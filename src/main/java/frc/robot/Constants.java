@@ -87,8 +87,20 @@ public final class Constants {
         public static final double ALLOWED_ERROR = 5.0;    // Allowed closed-loop error (units)
     }
     
+    public static final class MapConstants {
+        public static final String ELEVATOR_HEIGHT = "elevatorHeight";
+        public static final String END_EFFECTOR_SPEED = "endEffectorSpeed";
+        public static final String HOPPER_SPEED = "hopperSpeed";
+        public static final String CLIMBER_POSITION = "climberPosition";
+        public static final String WRIST_ANGLE = "wristAngle";
+        public static final String INTAKE_SPEED = "intakeSpeed";
+
+
+    }
+
     public static final class ClimberConstants {
         public static final int CAN_ID = 10;
+        public static final double CLIMBER_DEFAULT_POSITION = 0.0; // Placeholder value
         
         // PID Constants (placeholders—adjust as needed)
         public static final double kP = 0.5;
@@ -103,6 +115,7 @@ public final class Constants {
     
     public static final class ElevatorConstants {
         public static final int CAN_ID = 9;
+        public static final double ELEVATOR_DEFAULT_HEIGHT = 0.0; // Placeholder value
         
         // PID Constants (placeholders—adjust as needed)
         public static final double kP = 80.0; 

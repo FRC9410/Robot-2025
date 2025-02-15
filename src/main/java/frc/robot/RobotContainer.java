@@ -6,9 +6,25 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Commands.DefaultAlgaeIntakeCommand;
+import frc.robot.Commands.DefaultAlgaeWristCommand;
+import frc.robot.Commands.DefaultClimberCommand;
+import frc.robot.Commands.DefaultElevatorCommand;
+import frc.robot.Commands.DefaultEndEffectorCommand;
+import frc.robot.Commands.DefaultHopperCommand;
+import frc.robot.subsystems.Subsystems;
 
 public class RobotContainer {
+  private final Subsystems subsystems;
   public RobotContainer() {
+    subsystems = new Subsystems();
+    subsystems.getHopper().setDefaultCommand(new DefaultHopperCommand(subsystems.getHopper(), (key) -> subsystems.getCommandData(key)));
+    subsystems.getAlgaeIntake().setDefaultCommand(new DefaultAlgaeIntakeCommand(subsystems.getAlgaeIntake(), (key) -> subsystems.getCommandData(key)));
+    subsystems.getAlgaeWrist().setDefaultCommand(new DefaultAlgaeWristCommand(subsystems.getAlgaeWrist(), (key) -> subsystems.getCommandData(key)));
+    subsystems.getElevator().setDefaultCommand(new DefaultElevatorCommand(subsystems.getElevator(), (key) -> subsystems.getCommandData(key)));
+    subsystems.getEndEffector().setDefaultCommand(new DefaultEndEffectorCommand(subsystems.getEndEffector(), (key) -> subsystems.getCommandData(key)));
+    subsystems.getClimber().setDefaultCommand(new DefaultClimberCommand(subsystems.getClimber(), (key) -> subsystems.getCommandData(key)));
+    
     configureBindings();
   }
 

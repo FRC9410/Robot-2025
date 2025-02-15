@@ -41,7 +41,7 @@ public class EndEffector extends SubsystemBase {
      *
      * @param speed The desired motor output (range between -1 and 1).
      */
-    public void runEndEffectorr(double speed) {
+    public void runEndEffector(double speed) {
         endEffectorMotor.setVoltage(speed);
         // No need to command secondaryMotor here since it follows primaryMotor in reverse.
     }

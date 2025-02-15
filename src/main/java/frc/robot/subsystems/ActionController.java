@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-
+import java.util.function.Function;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -14,15 +14,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * as needed for your robot.
  */
 public class ActionController extends SubsystemBase {
-    BiConsumer updateData;
-    Consumer getSubsystemData;
+    private final BiConsumer<String, Object> updateData;
+    Function<String, Object> getSubsystemData;
 
-    public ActionController(BiConsumer<String, Object> updateData, Consumer<String> getSubsystemData) {
+    public ActionController(BiConsumer<String, Object> updateData, Function<String, Object> getSubsystemData) {
         // Initialization code for the action controller subsystem
         this.updateData = updateData;
         this.getSubsystemData = getSubsystemData;
-    }
-    
+    }   
     @Override
     public void periodic() {
         // Put code here to be run every scheduling cycle
