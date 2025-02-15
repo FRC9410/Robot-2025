@@ -6,10 +6,10 @@ import java.util.Map;
 import java.util.Optional;
 import frc.robot.subsystems.LimelightCamera.LimelightVersion;
 
-public class VisionSubsystem extends SubsystemBase {
+public class Vision extends SubsystemBase {
     private final Map<String, LimelightCamera> cameras = new HashMap<>();
     
-    public VisionSubsystem() {
+    public Vision() {
         // Example camera initialization - you would add your actual cameras here
         // addCamera("front", "limelight-front", LimelightVersion.V4);
         // addCamera("back", "limelight-back", LimelightVersion.V3);
