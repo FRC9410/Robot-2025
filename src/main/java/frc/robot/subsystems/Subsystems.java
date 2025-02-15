@@ -1,8 +1,9 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.util.HashMap;
+import java.util.Map;
 
-public class Subsystems extends SubsystemBase {
+public class Subsystems {
 
     // Instantiate the subsystems (using placeholder motor/control IDs)
     private final Elevator elevator;
@@ -11,17 +12,28 @@ public class Subsystems extends SubsystemBase {
     private final AlgaeIntake algaeIntake;
     private final AlgaeWrist algaeWrist;
     private final EndEffector endEffector;
+    private final ActionController actionController;
+    private final Map<String, Object> subsystemData;
+    private final Map<String, Object> commandData;
+    private final Vision vision;
+    private final Sensors sensors;
     
     /**
      * Constructor for the Subsystems container.
      */
     public Subsystems() {
-        elevator = new Elevator();
-        climber = new Climber();
-        hopper = new Hopper();
-        algaeIntake = new AlgaeIntake();
-        algaeWrist = new AlgaeWrist();
-        endEffector = new EndEffector();
+        elevator = new Elevator((key, value) -> updateSubsystemData(key, value));
+        climber = new Climber((key, value) -> updateSubsystemData(key, value));
+        hopper = new Hopper((key, value) -> updateSubsystemData(key, value));
+        algaeIntake = new AlgaeIntake((key, value) -> updateSubsystemData(key, value));
+        algaeWrist = new AlgaeWrist((key, value) -> updateSubsystemData(key, value));
+        endEffector = new EndEffector((key, value) -> updateSubsystemData(key, value));
+        vision = new Vision((key, value) -> updateSubsystemData(key, value));
+        sensors = new Sensors((key, value) -> updateSubsystemData(key, value));
+        actionController = new ActionController((key, value) -> updateCommandData(key, value), (key) -> getSubsystemData(key));
+        
+        commandData = new HashMap<>();
+        subsystemData = new HashMap<>();
     }
     
     // Accessor methods to retrieve subsystems:
@@ -50,9 +62,19 @@ public class Subsystems extends SubsystemBase {
         return endEffector;
     }
     
-    @Override
-    public void periodic() {
-        // This container can optionally call periodic() on its subsystems,
-        // or you can let the scheduler handle them independently.
+    public ActionController getActionController() {
+        return actionController;
+    }
+
+    public void updateSubsystemData(String key, Object value) {
+        subsystemData.put(key, value);
+    }
+
+    public void updateCommandData(String key, Object value) {
+        commandData.put(key, value);
+    }
+
+    public Object getSubsystemData(String key) {
+        return subsystemData.get(key);
     }
 } 

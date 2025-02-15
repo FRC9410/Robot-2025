@@ -2,6 +2,9 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import java.util.function.BiConsumer;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -12,8 +15,9 @@ public class Elevator extends SubsystemBase {
     private final TalonFX elevatorMotor;
     private final TalonFX elevatorFollowerMotor;
     private final PositionVoltage positionRequest;
+    private final BiConsumer<String, Object> updateData;
 
-    public Elevator() {
+    public Elevator(BiConsumer<String, Object> updateData) {
         elevatorMotor = new TalonFX(Constants.ElevatorConstants.CAN_ID, Constants.CanBusConstants.CANIVORE_BUS);
         elevatorFollowerMotor = new TalonFX(Constants.ElevatorConstants.CAN_ID, Constants.CanBusConstants.CANIVORE_BUS);
         
@@ -45,6 +49,8 @@ public class Elevator extends SubsystemBase {
         elevatorFollowerMotor.setNeutralMode(NeutralModeValue.Brake);
 
         elevatorFollowerMotor.setControl(new Follower(elevatorMotor.getDeviceID(), true));
+
+        this.updateData = updateData;
     }
 
     @Override

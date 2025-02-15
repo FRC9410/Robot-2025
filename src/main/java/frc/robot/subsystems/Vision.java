@@ -4,15 +4,20 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiConsumer;
+
 import frc.robot.subsystems.LimelightCamera.LimelightVersion;
 
 public class Vision extends SubsystemBase {
     private final Map<String, LimelightCamera> cameras = new HashMap<>();
+    private final BiConsumer<String, Object> updateData;
     
-    public Vision() {
+    public Vision(BiConsumer<String, Object> updateData) {
         // Example camera initialization - you would add your actual cameras here
         // addCamera("front", "limelight-front", LimelightVersion.V4);
         // addCamera("back", "limelight-back", LimelightVersion.V3);
+
+        this.updateData = updateData;
     }
 
     /**

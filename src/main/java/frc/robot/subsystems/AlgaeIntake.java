@@ -1,6 +1,9 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+
+import java.util.function.BiConsumer;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -9,14 +12,15 @@ import frc.robot.Constants;
 
 public class AlgaeIntake extends SubsystemBase {
     private final TalonFX intakeMotor;
-  private static final NeutralOut brake = new NeutralOut();
+    private static final NeutralOut brake = new NeutralOut();
+    private final BiConsumer<String, Object> updateData;
     
     /**
      * Constructor for the Algae Intake subsystem.
      * 
      * @param motorID CAN ID for the intake motor.
      */
-    public AlgaeIntake() {
+    public AlgaeIntake(BiConsumer<String, Object> updateData) {
         intakeMotor = new TalonFX(Constants.AlgaeIntakeConstants.CAN_ID, Constants.CanBusConstants.CANIVORE_BUS);
 
         // Configure motor controller using the configTalonFx method.
@@ -24,6 +28,8 @@ public class AlgaeIntake extends SubsystemBase {
 
         // Set neutral mode; coast mode is often preferred for an intake.
         intakeMotor.setNeutralMode(NeutralModeValue.Coast);
+
+        this.updateData = updateData;
     }
     
     /**

@@ -2,6 +2,9 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import java.util.function.BiConsumer;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.NeutralOut;
@@ -13,6 +16,7 @@ public class Hopper extends SubsystemBase {
     private final TalonFX primaryMotor;
     private final TalonFX secondaryMotor;
     private static final NeutralOut brake = new NeutralOut();
+    private final BiConsumer<String, Object> updateData;
     
     /**
      * Hopper subsystem constructor.
@@ -20,7 +24,7 @@ public class Hopper extends SubsystemBase {
      * @param primaryMotorID   CAN ID for the primary motor.
      * @param secondaryMotorID CAN ID for the secondary motor.
      */
-    public Hopper() {
+    public Hopper(BiConsumer<String, Object> updateData) {
         primaryMotor = new TalonFX(Constants.HopperConstants.PRIMARY_CAN_ID, Constants.CanBusConstants.CANIVORE_BUS);
         secondaryMotor = new TalonFX(Constants.HopperConstants.SECONDARY_CAN_ID, Constants.CanBusConstants.CANIVORE_BUS);
         
@@ -33,6 +37,8 @@ public class Hopper extends SubsystemBase {
         primaryMotor.getConfigurator().apply(config);
         secondaryMotor.getConfigurator().apply(config);
         secondaryMotor.setControl(new Follower(primaryMotor.getDeviceID(), true));
+
+        this.updateData = updateData;
     }
     
     /**
@@ -59,5 +65,7 @@ public class Hopper extends SubsystemBase {
     public void periodic() {
         // Post the current state to network tables or smth
 
+        
+        
     }
 }

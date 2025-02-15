@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.BiConsumer;
+
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -7,18 +9,21 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class EndEffector extends SubsystemBase {
-    public final TalonFX endEffectorMotor;
+    private final TalonFX endEffectorMotor;
     private static final NeutralOut brake = new NeutralOut();
+    private final BiConsumer<String, Object> updateData;
 
     /**
      * Constructor for the EndEffector subsystem.
      * 
      * 
      */
-    public EndEffector() {
+    public EndEffector(BiConsumer<String, Object> updateData) {
         endEffectorMotor = new TalonFX(Constants.EndEffectorConstants.CAN_ID, Constants.CanBusConstants.CANIVORE_BUS);
 
         endEffectorMotor.setNeutralMode(NeutralModeValue.Brake);
+
+        this.updateData = updateData;
 
     }
     

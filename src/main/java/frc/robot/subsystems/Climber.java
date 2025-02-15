@@ -1,8 +1,10 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
+
+import java.util.function.BiConsumer;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -11,13 +13,14 @@ import frc.robot.Constants;
 public class Climber extends SubsystemBase {
     private final TalonFX climberMotor;
     private final PositionVoltage positionRequest;
+    private final BiConsumer<String, Object> updateData;
 
     /**
      * Constructor for the Climber subsystem.
      *
      * @param motorID CAN ID for the climber's motor.
      */
-    public Climber() {
+    public Climber(BiConsumer<String, Object> updateData) {
         climberMotor = new TalonFX(Constants.ClimberConstants.CAN_ID, Constants.CanBusConstants.CANIVORE_BUS);
         positionRequest = new PositionVoltage(0).withSlot(0);
 
@@ -37,6 +40,8 @@ public class Climber extends SubsystemBase {
 
         // Set brake mode so the winch holds its position when no power is applied.
         climberMotor.setNeutralMode(NeutralModeValue.Brake);
+
+        this.updateData = updateData;
     }
 
     @Override

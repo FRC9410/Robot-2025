@@ -1,14 +1,9 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.signals.NeutralModeValue;
+import java.util.function.BiConsumer;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.AlgaeWristConstants;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -24,13 +19,14 @@ public class AlgaeWrist extends SubsystemBase {
     private final SparkClosedLoopController pidController;
     private final SparkMax wristMotor;
     private final SparkMaxConfig config;
+    private final BiConsumer<String, Object> updateData;
     /**
      * Constructor for the AlgaeWrist subsystem.
      *
      * @param motorID   CAN ID for the wrist motor.
      * @param encoderID CAN ID for the absolute encoder.
      */
-    public AlgaeWrist() {
+    public AlgaeWrist(BiConsumer<String, Object> updateData) {
         wristMotor = new SparkMax(AlgaeWristConstants.CAN_ID, MotorType.kBrushless);
         pidController = wristMotor.getClosedLoopController();
 
@@ -63,6 +59,8 @@ public class AlgaeWrist extends SubsystemBase {
 
         pidController.setReference(AlgaeWristConstants.MIN_ANGLE_UNITS, ControlType.kMAXMotionPositionControl,
           ClosedLoopSlot.kSlot0);
+          
+          this.updateData = updateData;
     }
     
     @Override
