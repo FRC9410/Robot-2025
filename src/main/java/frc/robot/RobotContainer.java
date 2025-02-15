@@ -6,12 +6,12 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.Commands.DefaultAlgaeIntakeCommand;
-import frc.robot.Commands.DefaultAlgaeWristCommand;
-import frc.robot.Commands.DefaultClimberCommand;
-import frc.robot.Commands.DefaultElevatorCommand;
-import frc.robot.Commands.DefaultEndEffectorCommand;
-import frc.robot.Commands.DefaultHopperCommand;
+import frc.robot.commands.defaults.DefaultAlgaeIntakeCommand;
+import frc.robot.commands.defaults.DefaultAlgaeWristCommand;
+import frc.robot.commands.defaults.DefaultClimberCommand;
+import frc.robot.commands.defaults.DefaultElevatorCommand;
+import frc.robot.commands.defaults.DefaultEndEffectorCommand;
+import frc.robot.commands.defaults.DefaultHopperCommand;
 import frc.robot.subsystems.Subsystems;
 
 public class RobotContainer {

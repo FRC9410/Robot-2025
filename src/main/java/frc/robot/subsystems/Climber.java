@@ -32,7 +32,7 @@ public class Climber extends SubsystemBase {
 
         // Set up soft limits to prevent over-extension or over-retraction.
         config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-        config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = Constants.ClimberConstants.WINCH_CLIMB_UNITS;
+        config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = Constants.ClimberConstants.WINCH_CLIMB_POSITION;
         config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
         config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0.0;
 
@@ -53,8 +53,8 @@ public class Climber extends SubsystemBase {
      *
      * @param extensionMeters The desired extension in meters.
      */
-    public void setPosition(double extensionUnits) {
-        climberMotor.setControl(positionRequest.withPosition(extensionUnits));
+    public void setPosition(double position) {
+        climberMotor.setControl(positionRequest.withPosition(position));
     }
 
     /**
@@ -64,6 +64,10 @@ public class Climber extends SubsystemBase {
      */
     public double getCurrentExtension() {
         return climberMotor.getPosition().getValueAsDouble();
+    }
+
+    public void setVoltage(double voltage) {
+        climberMotor.setVoltage(voltage);
     }
 
     /**

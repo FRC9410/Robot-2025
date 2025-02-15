@@ -49,16 +49,9 @@ public class Hopper extends SubsystemBase {
      *
      * @param speed The desired motor output (range between -1 and 1).
      */
-    public void runHopper(double speed) {
+    public void setVoltage(double speed) {
         primaryMotor.setVoltage(speed);
         // No need to command secondaryMotor here since it follows primaryMotor in reverse.
-    }
-    
-    /**
-     * Stops both hopper motors.
-     */
-    public void stopHopper() {
-        primaryMotor.setControl(brake);
     }
     
     @Override

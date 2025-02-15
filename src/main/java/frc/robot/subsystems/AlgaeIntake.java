@@ -41,15 +41,8 @@ public class AlgaeIntake extends SubsystemBase {
      * 
      * @param speed The motor output in the range [-1, 1].
      */
-    public void runIntake(double speed) {
+    public void setVoltage(double speed) {
         intakeMotor.setVoltage(speed);
-    }
-    
-    /**
-     * Stops the intake motor.
-     */
-    public void stopIntake() {
-        intakeMotor.setControl(brake);
     }
     
     @Override

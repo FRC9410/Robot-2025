@@ -36,9 +36,9 @@ public class Elevator extends SubsystemBase {
 
         // Configure soft limits
         config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-        config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = Constants.ElevatorConstants.L4_SCORE_HEIGHT_UNITS;
+        config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = Constants.ElevatorConstants.L4_SCORE_POSITION;
         config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-        config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = Constants.ElevatorConstants.HOME_HEIGHT_UNITS;
+        config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = Constants.ElevatorConstants.HOME_POSITION;
 
         // Apply configuration
         elevatorMotor.getConfigurator().apply(config);
@@ -61,8 +61,8 @@ public class Elevator extends SubsystemBase {
      * Sets the elevator to a specific height
      * @param heightMeters The target height in meters
      */
-    public void setHeight(double heightUnits) {
-        elevatorMotor.setControl(positionRequest.withPosition(heightUnits));
+    public void setHeight(double position) {
+        elevatorMotor.setControl(positionRequest.withPosition(position));
     }
 
     /**
@@ -78,6 +78,10 @@ public class Elevator extends SubsystemBase {
      */
     public boolean atTargetPosition() {
         return Math.abs(elevatorMotor.getClosedLoopError().getValue()) < 0.02; // 2cm tolerance
+    }
+
+    public void setVoltage(double voltage) {
+        elevatorMotor.setVoltage(voltage);
     }
 
     /**

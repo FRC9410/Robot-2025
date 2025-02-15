@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.Commands;
+package frc.robot.commands.base;
 
 import java.util.function.Function;
 
@@ -11,14 +11,14 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Elevator;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class DefaultElevatorCommand extends Command {
+public class ElevatorCommand extends Command {
   private final Elevator elevator;
-  private final Function<String, Object> commandData;
+  private final double voltage;
   /** Creates a new DefaultElevator. */
-  public DefaultElevatorCommand(Elevator elevator, Function<String, Object> commandData) {
+  public ElevatorCommand(Elevator elevator, double voltage) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.elevator = elevator;
-    this.commandData = commandData;
+    this.voltage = voltage;
   }
 
   // Called when the command is initially scheduled.
@@ -28,12 +28,7 @@ public class DefaultElevatorCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    final Object height = commandData.apply(Constants.MapConstants.ELEVATOR_HEIGHT);
-    if(height != null) {
-      elevator.setHeight((double) height);
-    } else {
-      elevator.setHeight(Constants.ElevatorConstants.ELEVATOR_DEFAULT_HEIGHT);
-    }
+    elevator.setVoltage(voltage);
   }
 
   // Called once the command ends or is interrupted.

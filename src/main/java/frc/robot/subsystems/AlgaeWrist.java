@@ -39,8 +39,8 @@ public class AlgaeWrist extends SubsystemBase {
                 AlgaeWristConstants.kI,
                 AlgaeWristConstants.kD
             )
-            .outputRange(AlgaeWristConstants.MIN_ANGLE_UNITS,
-                AlgaeWristConstants.MAX_ANGLE_UNITS);
+            .outputRange(AlgaeWristConstants.MIN_POSITION,
+                AlgaeWristConstants.MAX_POSITION);
         config.encoder
             .positionConversionFactor(1)
             .velocityConversionFactor(1);
@@ -57,7 +57,7 @@ public class AlgaeWrist extends SubsystemBase {
             
         wristMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        pidController.setReference(AlgaeWristConstants.MIN_ANGLE_UNITS, ControlType.kMAXMotionPositionControl,
+        pidController.setReference(AlgaeWristConstants.MIN_POSITION, ControlType.kMAXMotionPositionControl,
           ClosedLoopSlot.kSlot0);
           
           this.updateData = updateData;
@@ -76,7 +76,11 @@ public class AlgaeWrist extends SubsystemBase {
      *
      * @param targetAngleDegrees The desired target angle in degrees.
      */
-    public void setAngle(double targetUnits) {
-        pidController.setReference(targetUnits, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
+    public void setAngle(double targetPosition) {
+        pidController.setReference(targetPosition, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
+    }
+
+    public void setVoltage(double voltage) {
+        wristMotor.setVoltage(voltage);
     }
 } 

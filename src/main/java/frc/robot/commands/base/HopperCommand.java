@@ -2,23 +2,23 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.Commands;
+package frc.robot.commands.base;
 
 import java.util.function.Function;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.AlgaeIntake;
+import frc.robot.subsystems.Hopper;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class DefaultAlgaeIntakeCommand extends Command {
-  private AlgaeIntake algaeIntake;
-  private Function<String, Object> commandData;
-  /** Creates a new DefaultAlgaeIntake. */
-  public DefaultAlgaeIntakeCommand(AlgaeIntake algaeIntake, Function<String, Object> commandData) {
+public class HopperCommand extends Command {
+  private final Hopper hopper;
+  private final double voltage;
+  /** Creates a new DefaultHopper. */
+  public HopperCommand(Hopper hopper, double voltage) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.algaeIntake = algaeIntake;
-    this.commandData = commandData;
+    this.hopper = hopper;
+    this.voltage = voltage;
   }
 
   // Called when the command is initially scheduled.
@@ -28,13 +28,7 @@ public class DefaultAlgaeIntakeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Object speed = commandData.apply(Constants.MapConstants.INTAKE_SPEED);
-    if (speed != null) {
-      algaeIntake.runIntake((double) speed);
-    } 
-    else {
-      algaeIntake.stopIntake();
-    }
+    hopper.setVoltage(voltage);
   }
 
   // Called once the command ends or is interrupted.

@@ -41,15 +41,8 @@ public class EndEffector extends SubsystemBase {
      *
      * @param speed The desired motor output (range between -1 and 1).
      */
-    public void runEndEffector(double speed) {
+    public void setVoltage(double speed) {
         endEffectorMotor.setVoltage(speed);
         // No need to command secondaryMotor here since it follows primaryMotor in reverse.
-    }
-    
-    /**
-     * Stops both hopper motors.
-     */
-    public void stopEndEffector() {
-        endEffectorMotor.setControl(brake);
     }
 } 

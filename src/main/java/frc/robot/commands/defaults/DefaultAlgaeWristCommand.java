@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.Commands;
+package frc.robot.commands.defaults;
 
 import java.util.function.Function;
 
@@ -13,8 +13,8 @@ import frc.robot.subsystems.AlgaeWrist;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class DefaultAlgaeWristCommand extends Command {
   /** Creates a new DefaultAlgaeWrist. */
-  private AlgaeWrist algaeWrist;
-  private Function<String, Object> commandData;
+  private final AlgaeWrist algaeWrist;
+  private final Function<String, Object> commandData;
   public DefaultAlgaeWristCommand(AlgaeWrist algaeWrist, Function<String, Object> commandData) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.algaeWrist = algaeWrist;
@@ -28,12 +28,12 @@ public class DefaultAlgaeWristCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Object angle = commandData.apply(Constants.MapConstants.WRIST_ANGLE);
+    Object angle = commandData.apply(Constants.MapConstants.WRIST_POSITION);
     if (angle != null) {
       algaeWrist.setAngle((double) angle);
     }
     else {
-      algaeWrist.setAngle(Constants.AlgaeWristConstants.MIN_ANGLE_UNITS);
+      algaeWrist.setAngle(Constants.AlgaeWristConstants.MIN_POSITION);
     }
   }
 

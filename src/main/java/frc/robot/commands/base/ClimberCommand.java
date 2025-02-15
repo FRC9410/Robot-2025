@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.Commands;
+package frc.robot.commands.base;
 
 import java.util.function.Function;
 
@@ -11,14 +11,14 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Climber;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class DefaultClimberCommand extends Command {
-  private Climber climber;
-  private Function<String, Object> commandData;
+public class ClimberCommand extends Command {
+  private final Climber climber;
+  private final double voltage;
   /** Creates a new DefaultClimber. */
-  public DefaultClimberCommand(Climber climber, Function<String, Object> commandData) {
+  public ClimberCommand(Climber climber, double voltage) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.climber = climber;
-    this.commandData = commandData;
+    this.voltage = voltage;
   }
 
   // Called when the command is initially scheduled.
@@ -28,13 +28,7 @@ public class DefaultClimberCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    final Object climberPosition = commandData.apply(Constants.MapConstants.CLIMBER_POSITION);
-    if(climberPosition != null) {
-      climber.setPosition((Double) climberPosition);
-    }
-    else {
-      climber.setPosition(Constants.ClimberConstants.CLIMBER_DEFAULT_POSITION);
-    }
+    climber.setVoltage(voltage);
   }
 
   // Called once the command ends or is interrupted.
