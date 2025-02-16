@@ -6,24 +6,19 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.commands.defaults.DefaultAlgaeIntakeCommand;
-import frc.robot.commands.defaults.DefaultAlgaeWristCommand;
-import frc.robot.commands.defaults.DefaultClimberCommand;
-import frc.robot.commands.defaults.DefaultElevatorCommand;
-import frc.robot.commands.defaults.DefaultEndEffectorCommand;
-import frc.robot.commands.defaults.DefaultHopperCommand;
+import frc.robot.commands.action.*;
 import frc.robot.subsystems.Subsystems;
 
 public class RobotContainer {
   private final Subsystems subsystems;
   public RobotContainer() {
     subsystems = new Subsystems();
-    subsystems.getHopper().setDefaultCommand(new DefaultHopperCommand(subsystems.getHopper(), (key) -> subsystems.getCommandData(key)));
-    subsystems.getAlgaeIntake().setDefaultCommand(new DefaultAlgaeIntakeCommand(subsystems.getAlgaeIntake(), (key) -> subsystems.getCommandData(key)));
-    subsystems.getAlgaeWrist().setDefaultCommand(new DefaultAlgaeWristCommand(subsystems.getAlgaeWrist(), (key) -> subsystems.getCommandData(key)));
-    subsystems.getElevator().setDefaultCommand(new DefaultElevatorCommand(subsystems.getElevator(), (key) -> subsystems.getCommandData(key)));
-    subsystems.getEndEffector().setDefaultCommand(new DefaultEndEffectorCommand(subsystems.getEndEffector(), (key) -> subsystems.getCommandData(key)));
-    subsystems.getClimber().setDefaultCommand(new DefaultClimberCommand(subsystems.getClimber(), (key) -> subsystems.getCommandData(key)));
+    subsystems.getHopper().setDefaultCommand(new ActionHopperCommand(subsystems.getHopper(), subsystems.getActionController()));
+    subsystems.getAlgaeIntake().setDefaultCommand(new ActionAlgaeIntakeCommand(subsystems.getAlgaeIntake(), subsystems.getActionController()));
+    subsystems.getAlgaeWrist().setDefaultCommand(new ActionAlgaeWristCommand(subsystems.getAlgaeWrist(), subsystems.getActionController()));
+    subsystems.getElevator().setDefaultCommand(new ActionElevatorCommand(subsystems.getElevator(), subsystems.getActionController()));
+    subsystems.getEndEffector().setDefaultCommand(new ActionEndEffectorCommand(subsystems.getEndEffector(), subsystems.getActionController()));
+    subsystems.getClimber().setDefaultCommand(new ActionClimberCommand(subsystems.getClimber(), subsystems.getActionController()));
     
     configureBindings();
   }

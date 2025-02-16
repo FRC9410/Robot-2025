@@ -19,6 +19,8 @@ public class AlgaeWristCommand extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     this.algaeWrist = algaeWrist;
     this.voltage = voltage;
+
+    addRequirements(algaeWrist);
   }
 
   // Called when the command is initially scheduled.

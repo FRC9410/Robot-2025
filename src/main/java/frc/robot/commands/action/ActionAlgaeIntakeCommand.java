@@ -2,23 +2,24 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.defaults;
+package frc.robot.commands.action;
 
 import java.util.function.Function;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.AlgaeWrist;
+import frc.robot.subsystems.ActionController;
+import frc.robot.subsystems.AlgaeIntake;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class DefaultAlgaeWristCommand extends Command {
-  /** Creates a new DefaultAlgaeWrist. */
-  private final AlgaeWrist algaeWrist;
-  private final Function<String, Object> commandData;
-  public DefaultAlgaeWristCommand(AlgaeWrist algaeWrist, Function<String, Object> commandData) {
+public class ActionAlgaeIntakeCommand extends Command {
+  private final AlgaeIntake algaeIntake;
+  private final ActionController controller;
+  /** Creates a new DefaultAlgaeIntake. */
+  public ActionAlgaeIntakeCommand(AlgaeIntake algaeIntake, ActionController controller) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.algaeWrist = algaeWrist;
-    this.commandData = commandData;
+    this.algaeIntake = algaeIntake;
+    this.controller = controller;
   }
 
   // Called when the command is initially scheduled.
@@ -28,12 +29,12 @@ public class DefaultAlgaeWristCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Object angle = commandData.apply(Constants.MapConstants.WRIST_POSITION);
-    if (angle != null) {
-      algaeWrist.setAngle((double) angle);
-    }
+    Object speed = controller.getCommandField(Constants.MapConstants.INTAKE_VOLTAGE);
+    if (speed != null) {
+      algaeIntake.setVoltage((double) speed);
+    } 
     else {
-      algaeWrist.setAngle(Constants.AlgaeWristConstants.MIN_POSITION);
+      algaeIntake.setVoltage(Constants.AlgaeIntakeConstants.STOP_VOLTAGE);
     }
   }
 

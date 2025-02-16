@@ -2,23 +2,21 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.defaults;
-
-import java.util.function.Function;
+package frc.robot.commands.action;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
-import frc.robot.subsystems.AlgaeIntake;
+import frc.robot.subsystems.ActionController.Action;
+import frc.robot.subsystems.Subsystems;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class DefaultAlgaeIntakeCommand extends Command {
-  private final AlgaeIntake algaeIntake;
-  private final Function<String, Object> commandData;
-  /** Creates a new DefaultAlgaeIntake. */
-  public DefaultAlgaeIntakeCommand(AlgaeIntake algaeIntake, Function<String, Object> commandData) {
+public class ActionRequestCommand extends Command {
+  private final Action action;
+  private final Subsystems subsystems;
+  /** Creates a new ActionRequestCommand. */
+  public ActionRequestCommand(Subsystems subsystems, Action action) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.algaeIntake = algaeIntake;
-    this.commandData = commandData;
+    this.subsystems = subsystems;
+    this.action = action;
   }
 
   // Called when the command is initially scheduled.
@@ -28,13 +26,7 @@ public class DefaultAlgaeIntakeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Object speed = commandData.apply(Constants.MapConstants.INTAKE_VOLTAGE);
-    if (speed != null) {
-      algaeIntake.setVoltage((double) speed);
-    } 
-    else {
-      algaeIntake.setVoltage(Constants.AlgaeIntakeConstants.STOP_VOLTAGE);
-    }
+    subsystems.getActionController().doRequest(subsystems.getSubsystemData(), action);
   }
 
   // Called once the command ends or is interrupted.

@@ -2,25 +2,24 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.base;
+package frc.robot.commands.action;
 
 import java.util.function.Function;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.AlgaeIntake;
+import frc.robot.subsystems.ActionController;
+import frc.robot.subsystems.Elevator;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class AlgaeIntakeCommand extends Command {
-  private final AlgaeIntake algaeIntake;
-  private final double voltage;
-  /** Creates a new DefaultAlgaeIntake. */
-  public AlgaeIntakeCommand(AlgaeIntake algaeIntake, double voltage) {
+public class ActionElevatorCommand extends Command {
+  private final Elevator elevator;
+  private final ActionController controller;
+  /** Creates a new DefaultElevator. */
+  public ActionElevatorCommand(Elevator elevator, ActionController controller) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.algaeIntake = algaeIntake;
-    this.voltage = voltage;
-
-    addRequirements(algaeIntake);
+    this.elevator = elevator;
+    this.controller = controller;
   }
 
   // Called when the command is initially scheduled.
@@ -30,7 +29,12 @@ public class AlgaeIntakeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    algaeIntake.setVoltage(voltage);
+    final Object height = controller.getCommandField(Constants.MapConstants.ELEVATOR_POSITION);
+    if(height != null) {
+      elevator.setHeight((double) height);
+    } else {
+      elevator.setHeight(Constants.ElevatorConstants.ELEVATOR_DEFAULT_HEIGHT);
+    }
   }
 
   // Called once the command ends or is interrupted.

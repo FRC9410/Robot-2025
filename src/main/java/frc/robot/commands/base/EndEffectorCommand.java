@@ -19,6 +19,8 @@ public class EndEffectorCommand extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     this.endEffector = endEffector;
     this.voltage = voltage;
+
+    addRequirements(endEffector);
   }
 
   // Called when the command is initially scheduled.

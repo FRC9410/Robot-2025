@@ -1,10 +1,12 @@
 package frc.robot.subsystems;
 
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.actionRequestHandlers.*;
+import frc.team9410.lib.interfaces.ActionRequestHandler;
 
 /**
  * ActionController subsystem.
@@ -14,14 +16,18 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * as needed for your robot.
  */
 public class ActionController extends SubsystemBase {
-    private final BiConsumer<String, Object> updateData;
-    Function<String, Object> getSubsystemData;
+    private Map<String, Object> commandData;
+    
+  
+    private final List<ActionRequestHandler> requestHandlers = List.of(
+        new Idle()
+    );
 
-    public ActionController(BiConsumer<String, Object> updateData, Function<String, Object> getSubsystemData) {
+    public ActionController() {
         // Initialization code for the action controller subsystem
-        this.updateData = updateData;
-        this.getSubsystemData = getSubsystemData;
+        commandData = new HashMap<>();
     }   
+
     @Override
     public void periodic() {
         // Put code here to be run every scheduling cycle
@@ -30,7 +36,50 @@ public class ActionController extends SubsystemBase {
     /**
      * Example method that performs an action.
      */
-    public void performAction() {
-        // Insert action logic here.
+    public void doRequest(Map<String, Object> state, Action action) {
+        for (ActionRequestHandler handler : requestHandlers) {
+            if (handler.matches(state, action)) {
+                handler.execute(state, this);
+                break;
+            }
+        }
+    }
+    public void setCommandData(Map<String, Object> newCommandData) {
+        this.commandData = newCommandData;
+    }
+
+    public void updateCommandData(String key, Object value) {
+      commandData.put(key, value);
+    }
+  
+    public void removeMultipleCommandKeys(List<String> keys) {
+      for (String key : keys) {
+        commandData.remove(key);
+      }
+    }
+
+    public Map<String, Object> getCommandData() {
+        return commandData;
+    }
+
+    public Object getCommandField(String key) {
+        Object value = commandData.get(key);
+  
+        if (value instanceof String) {
+            return (String) value;
+        } else if (value instanceof Integer) {
+            return (Integer) value;
+        } else if (value instanceof Double) {
+            return (Double) value;
+        } else {
+            return null; // Handle cases where the value is not of expected type
+        }
+    }
+  
+
+    public enum Action {
+      IDLE,
+      DEV_MODE,
+      DEMO_MODE
     }
 } 

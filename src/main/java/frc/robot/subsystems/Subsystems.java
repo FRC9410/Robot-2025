@@ -14,7 +14,6 @@ public class Subsystems {
     private final EndEffector endEffector;
     private final ActionController actionController;
     private final Map<String, Object> subsystemData;
-    private final Map<String, Object> commandData;
     private final Vision vision;
     private final Sensors sensors;
     
@@ -31,9 +30,8 @@ public class Subsystems {
         vision = new Vision((key, value) -> updateSubsystemData(key, value));
         sensors = new Sensors((key, value) -> updateSubsystemData(key, value));
         
-        commandData = new HashMap<>();
         subsystemData = new HashMap<>();
-        actionController = new ActionController((key, value) -> updateCommandData(key, value), (key) -> subsystemData.get(key));
+        actionController = new ActionController();
     }
     
     // Accessor methods to retrieve subsystems:
@@ -70,15 +68,11 @@ public class Subsystems {
         subsystemData.put(key, value);
     }
 
-    public void updateCommandData(String key, Object value) {
-        commandData.put(key, value);
-    }
-
-    public Object getSubsystemData(String key) {
+    public Object getSubsystemField(String key) {
         return subsystemData.get(key);
     }
 
-    public Object getCommandData(String key) {
-        return commandData.get(key);
+    public Map<String, Object> getSubsystemData() {
+        return subsystemData;
     }
 } 
