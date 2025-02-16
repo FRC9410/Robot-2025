@@ -14,6 +14,7 @@ public class AlgaeIntake extends SubsystemBase {
     private final TalonFX intakeMotor;
     private static final NeutralOut brake = new NeutralOut();
     private final BiConsumer<String, Object> updateData;
+    private double voltage;
     
     /**
      * Constructor for the Algae Intake subsystem.
@@ -30,6 +31,8 @@ public class AlgaeIntake extends SubsystemBase {
         intakeMotor.setNeutralMode(NeutralModeValue.Coast);
 
         this.updateData = updateData;
+
+        voltage = Constants.AlgaeIntakeConstants.STOP_VOLTAGE;
     }
     
     /**
@@ -42,7 +45,10 @@ public class AlgaeIntake extends SubsystemBase {
      * @param speed The motor output in the range [-1, 1].
      */
     public void setVoltage(double speed) {
-        intakeMotor.setVoltage(speed);
+        if (voltage != this.voltage) {
+            this.voltage = voltage;
+            intakeMotor.setVoltage(voltage);
+        }
     }
     
     @Override

@@ -144,8 +144,9 @@ public final class Constants {
         public static final double ALGAE_LAYUP_POSITIONS = 0.6;
         public static final double ALGAE_PLACE_POSITION = 0.8;
         
-        public static final double ELEVATOR_UP_VOLTAGE = 0.2;
-        public static final double ELEVATOR_DOWN_VOLTAGE = 0.05;
+        public static final double UP_VOLTAGE = 0.2;
+        public static final double DOWN_VOLTAGE = 0.05;
+        public static final double STOP_VOLTAGE = 0.0;
     }
     
     public static final class EndEffectorConstants {
@@ -158,7 +159,7 @@ public final class Constants {
         public static final int PRIMARY_CAN_ID = 11;
         public static final int SECONDARY_CAN_ID = 12;
         // Hopper speed constant (placeholder value; adjust as needed)
-        public static final double HOPPER_VOLTAGE = 0.8;
+        public static final double START_VOLTAGE = 0.8;
         public static final double STOP_VOLTAGE = 0.0;
     }
 }

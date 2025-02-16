@@ -31,9 +31,9 @@ public class ActionElevatorCommand extends Command {
   public void execute() {
     final Object height = controller.getCommandField(Constants.MapConstants.ELEVATOR_POSITION);
     if(height != null) {
-      elevator.setHeight((double) height);
+      elevator.setPosition((double) height);
     } else {
-      elevator.setHeight(Constants.ElevatorConstants.ELEVATOR_DEFAULT_HEIGHT);
+      elevator.setPosition(Constants.ElevatorConstants.ELEVATOR_DEFAULT_HEIGHT);
     }
   }
 

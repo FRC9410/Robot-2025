@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -11,6 +12,7 @@ import frc.robot.commands.action.*;
 import frc.robot.commands.base.*;
 import frc.robot.subsystems.Subsystems;
 import frc.robot.subsystems.ActionController.Action;
+import frc.robot.utils.LimelightHelpers.PoseEstimate;
 
 public class RobotContainer {
   private final Subsystems subsystems;
@@ -42,9 +44,9 @@ public class RobotContainer {
   private void configureCopilotBindings() {}
 
   private void configureTestBindings() {
-    testController.povUp().whileTrue(new ElevatorCommand(subsystems.getElevator(), Constants.ElevatorConstants.ELEVATOR_UP_VOLTAGE));
-    testController.povDown().whileTrue(new ElevatorCommand(subsystems.getElevator(), Constants.ElevatorConstants.ELEVATOR_DOWN_VOLTAGE));
-    testController.a().whileTrue(new HopperCommand(subsystems.getHopper(), Constants.HopperConstants.HOPPER_VOLTAGE));
+    testController.povUp().whileTrue(new ElevatorCommand(subsystems.getElevator(), Constants.ElevatorConstants.UP_VOLTAGE));
+    testController.povDown().whileTrue(new ElevatorCommand(subsystems.getElevator(), Constants.ElevatorConstants.DOWN_VOLTAGE));
+    testController.a().whileTrue(new HopperCommand(subsystems.getHopper(), Constants.HopperConstants.START_VOLTAGE));
     testController.x().whileTrue(new AlgaeIntakeCommand(subsystems.getAlgaeIntake(), Constants.AlgaeIntakeConstants.INTAKE_VOLTAGE));
     testController.b().whileTrue(new AlgaeWristCommand(subsystems.getAlgaeWrist(), Constants.AlgaeWristConstants.WRIST_DOWN_VOLTAGE));
     testController.y().whileTrue(new AlgaeWristCommand(subsystems.getAlgaeWrist(), Constants.AlgaeWristConstants.WRIST_UP_VOLTAGE));
@@ -55,5 +57,14 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
+  }
+
+  public void updatePose() {
+    final PoseEstimate poseEsimate = subsystems.getVision().getPose(true);
+    
+        // m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
+        // m_poseEstimator.addVisionMeasurement(
+        //     mt2.pose,
+        //     mt2.timestampSeconds);
   }
 }

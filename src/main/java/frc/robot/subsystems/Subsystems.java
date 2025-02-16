@@ -64,6 +64,10 @@ public class Subsystems {
         return actionController;
     }
 
+    public Vision getVision() {
+        return vision;
+    }
+
     public void updateSubsystemData(String key, Object value) {
         subsystemData.put(key, value);
     }

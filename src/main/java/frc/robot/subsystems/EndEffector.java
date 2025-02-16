@@ -12,6 +12,7 @@ public class EndEffector extends SubsystemBase {
     private final TalonFX endEffectorMotor;
     private static final NeutralOut brake = new NeutralOut();
     private final BiConsumer<String, Object> updateData;
+    private double voltage;
 
     /**
      * Constructor for the EndEffector subsystem.
@@ -24,6 +25,8 @@ public class EndEffector extends SubsystemBase {
         endEffectorMotor.setNeutralMode(NeutralModeValue.Brake);
 
         this.updateData = updateData;
+
+        endEffectorMotor.setVoltage(Constants.EndEffectorConstants.STOP_VOLTAGE);
 
     }
     
@@ -42,7 +45,10 @@ public class EndEffector extends SubsystemBase {
      * @param speed The desired motor output (range between -1 and 1).
      */
     public void setVoltage(double speed) {
-        endEffectorMotor.setVoltage(speed);
+        if (voltage != this.voltage) {
+            this.voltage = voltage;
+            endEffectorMotor.setVoltage(voltage);
+        }
         // No need to command secondaryMotor here since it follows primaryMotor in reverse.
     }
 } 

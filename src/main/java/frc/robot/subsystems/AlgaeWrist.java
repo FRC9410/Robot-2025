@@ -20,6 +20,8 @@ public class AlgaeWrist extends SubsystemBase {
     private final SparkMax wristMotor;
     private final SparkMaxConfig config;
     private final BiConsumer<String, Object> updateData;
+    private double voltage;
+    private double setpoint;
     /**
      * Constructor for the AlgaeWrist subsystem.
      *
@@ -60,7 +62,10 @@ public class AlgaeWrist extends SubsystemBase {
         pidController.setReference(AlgaeWristConstants.MIN_POSITION, ControlType.kMAXMotionPositionControl,
           ClosedLoopSlot.kSlot0);
           
-          this.updateData = updateData;
+        this.updateData = updateData;
+
+        voltage = AlgaeWristConstants.STOP_VOLTAGE;
+        setpoint = 0.0;
     }
     
     @Override
@@ -76,11 +81,17 @@ public class AlgaeWrist extends SubsystemBase {
      *
      * @param targetAngleDegrees The desired target angle in degrees.
      */
-    public void setAngle(double targetPosition) {
-        pidController.setReference(targetPosition, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
+    public void setPosition(double position) {
+        if (position != setpoint) {
+            setpoint = position;
+            pidController.setReference(position, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
+        }
     }
 
     public void setVoltage(double voltage) {
-        wristMotor.setVoltage(voltage);
+        if (voltage != this.voltage) {
+            this.voltage = voltage;
+            wristMotor.setVoltage(voltage);
+        }
     }
 } 

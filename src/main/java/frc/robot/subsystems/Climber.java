@@ -14,6 +14,8 @@ public class Climber extends SubsystemBase {
     private final TalonFX climberMotor;
     private final PositionVoltage positionRequest;
     private final BiConsumer<String, Object> updateData;
+    private double voltage;
+    private double setpoint;
 
     /**
      * Constructor for the Climber subsystem.
@@ -42,6 +44,9 @@ public class Climber extends SubsystemBase {
         climberMotor.setNeutralMode(NeutralModeValue.Brake);
 
         this.updateData = updateData;
+
+        voltage = Constants.ClimberConstants.STOP_VOLTAGE;
+        setpoint = 0.0;
     }
 
     @Override
@@ -54,7 +59,10 @@ public class Climber extends SubsystemBase {
      * @param extensionMeters The desired extension in meters.
      */
     public void setPosition(double position) {
-        climberMotor.setControl(positionRequest.withPosition(position));
+        if(position != setpoint) {
+            setpoint = position;
+            climberMotor.setControl(positionRequest.withPosition(position));
+        }
     }
 
     /**
@@ -67,7 +75,10 @@ public class Climber extends SubsystemBase {
     }
 
     public void setVoltage(double voltage) {
-        climberMotor.setVoltage(voltage);
+        if (voltage != this.voltage) {
+            this.voltage = voltage;
+            climberMotor.setVoltage(voltage);
+        }
     }
 
     /**

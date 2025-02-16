@@ -31,10 +31,10 @@ public class ActionAlgaeWristCommand extends Command {
   public void execute() {
     Object angle = controller.getCommandField(Constants.MapConstants.WRIST_POSITION);
     if (angle != null) {
-      algaeWrist.setAngle((double) angle);
+      algaeWrist.setPosition((double) angle);
     }
     else {
-      algaeWrist.setAngle(Constants.AlgaeWristConstants.MIN_POSITION);
+      algaeWrist.setPosition(Constants.AlgaeWristConstants.MIN_POSITION);
     }
   }
 

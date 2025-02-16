@@ -16,6 +16,8 @@ public class Elevator extends SubsystemBase {
     private final TalonFX elevatorFollowerMotor;
     private final PositionVoltage positionRequest;
     private final BiConsumer<String, Object> updateData;
+    private double voltage;
+    private double setpoint;
 
     public Elevator(BiConsumer<String, Object> updateData) {
         elevatorMotor = new TalonFX(Constants.ElevatorConstants.CAN_ID, Constants.CanBusConstants.CANIVORE_BUS);
@@ -51,6 +53,9 @@ public class Elevator extends SubsystemBase {
         elevatorFollowerMotor.setControl(new Follower(elevatorMotor.getDeviceID(), true));
 
         this.updateData = updateData;
+
+        voltage = Constants.ElevatorConstants.STOP_VOLTAGE;
+        setpoint = Constants.ElevatorConstants.HOME_POSITION;
     }
 
     @Override
@@ -61,8 +66,11 @@ public class Elevator extends SubsystemBase {
      * Sets the elevator to a specific height
      * @param heightMeters The target height in meters
      */
-    public void setHeight(double position) {
-        elevatorMotor.setControl(positionRequest.withPosition(position));
+    public void setPosition(double position) {
+        if(position != setpoint) {
+            setpoint = position;
+            elevatorMotor.setControl(positionRequest.withPosition(position));
+        }
     }
 
     /**
@@ -81,7 +89,10 @@ public class Elevator extends SubsystemBase {
     }
 
     public void setVoltage(double voltage) {
-        elevatorMotor.setVoltage(voltage);
+        if (voltage != this.voltage) {
+            this.voltage = voltage;
+            elevatorMotor.setVoltage(voltage);
+        }
     }
 
     /**
