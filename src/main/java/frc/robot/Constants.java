@@ -81,7 +81,8 @@ public final class Constants {
         public static final double REEF_POSITION = 0.0;    // Placeholder value for reef angle
         public static final double LAYUP_POSITION = 0.0;   // Placeholder value for layup angle
         public static final double PLACE_POSITION = 0.0;   // Placeholder value for place angle
-        public static final double WRIST_VOLTAGE = 0.0;
+        public static final double WRIST_UP_VOLTAGE = 0.2;
+        public static final double WRIST_DOWN_VOLTAGE = 0.05;
         public static final double STOP_VOLTAGE = 0.0;
 
         // SmartMotion parameters for wrist PID control (placeholders—adjust as needed)
@@ -136,6 +137,9 @@ public final class Constants {
         public static final double L4_SCORE_POSITION = 1.25;
         public static final double ALGAE_LAYUP_POSITIONS = 0.6;
         public static final double ALGAE_PLACE_POSITION = 0.8;
+        
+        public static final double ELEVATOR_UP_VOLTAGE = 0.2;
+        public static final double ELEVATOR_DOWN_VOLTAGE = 0.05;
     }
     
     public static final class EndEffectorConstants {
