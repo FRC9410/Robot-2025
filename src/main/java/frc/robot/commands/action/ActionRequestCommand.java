@@ -17,6 +17,8 @@ public class ActionRequestCommand extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     this.subsystems = subsystems;
     this.action = action;
+
+    addRequirements(subsystems.getActionController());
   }
 
   // Called when the command is initially scheduled.

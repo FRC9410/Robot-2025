@@ -20,6 +20,8 @@ public class ActionEndEffectorCommand extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     this.endEffector = endEffector;
     this.controller = controller;
+
+    addRequirements(endEffector);
   }
 
   // Called when the command is initially scheduled.

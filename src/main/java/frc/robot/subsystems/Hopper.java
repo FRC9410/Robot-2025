@@ -17,6 +17,7 @@ public class Hopper extends SubsystemBase {
     private final TalonFX secondaryMotor;
     private static final NeutralOut brake = new NeutralOut();
     private final BiConsumer<String, Object> updateData;
+    private double voltage;
     
     /**
      * Hopper subsystem constructor.
@@ -39,6 +40,7 @@ public class Hopper extends SubsystemBase {
         secondaryMotor.setControl(new Follower(primaryMotor.getDeviceID(), true));
 
         this.updateData = updateData;
+        primaryMotor.setVoltage(Constants.HopperConstants.STOP_VOLTAGE);
     }
     
     /**
@@ -49,8 +51,11 @@ public class Hopper extends SubsystemBase {
      *
      * @param speed The desired motor output (range between -1 and 1).
      */
-    public void setVoltage(double speed) {
-        primaryMotor.setVoltage(speed);
+    public void setVoltage(double voltage) {
+        if (voltage != this.voltage) {
+            this.voltage = voltage;
+            primaryMotor.setVoltage(voltage);
+        }
         // No need to command secondaryMotor here since it follows primaryMotor in reverse.
     }
     

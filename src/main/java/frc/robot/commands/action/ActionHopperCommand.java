@@ -21,6 +21,8 @@ public class ActionHopperCommand extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     this.hopper = hopper;
     this.controller = controller;
+
+    addRequirements(hopper);
   }
 
   // Called when the command is initially scheduled.

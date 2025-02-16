@@ -20,6 +20,8 @@ public class ActionAlgaeWristCommand extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     this.algaeWrist = algaeWrist;
     this.controller = controller;
+
+    addRequirements(algaeWrist);
   }
 
   // Called when the command is initially scheduled.

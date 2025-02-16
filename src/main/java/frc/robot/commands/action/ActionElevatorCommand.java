@@ -20,6 +20,8 @@ public class ActionElevatorCommand extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     this.elevator = elevator;
     this.controller = controller;
+
+    addRequirements(elevator);
   }
 
   // Called when the command is initially scheduled.

@@ -20,6 +20,8 @@ public class ActionAlgaeIntakeCommand extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     this.algaeIntake = algaeIntake;
     this.controller = controller;
+
+    addRequirements(algaeIntake);
   }
 
   // Called when the command is initially scheduled.
