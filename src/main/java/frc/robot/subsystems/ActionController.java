@@ -20,6 +20,15 @@ public class ActionController extends SubsystemBase {
     
   
     private final List<ActionRequestHandler> requestHandlers = List.of(
+        new Climb(),
+        new DeployClimber(),
+        new IntakeAlgaeGround(),
+        new IntakeAlgaeReef(),
+        new IntakeCoral(),
+        new LayupAlgae(),
+        new PlaceAlgae(),
+        new ProcessAlgae(),
+        new ScoreCoral(),
         new Idle()
     );
 
@@ -78,8 +87,17 @@ public class ActionController extends SubsystemBase {
   
 
     public enum Action {
-      IDLE,
-      DEV_MODE,
-      DEMO_MODE
+        IDLE,
+        CLIMB,
+        DEPLOY_CLIMBER,
+        INTAKE_ALGAE_GROUND,
+        INTAKE_ALGAE_REEF,
+        INTAKE_CORAL,
+        LAYUP_ALGAE,
+        PLACE_ALGAE,
+        PROCESS_ALGAE,
+        SCORE_CORAL,
+        DEV_MODE,
+        DEMO_MODE
     }
 } 
