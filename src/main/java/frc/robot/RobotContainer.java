@@ -13,6 +13,7 @@ import frc.robot.commands.base.*;
 import frc.robot.subsystems.Subsystems;
 import frc.robot.subsystems.ActionController.Action;
 import frc.robot.utils.LimelightHelpers.PoseEstimate;
+import frc.robot.utils.Utils;
 
 public class RobotContainer {
   private final Subsystems subsystems;
@@ -66,5 +67,10 @@ public class RobotContainer {
         // m_poseEstimator.addVisionMeasurement(
         //     mt2.pose,
         //     mt2.timestampSeconds);
+  }
+
+  public void logMapData() {
+    Utils.logMap(subsystems.getSubsystemData(), "Subsystem Data");
+    Utils.logMap(subsystems.getActionController().getCommandData(), "Command Data");
   }
 }

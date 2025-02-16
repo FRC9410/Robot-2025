@@ -1,5 +1,9 @@
 package frc.robot.utils;
 
+import java.util.Map;
+
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
@@ -61,5 +65,21 @@ public class Utils {
      */
     public static double cubeInput(double input) {
         return curveInput(input, 3.0);
+    }
+
+    public static void logMap(Map<String, Object> map, String tableName) {
+        final NetworkTableInstance inst = NetworkTableInstance.getDefault();
+        final NetworkTable table = inst.getTable(tableName);
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+        if (entry.getValue() instanceof Double) {
+            table.getEntry(entry.getKey()).setDouble((Double) entry.getValue());
+        } else if (entry.getValue() instanceof Integer) {
+            table.getEntry(entry.getKey()).setNumber((Integer) entry.getValue());
+        } else if (entry.getValue() instanceof Boolean) {
+            table.getEntry(entry.getKey()).setBoolean((Boolean) entry.getValue());
+        } else {
+        table.getEntry(entry.getKey()).setString(entry.getValue().toString());
+        }
+        }
     }
 } 
