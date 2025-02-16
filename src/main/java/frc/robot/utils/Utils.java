@@ -9,9 +9,13 @@ public class Utils {
      * @return Alliance enum representing the current alliance color. 
      *         Returns null if alliance color is not yet available.
      */
-    public static Alliance getAllianceColor() {
-        return DriverStation.getAlliance().orElse(null);
-    }
+    public static String getAllianceColor() {
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+          return alliance.get() == DriverStation.Alliance.Red ? "red" : "blue";
+        }
+        return "";
+      }
 
     /**
      * Checks if a value is within a specified tolerance of a target

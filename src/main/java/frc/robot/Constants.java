@@ -48,6 +48,12 @@ public final class Constants {
         // Intake Laser constants
         public static final int INTAKE_LASER_CAN_ID = 17;
         public static final int OUTTAKE_LASER_CAN_ID = 18;
+
+        public static final int INTAKE_LASER_LOWER_BOUND = 450;
+        public static final int INTAKE_LASER_UPPER_BOUND = 1000;
+
+        public static final int OUTTAKE_LASER_LOWER_BOUND = 450;
+        public static final int OUTTAKE_LASER_UPPER_BOUND = 1000;
     }
     
     public static final class AlgaeIntakeConstants {
