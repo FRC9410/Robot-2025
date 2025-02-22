@@ -5,8 +5,10 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import java.util.function.BiConsumer;
 
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -14,21 +16,25 @@ import frc.robot.Constants;
 public class Elevator extends SubsystemBase {
     private final TalonFX elevatorMotor;
     private final TalonFX elevatorFollowerMotor;
-    private final PositionVoltage positionRequest;
+    private MotionMagicVoltage motionMagicRequest = new MotionMagicVoltage(0);
     private final BiConsumer<String, Object> updateData;
     private double voltage;
     private double setpoint;
 
     public Elevator(BiConsumer<String, Object> updateData) {
-        elevatorMotor = new TalonFX(Constants.ElevatorConstants.CAN_ID, Constants.CanBusConstants.CANIVORE_BUS);
-        elevatorFollowerMotor = new TalonFX(Constants.ElevatorConstants.CAN_ID, Constants.CanBusConstants.CANIVORE_BUS);
+        elevatorMotor = new TalonFX(Constants.ElevatorConstants.PRIMARY_CAN_ID, Constants.CanBusConstants.CANIVORE_BUS);
+        elevatorFollowerMotor = new TalonFX(Constants.ElevatorConstants.SECONDARY_CAN_ID, Constants.CanBusConstants.CANIVORE_BUS);
         
         // Create the position request for closed-loop control
-        positionRequest = new PositionVoltage(0).withSlot(0);
+        motionMagicRequest = new MotionMagicVoltage(0);
 
         // Configure the Kraken
         TalonFXConfiguration config = new TalonFXConfiguration();
         TalonFXConfiguration followerConfig = new TalonFXConfiguration();
+        MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs();
+
+        motionMagicConfigs.withMotionMagicCruiseVelocity(Constants.ElevatorConstants.MOTION_MAGIC_VELOCITY)
+          .withMotionMagicAcceleration(Constants.ElevatorConstants.MOTION_MAGIC_ACCELERATION);
         
         // Configure PID
         config.Slot0.kP = Constants.ElevatorConstants.kP;
@@ -44,7 +50,9 @@ public class Elevator extends SubsystemBase {
 
         // Apply configuration
         elevatorMotor.getConfigurator().apply(config);
+        elevatorMotor.getConfigurator().apply(motionMagicConfigs);
         elevatorFollowerMotor.getConfigurator().apply(followerConfig);
+        elevatorMotor.setPosition(0);
 
         // Set brake mode
         elevatorMotor.setNeutralMode(NeutralModeValue.Brake);
@@ -56,6 +64,7 @@ public class Elevator extends SubsystemBase {
 
         voltage = Constants.ElevatorConstants.STOP_VOLTAGE;
         setpoint = Constants.ElevatorConstants.HOME_POSITION;
+        // elevatorMotor.setControl(motionMagicRequest.withPosition(0.25).withSlot(0));
     }
 
     @Override
@@ -69,7 +78,7 @@ public class Elevator extends SubsystemBase {
     public void setPosition(double position) {
         if(position != setpoint) {
             setpoint = position;
-            elevatorMotor.setControl(positionRequest.withPosition(position));
+            elevatorMotor.setControl(motionMagicRequest.withPosition(position).withSlot(0));
         }
     }
 

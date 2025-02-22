@@ -14,11 +14,11 @@ import frc.robot.subsystems.AlgaeWrist;
 public class AlgaeWristCommand extends Command {
   /** Creates a new DefaultAlgaeWrist. */
   private final AlgaeWrist algaeWrist;
-  private final double voltage;
-  public AlgaeWristCommand(AlgaeWrist algaeWrist, double voltage) {
+  private final double position;
+  public AlgaeWristCommand(AlgaeWrist algaeWrist, double position) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.algaeWrist = algaeWrist;
-    this.voltage = voltage;
+    this.position = position;
 
     addRequirements(algaeWrist);
   }
@@ -30,13 +30,13 @@ public class AlgaeWristCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    algaeWrist.setVoltage(voltage);
+    algaeWrist.setPosition(position);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    algaeWrist.setVoltage(Constants.AlgaeWristConstants.STOP_VOLTAGE);
+    algaeWrist.setPosition(0.8);
   }
 
   // Returns true when the command should end.

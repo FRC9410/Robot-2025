@@ -24,8 +24,8 @@ private final BiConsumer<String, Object> updateData;
 
     try {
       intakeLaser.setRangingMode(LaserCan.RangingMode.SHORT);
-      intakeLaser.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 16, 16));
-      intakeLaser.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_33MS);
+      intakeLaser.setRegionOfInterest(new LaserCan.RegionOfInterest(0, 16, 2, 2));
+      intakeLaser.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_20MS);
     } catch (ConfigurationFailedException e) {
       System.out.println("Configuration failed! " + e);
     }
@@ -33,8 +33,8 @@ private final BiConsumer<String, Object> updateData;
  
     try {
       outtakeLaser.setRangingMode(LaserCan.RangingMode.SHORT);
-      outtakeLaser.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 16, 16));
-      outtakeLaser.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_33MS);
+      outtakeLaser.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 2, 2));
+      outtakeLaser.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_20MS);
     } catch (ConfigurationFailedException e) {
       System.out.println("Configuration failed! " + e);
     }
@@ -42,7 +42,9 @@ private final BiConsumer<String, Object> updateData;
   
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    // // This method will be called once per scheduler run
+    updateData.accept("intakeLaserBroken", getIntakeLaserBroken());
+    updateData.accept("outtakeLaserBroken", getOuttakeLaserBroken());
   }
 
   
@@ -55,15 +57,13 @@ private final BiConsumer<String, Object> updateData;
     return intakeLaser.getMeasurement().distance_mm;
   }
   
-  private boolean getIntakeLaserBroken() {
+  public boolean getIntakeLaserBroken() {
     double measurement = intakeLaser.getMeasurement().distance_mm;
-    return measurement >= Constants.SensorConstants.INTAKE_LASER_LOWER_BOUND
-    && measurement <= Constants.SensorConstants.INTAKE_LASER_UPPER_BOUND;
+    return measurement <= Constants.SensorConstants.INTAKE_BREAKBEAM;
   }
   
-  private boolean getOuttakeLaserBroken() {
-    double measurement = intakeLaser.getMeasurement().distance_mm;
-    return measurement >= Constants.SensorConstants.OUTTAKE_LASER_LOWER_BOUND
-    && measurement <= Constants.SensorConstants.OUTTAKE_LASER_UPPER_BOUND;
+  public boolean getOuttakeLaserBroken() {
+    double measurement = outtakeLaser.getMeasurement().distance_mm;
+    return measurement <= Constants.SensorConstants.OUTTAKE_BREAKBEAM;
   }
 }

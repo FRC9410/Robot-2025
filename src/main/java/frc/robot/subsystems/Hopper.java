@@ -61,6 +61,7 @@ public class Hopper extends SubsystemBase {
     
     @Override
     public void periodic() {
+        updateData.accept(Constants.MapConstants.HOPPER_VOLTAGE, voltage);
         // Post the current state to network tables or smth
 
         

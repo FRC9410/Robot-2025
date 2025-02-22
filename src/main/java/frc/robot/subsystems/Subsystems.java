@@ -68,6 +68,10 @@ public class Subsystems {
         return vision;
     }
 
+    public Sensors getSensors() {
+        return sensors;
+    }
+
     public void updateSubsystemData(String key, Object value) {
         subsystemData.put(key, value);
     }

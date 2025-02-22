@@ -33,7 +33,7 @@ public class EndEffector extends SubsystemBase {
     
     @Override
     public void periodic() {
-        
+
     }
     
     /**
@@ -44,7 +44,7 @@ public class EndEffector extends SubsystemBase {
      *
      * @param speed The desired motor output (range between -1 and 1).
      */
-    public void setVoltage(double speed) {
+    public void setVoltage(double voltage) {
         if (voltage != this.voltage) {
             this.voltage = voltage;
             endEffectorMotor.setVoltage(voltage);

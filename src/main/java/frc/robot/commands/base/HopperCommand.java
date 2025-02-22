@@ -5,41 +5,61 @@
 package frc.robot.commands.base;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
+import frc.robot.subsystems.EndEffector;
 import frc.robot.subsystems.Hopper;
+import frc.robot.subsystems.Sensors;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class HopperCommand extends Command {
   private final Hopper hopper;
-  private final double voltage;
+  private final EndEffector endEffector;
+  private final Sensors sensors;
+  private final double hopperVoltage;
+  private final double endEffectorVoltage;
   /** Creates a new DefaultHopper. */
-  public HopperCommand(Hopper hopper, double voltage) {
+  public HopperCommand(Hopper hopper, EndEffector endEffector, Sensors sensors, double hopperVoltage, double endEffectorVoltage) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.hopper = hopper;
-    this.voltage = voltage;
+    this.endEffector = endEffector;
+    this.sensors = sensors;
+    this.hopperVoltage = hopperVoltage;
+    this.endEffectorVoltage = endEffectorVoltage;
 
-    addRequirements(hopper);
+    addRequirements(hopper, endEffector);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    hopper.setVoltage(Constants.HopperConstants.STOP_VOLTAGE);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    hopper.setVoltage(voltage);
+    if (sensors.getIntakeLaserBroken()) {
+      hopper.setVoltage(hopperVoltage);
+      endEffector.setVoltage(endEffectorVoltage/2);
+    }
+    else {
+      hopper.setVoltage(hopperVoltage);
+      endEffector.setVoltage(endEffectorVoltage);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    hopper.setVoltage(0);
+    endEffector.setVoltage(0);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if (sensors.getOuttakeLaserBroken() && !sensors.getIntakeLaserBroken()) {
+      return true;
+    }
+
     return false;
   }
 }

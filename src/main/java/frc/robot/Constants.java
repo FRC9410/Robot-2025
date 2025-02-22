@@ -46,14 +46,16 @@ public final class Constants {
     
     public static final class SensorConstants {
         // Intake Laser constants
-        public static final int INTAKE_LASER_CAN_ID = 17;
-        public static final int OUTTAKE_LASER_CAN_ID = 18;
+        public static final int INTAKE_LASER_CAN_ID = 27;
+        public static final int OUTTAKE_LASER_CAN_ID = 26;
 
         public static final int INTAKE_LASER_LOWER_BOUND = 450;
         public static final int INTAKE_LASER_UPPER_BOUND = 1000;
+        public static final int INTAKE_BREAKBEAM = 150;
 
         public static final int OUTTAKE_LASER_LOWER_BOUND = 450;
         public static final int OUTTAKE_LASER_UPPER_BOUND = 1000;
+        public static final int OUTTAKE_BREAKBEAM = 150;
     }
     
     public static final class AlgaeIntakeConstants {
@@ -73,16 +75,16 @@ public final class Constants {
     }
     
     public static final class AlgaeWristConstants {
-        public static final int CAN_ID = 14; 
+        public static final int CAN_ID = 24; 
         // PID Constants (placeholders—adjust as needed)
-        public static final double kP = 0.5;
+        public static final double kP = 3;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
         public static final double kF = 0.0;
 
         public static final double MIN_POSITION = 0.0;  // Placeholder
         public static final double MAX_POSITION = 0.0;    // Placeholder
-        public static final double OFFSET_POSITION = 0.0;       // Placeholder
+        public static final double OFFSET_POSITION = 0.068;       // Placeholder
         // Additional preset angles for Algae Wrist positions (in units; placeholders)
         public static final double REEF_POSITION = 0.0;    // Placeholder value for reef angle
         public static final double LAYUP_POSITION = 0.0;   // Placeholder value for layup angle
@@ -126,21 +128,24 @@ public final class Constants {
     }
     
     public static final class ElevatorConstants {
-        public static final int CAN_ID = 9;
+        public static final int PRIMARY_CAN_ID = 22;
+        public static final int SECONDARY_CAN_ID = 21;
         public static final double ELEVATOR_DEFAULT_HEIGHT = 0.0; // Placeholder value
         
         // PID Constants (placeholders—adjust as needed)
-        public static final double kP = 80.0; 
+        public static final double kP = 4.0; 
         public static final double kI = 0.0; 
         public static final double kD = 0.0; 
-        public static final double kG = 0.05;
+        public static final double kG = 0.34;
+        public static final double MOTION_MAGIC_ACCELERATION = 190.0;
+        public static final double MOTION_MAGIC_VELOCITY = 200.0;
         
         // Elevator preset heights (in units; placeholders for L1-L4, home, algae layup, and algae place)
         public static final double HOME_POSITION = 0.0;
-        public static final double L1_SCORE_POSITION = 0.5;
-        public static final double L2_SCORE_POSITION = 0.75;
-        public static final double L3_SCORE_POSITION = 1.0;
-        public static final double L4_SCORE_POSITION = 1.25;
+        public static final double L1_SCORE_POSITION = 30.0;
+        public static final double L2_SCORE_POSITION = 21.25;
+        public static final double L3_SCORE_POSITION = 33.25;
+        public static final double L4_SCORE_POSITION = 56.25;
         public static final double ALGAE_LAYUP_POSITIONS = 0.6;
         public static final double ALGAE_PLACE_POSITION = 0.8;
         
@@ -150,16 +155,17 @@ public final class Constants {
     }
     
     public static final class EndEffectorConstants {
-        public static final int CAN_ID = 16;
-        public static final double END_EFFECTOR_VOLTAGE = 0.8;
+        public static final int CAN_ID = 23;
+        public static final double END_EFFECTOR_VOLTAGE = 6.0;
         public static final double STOP_VOLTAGE = 0.0;
+        public static final double END_EFFECTOR_INTAKE_VOLTAGE = 2;
     }
     
     public static final class HopperConstants {
-        public static final int PRIMARY_CAN_ID = 11;
-        public static final int SECONDARY_CAN_ID = 12;
+        public static final int PRIMARY_CAN_ID = 32;
+        public static final int SECONDARY_CAN_ID = 31;
         // Hopper speed constant (placeholder value; adjust as needed)
-        public static final double START_VOLTAGE = 0.8;
+        public static final double START_VOLTAGE = 3.5;
         public static final double STOP_VOLTAGE = 0.0;
     }
 }

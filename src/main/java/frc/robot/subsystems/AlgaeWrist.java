@@ -13,10 +13,13 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkAbsoluteEncoder;
 
 public class AlgaeWrist extends SubsystemBase {
     private final SparkClosedLoopController pidController;
+    private AbsoluteEncoder encoder;
     private final SparkMax wristMotor;
     private final SparkMaxConfig config;
     private final BiConsumer<String, Object> updateData;
@@ -31,9 +34,10 @@ public class AlgaeWrist extends SubsystemBase {
     public AlgaeWrist(BiConsumer<String, Object> updateData) {
         wristMotor = new SparkMax(AlgaeWristConstants.CAN_ID, MotorType.kBrushless);
         pidController = wristMotor.getClosedLoopController();
+        encoder = wristMotor.getAbsoluteEncoder();
 
         config = new SparkMaxConfig();
-        config.idleMode(IdleMode.kBrake);
+        config.idleMode(IdleMode.kBrake).smartCurrentLimit(20).inverted(true);
         config.closedLoop
             .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
             .pid(
@@ -41,36 +45,31 @@ public class AlgaeWrist extends SubsystemBase {
                 AlgaeWristConstants.kI,
                 AlgaeWristConstants.kD
             )
-            .outputRange(AlgaeWristConstants.MIN_POSITION,
-                AlgaeWristConstants.MAX_POSITION);
-        config.encoder
-            .positionConversionFactor(1)
-            .velocityConversionFactor(1);
-        config.closedLoop.maxMotion
-            // Set MAXMotion parameters for position control. We don't need to pass
-            // a closed loop slot, as it will default to slot 0.
-            .maxVelocity(1000)
-            .maxAcceleration(1000)
-            .allowedClosedLoopError(1)
-            // Set MAXMotion parameters for velocity control in slot 1
-            .maxAcceleration(500, ClosedLoopSlot.kSlot1)
-            .maxVelocity(6000, ClosedLoopSlot.kSlot1)
-            .allowedClosedLoopError(1, ClosedLoopSlot.kSlot1);
+            .maxMotion
+                // Set MAXMotion parameters for position control
+                .maxVelocity(2000)
+                .maxAcceleration(10000)
+                .allowedClosedLoopError(0.25);
+        config.absoluteEncoder
+            .zeroOffset(0)
+          .positionConversionFactor(1)
+          .velocityConversionFactor(1);
             
         wristMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        pidController.setReference(AlgaeWristConstants.MIN_POSITION, ControlType.kMAXMotionPositionControl,
-          ClosedLoopSlot.kSlot0);
+        pidController.setReference(0.8, ControlType.kPosition);
           
         this.updateData = updateData;
 
         voltage = AlgaeWristConstants.STOP_VOLTAGE;
-        setpoint = 0.0;
+        setpoint = 0.8;
     }
     
     @Override
     public void periodic() {
-       
+        updateData.accept("wristVoltage", wristMotor.getOutputCurrent());
+        updateData.accept("wristPosition", encoder.getPosition());
+        updateData.accept("wristSetpoint", wristMotor.getAppliedOutput());
     }
 
     /**
@@ -84,7 +83,7 @@ public class AlgaeWrist extends SubsystemBase {
     public void setPosition(double position) {
         if (position != setpoint) {
             setpoint = position;
-            pidController.setReference(position, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
+            pidController.setReference(position, ControlType.kPosition);
         }
     }
 
