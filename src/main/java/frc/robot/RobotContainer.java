@@ -6,33 +6,16 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.List;
-
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.GoalEndState;
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.path.Waypoint;
 
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.action.*;
 import frc.robot.commands.base.*;
 import frc.robot.subsystems.Subsystems;
-import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.ActionController.Action;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.utils.LimelightHelpers.PoseEstimate;
 import frc.robot.utils.Utils;
 
@@ -50,8 +33,6 @@ public class RobotContainer {
   private final CommandXboxController driverController;
   // private final CommandXboxController copilotController;
   // private final CommandXboxController testController;
-  private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-  private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
   // private final Telemetry logger = new Telemetry(MAX_SPEED);
 
