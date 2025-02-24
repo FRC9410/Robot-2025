@@ -8,19 +8,20 @@ import java.util.function.Function;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.AlgaeIntake;
+import frc.robot.subsystems.EndEffector;
+import frc.robot.subsystems.Sensors;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class AlgaeIntakeCommand extends Command {
-  private final AlgaeIntake algaeIntake;
-  private final double voltage;
-  /** Creates a new DefaultAlgaeIntake. */
-  public AlgaeIntakeCommand(AlgaeIntake algaeIntake, double voltage) {
+public class DefaultEndEffectorCommand extends Command {
+  private final EndEffector endEffector;
+  private final Sensors sensors;
+  /** Creates a new DefaultEndEffector. */
+  public DefaultEndEffectorCommand(EndEffector endEffector, Sensors sensors) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.algaeIntake = algaeIntake;
-    this.voltage = voltage;
+    this.endEffector = endEffector;
+    this.sensors = sensors;
 
-    addRequirements(algaeIntake);
+    addRequirements(endEffector);
   }
 
   // Called when the command is initially scheduled.
@@ -30,13 +31,19 @@ public class AlgaeIntakeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    algaeIntake.setVoltage(1);
+    if (sensors.getIntakeLaserBroken() && sensors.getOuttakeLaserBroken()) {
+      endEffector.setVoltage(Constants.EndEffectorConstants.END_EFFECTOR_INTAKE_VOLTAGE/2);
+    }
+    else if (sensors.getIntakeLaserBroken() && !sensors.getOuttakeLaserBroken()) {
+      endEffector.setVoltage(Constants.EndEffectorConstants.END_EFFECTOR_INTAKE_VOLTAGE);
+    } else {
+      endEffector.setVoltage(Constants.EndEffectorConstants.STOP_VOLTAGE);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    algaeIntake.setVoltage(0);
   }
 
   // Returns true when the command should end.

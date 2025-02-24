@@ -6,38 +6,56 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
 
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.action.*;
 import frc.robot.commands.base.*;
 import frc.robot.subsystems.Subsystems;
+import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.ActionController.Action;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.utils.LimelightHelpers.PoseEstimate;
 import frc.robot.utils.Utils;
 
 public class RobotContainer {
-  private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-  private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+  private double MAX_SPEED = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+  private double MAX_ANGULAR_RATE = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+  private final SwerveRequest.FieldCentric FIELD_DRIVE = new SwerveRequest.FieldCentric()
+    .withDeadband(MAX_SPEED * 0.1).withRotationalDeadband(MAX_ANGULAR_RATE * 0.1)
+    .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+  private final SwerveRequest.RobotCentric ROBOT_DRIVE = new SwerveRequest.RobotCentric()
+    .withDeadband(MAX_SPEED * 0.1).withRotationalDeadband(MAX_ANGULAR_RATE * 0.1)
+    .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+
   private final Subsystems subsystems;
   private final CommandXboxController driverController;
   // private final CommandXboxController copilotController;
   // private final CommandXboxController testController;
-    /* Setting up bindings for necessary control of the swerve drive platform */
-    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+  private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+  private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
-    private final Telemetry logger = new Telemetry(MaxSpeed);
+  // private final Telemetry logger = new Telemetry(MAX_SPEED);
 
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+  private String humanPlayerStation = "";
 
   public RobotContainer() {
     subsystems = new Subsystems();
@@ -45,7 +63,7 @@ public class RobotContainer {
     // subsystems.getAlgaeIntake().setDefaultCommand(new ActionAlgaeIntakeCommand(subsystems.getAlgaeIntake(), subsystems.getActionController()));
     // subsystems.getAlgaeWrist().setDefaultCommand(new ActionAlgaeWristCommand(subsystems.getAlgaeWrist(), subsystems.getActionController()));
     // subsystems.getElevator().setDefaultCommand(new ActionElevatorCommand(subsystems.getElevator(), subsystems.getActionController()));
-    // subsystems.getEndEffector().setDefaultCommand(new ActionEndEffectorCommand(subsystems.getEndEffector(), subsystems.getActionController()));
+    subsystems.getEndEffector().setDefaultCommand(new DefaultEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors()));
     // subsystems.getClimber().setDefaultCommand(new ActionClimberCommand(subsystems.getClimber(), subsystems.getActionController()));
     // subsystems.getActionController().setDefaultCommand(new ActionRequestCommand(subsystems, Action.IDLE));
 
@@ -59,25 +77,45 @@ public class RobotContainer {
   }
 
   private void configurePilotBindings() {
-    drivetrain.setDefaultCommand(
-        // Drivetrain will execute this command periodically
-        drivetrain.applyRequest(() ->
-            drive.withVelocityX(-driverController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                .withVelocityY(-driverController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                .withRotationalRate(-driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
-        )
-    );
-    // reset the field-centric heading on left bumper press
-    driverController.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-    driverController.back().onTrue(new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.HOME_POSITION));
-    driverController.a().onTrue(new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L1_SCORE_POSITION));
-    driverController.b().onTrue(new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L2_SCORE_POSITION));
-    driverController.x().onTrue(new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L3_SCORE_POSITION));
-    driverController.y().onTrue(new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L4_SCORE_POSITION));
-    driverController.rightBumper().onTrue(new HopperCommand(subsystems.getHopper(),subsystems.getEndEffector(), subsystems.getSensors(), Constants.HopperConstants.START_VOLTAGE, Constants.EndEffectorConstants.END_EFFECTOR_INTAKE_VOLTAGE));
-    driverController.rightTrigger(0.5).whileTrue(new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE));
+    subsystems.getDrivetrain().setDefaultCommand(
+      new DriveCommand(
+        subsystems.getDrivetrain(),
+        driverController, 
+        subsystems.getVision()));
 
-    drivetrain.registerTelemetry(logger::telemeterize);
+    // reset the field-centric heading on left bumper press
+    driverController.back().onTrue(subsystems.getDrivetrain().runOnce(() -> {
+      subsystems.getDrivetrain().resetPose(new Pose2d());
+      // subsystems.getDrivetrain().seedFieldCentric();
+    }));
+    driverController.a().onTrue(new FollowPathCommand(subsystems.getDrivetrain(), driverController, 1, 0, 0));
+    driverController.b().onTrue(new FollowPathCommand(subsystems.getDrivetrain(), driverController, 0, 0, 0));
+    // driverController.start().onTrue(new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.HOME_POSITION));
+    // driverController.a().onTrue(new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L1_SCORE_POSITION));
+    // driverController.b().onTrue(new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L2_SCORE_POSITION));
+    // driverController.x().onTrue(new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L3_SCORE_POSITION));
+    // driverController.y().onTrue(new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L4_SCORE_POSITION));
+    // driverController.a().whileTrue(new ClimberCommand(subsystems.getClimber(), Constants.ClimberConstants.CLIMB_VOLTAGE));
+    driverController.rightBumper().onTrue(
+      new HopperCommand(
+        subsystems.getHopper(),
+        subsystems.getSensors(),
+        Constants.HopperConstants.START_VOLTAGE,
+        (value) -> setHumanPlayerStation(value))
+        .alongWith(new InstantCommand(() -> setHumanPlayerStation("right"))));
+    driverController.leftBumper().onTrue(
+      new HopperCommand(
+        subsystems.getHopper(),
+        subsystems.getSensors(),
+        Constants.HopperConstants.START_VOLTAGE,
+        (value) -> setHumanPlayerStation(value))
+        .alongWith(new InstantCommand(() -> setHumanPlayerStation("left"))));
+    // driverController.rightTrigger(0.5).whileTrue(new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE));
+
+    // subsystems.getDrivetrain().registerTelemetry(logger::telemeterize);
+    
+    driverController.x().whileTrue(new AlgaeWristCommand(subsystems.getAlgaeWrist(), 0.25)
+    .alongWith(new AlgaeIntakeCommand(subsystems.getAlgaeIntake(), Constants.AlgaeIntakeConstants.INTAKE_VOLTAGE)));
   }
 
   // private void configureCopilotBindings() {
@@ -118,5 +156,18 @@ public class RobotContainer {
   public void logMapData() {
     Utils.logMap(subsystems.getSubsystemData(), "Subsystem Data");
     Utils.logMap(subsystems.getActionController().getCommandData(), "Command Data");
+  }
+
+  private void setHumanPlayerStation(String station) {
+    humanPlayerStation = station;
+  }
+
+  public void resetLocalization() {
+    subsystems.getDrivetrain().resetPose(new Pose2d());
+    // subsystems.getDrivetrain().seedFieldCentric();
+  }
+
+  public Subsystems getSubsystems() {
+    return subsystems;
   }
 }

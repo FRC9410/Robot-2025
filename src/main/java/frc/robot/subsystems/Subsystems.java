@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import java.util.HashMap;
 import java.util.Map;
 
+import frc.robot.TunerConstants;
+
 public class Subsystems {
 
     // Instantiate the subsystems (using placeholder motor/control IDs)
@@ -16,11 +18,13 @@ public class Subsystems {
     private final Map<String, Object> subsystemData;
     private final Vision vision;
     private final Sensors sensors;
+    private final CommandSwerveDrivetrain drivetrain;
     
     /**
      * Constructor for the Subsystems container.
      */
     public Subsystems() {
+        drivetrain = TunerConstants.createDrivetrain();
         elevator = new Elevator((key, value) -> updateSubsystemData(key, value));
         climber = new Climber((key, value) -> updateSubsystemData(key, value));
         hopper = new Hopper((key, value) -> updateSubsystemData(key, value));
@@ -35,7 +39,10 @@ public class Subsystems {
     }
     
     // Accessor methods to retrieve subsystems:
-    
+    public CommandSwerveDrivetrain getDrivetrain() {
+        return drivetrain;
+    }
+
     public Elevator getElevator() {
         return elevator;
     }
