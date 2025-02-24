@@ -46,6 +46,19 @@ public class Vision extends SubsystemBase {
 
     @Override
     public void periodic() {
+        updateData.accept("leftrfTA", getArea(getLeftReefTable()));
+        updateData.accept("rightrfT", getArea(getRightReefTable()));
+        updateData.accept("leftXOffset", getXOffset(getLeftReefTable()));
+        updateData.accept("rightXOffset", getXOffset(getRightReefTable()));
+
+    }
+
+    public NetworkTable getLeftReefTable() {
+        return leftReefTable;
+    }
+
+    public NetworkTable getRightReefTable() {
+        return rightReefTable;
     }
 
     public PoseEstimate getPose(boolean getBlueSide) {
@@ -73,5 +86,23 @@ public class Vision extends SubsystemBase {
 
     public double getYOffset(NetworkTable table) {
         return table.getEntry("ty").getDouble(0.0);
+    }
+    public int getTagId(NetworkTable table) {
+        return (int) table.getEntry("tid").getInteger(0);
+    }
+
+    public int getReefTag() {
+        final double leftReefTagArea = getArea(leftReefTable);
+        final double rightReefTagArea = getArea(rightReefTable);
+
+        if (leftReefTagArea > 0.5 || rightReefTagArea > 0.5) {
+            if (leftReefTagArea > rightReefTagArea) {
+                return getTagId(leftReefTable);
+            } else {
+                return getTagId(rightReefTable);
+            }
+        } else {
+            return 0;
+        }
     }
 } 

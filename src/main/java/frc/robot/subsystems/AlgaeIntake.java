@@ -5,6 +5,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import java.util.function.BiConsumer;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -28,7 +29,7 @@ public class AlgaeIntake extends SubsystemBase {
         configTalonFx();
 
         // Set neutral mode; coast mode is often preferred for an intake.
-        intakeMotor.setNeutralMode(NeutralModeValue.Coast);
+        intakeMotor.setNeutralMode(NeutralModeValue.Brake);
 
         this.updateData = updateData;
 
@@ -45,10 +46,11 @@ public class AlgaeIntake extends SubsystemBase {
      * @param speed The motor output in the range [-1, 1].
      */
     public void setVoltage(double speed) {
-        if (voltage != this.voltage) {
-            this.voltage = voltage;
-            intakeMotor.setVoltage(voltage);
-        }
+        intakeMotor.setControl(new DutyCycleOut(-speed));
+        // if (voltage != this.voltage) {
+        //     this.voltage = voltage;
+        //     intakeMotor.setVoltage(voltage);
+        // }
     }
     
     @Override

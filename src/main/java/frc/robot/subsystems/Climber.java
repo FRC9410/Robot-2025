@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 
 import java.util.function.BiConsumer;
@@ -27,16 +28,16 @@ public class Climber extends SubsystemBase {
         positionRequest = new PositionVoltage(0).withSlot(0);
 
         TalonFXConfiguration config = new TalonFXConfiguration();
-        config.Slot0.kP = Constants.ClimberConstants.kP;
-        config.Slot0.kI = Constants.ClimberConstants.kI;
-        config.Slot0.kD = Constants.ClimberConstants.kD;
-        config.Slot0.kG = Constants.ClimberConstants.kF;
+        // config.Slot0.kP = Constants.ClimberConstants.kP;
+        // config.Slot0.kI = Constants.ClimberConstants.kI;
+        // config.Slot0.kD = Constants.ClimberConstants.kD;
+        // config.Slot0.kG = Constants.ClimberConstants.kF;
 
         // Set up soft limits to prevent over-extension or over-retraction.
-        config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-        config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = Constants.ClimberConstants.WINCH_CLIMB_POSITION;
-        config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-        config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0.0;
+        // config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+        // config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = Constants.ClimberConstants.WINCH_CLIMB_POSITION;
+        // config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+        // config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = 0.0;
 
         climberMotor.getConfigurator().apply(config);
 
@@ -75,10 +76,11 @@ public class Climber extends SubsystemBase {
     }
 
     public void setVoltage(double voltage) {
-        if (voltage != this.voltage) {
-            this.voltage = voltage;
-            climberMotor.setVoltage(voltage);
-        }
+        // if (voltage != this.voltage) {
+            // this.voltage = voltage;
+            // climberMotor.setVoltage(voltage);
+            climberMotor.setControl(new DutyCycleOut(-voltage));
+        // }
     }
 
     /**

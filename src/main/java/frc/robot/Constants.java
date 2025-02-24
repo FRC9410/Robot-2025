@@ -34,10 +34,10 @@ public final class Constants {
         public static final double MAX_TARGET_DISTANCE_METERS = 5.0;
         
         // Additional Vision constants for Reef Vision:
-        public static final String LEFT_PERIMETER_TABLE = "left-perimeter";  // Placeholder table name
-        public static final String RIGHT_PERIMETER_TABLE = "right-perimeter";  // Placeholder table name
-        public static final String LEFT_REEF_TABLE = "left-reef";  // Placeholder table name
-        public static final String RIGHT_REEF_TABLE = "right-reef";  // Placeholder table name
+        public static final String LEFT_PERIMETER_TABLE = "limelight-lftper";  // Placeholder table name
+        public static final String RIGHT_PERIMETER_TABLE = "limelight-rghtper";  // Placeholder table name
+        public static final String LEFT_REEF_TABLE = "limelight-lftrf";  // Placeholder table name
+        public static final String RIGHT_REEF_TABLE = "limelight-rghtrf";  // Placeholder table name
         
         // Lists for reef vision excluded tags and perimeter excluded tags (placeholders)
         public static final List<Integer> REEF_VISION_EXCLUDED_TAGS = List.of(1, 2, 3);
@@ -59,7 +59,7 @@ public final class Constants {
     }
     
     public static final class AlgaeIntakeConstants {
-        public static final int CAN_ID = 13;
+        public static final int CAN_ID = 25;
         // PID stall control constants for the Algae Intake (placeholders—adjust as needed)
         public static final int PID_SLOT = 0;
         // PID Constants (placeholders—adjust as needed)
@@ -69,7 +69,7 @@ public final class Constants {
         public static final double kF = 0.0;
         public static final double STALL_FEEDFORWARD = 0.0;
         // Speeds for intake and outtake (placeholder values; adjust as needed)
-        public static final double INTAKE_VOLTAGE = 0.7;
+        public static final double INTAKE_VOLTAGE = 7;
         public static final double OUTTAKE_VOLTAGE = -0.7;
         public static final double STOP_VOLTAGE = 0.0;
     }
@@ -111,7 +111,7 @@ public final class Constants {
     }
 
     public static final class ClimberConstants {
-        public static final int CAN_ID = 10;
+        public static final int CAN_ID = 41;
         public static final double CLIMBER_DEFAULT_POSITION = 0.0; // Placeholder value
         
         // PID Constants (placeholders—adjust as needed)
@@ -123,7 +123,7 @@ public final class Constants {
         // Additional constants for Climber: winch extension and climb units (placeholders)
         public static final double WINCH_EXTENSION_POSITION = 2.0; // Placeholder value
         public static final double WINCH_CLIMB_POSITION = 1.8;     // Placeholder value
-        public static final double CLIMB_VOLTAGE = 0.0;
+        public static final double CLIMB_VOLTAGE = 4.0;
         public static final double STOP_VOLTAGE = 0.0;
     }
     
@@ -143,9 +143,9 @@ public final class Constants {
         // Elevator preset heights (in units; placeholders for L1-L4, home, algae layup, and algae place)
         public static final double HOME_POSITION = 0.0;
         public static final double L1_SCORE_POSITION = 30.0;
-        public static final double L2_SCORE_POSITION = 21.25;
+        public static final double L2_SCORE_POSITION = 21.75;
         public static final double L3_SCORE_POSITION = 33.25;
-        public static final double L4_SCORE_POSITION = 56.25;
+        public static final double L4_SCORE_POSITION = 55.75;
         public static final double ALGAE_LAYUP_POSITIONS = 0.6;
         public static final double ALGAE_PLACE_POSITION = 0.8;
         

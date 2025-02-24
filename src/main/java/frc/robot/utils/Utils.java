@@ -53,6 +53,9 @@ public class Utils {
      * @return The curved value, maintaining the sign of the input
      */
     public static double squareInput(double input) {
+        if (input < 0) {
+            return -curveInput(-input, 2.0);
+        }
         return curveInput(input, 2.0);
     }
 
