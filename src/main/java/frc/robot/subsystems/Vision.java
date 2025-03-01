@@ -9,6 +9,7 @@ import frc.robot.utils.LimelightHelpers;
 import frc.robot.utils.LimelightHelpers.PoseEstimate;
 import frc.robot.utils.Utils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
 
@@ -18,8 +19,8 @@ public class Vision extends SubsystemBase {
     private final NetworkTable rightPerimeterTable;
     private final NetworkTable leftReefTable;
     private final NetworkTable rightReefTable;
-    private final List<String> LocalizationTables;
-    private final List<String> ServoTables;
+    final List<Integer> reefTagIds = Arrays.asList(6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22);
+    final List<Integer> bargeTagIds = Arrays.asList(4, 5, 14, 15);
     
     public Vision(BiConsumer<String, Object> updateData) {
         // Example camera initialization - you would add your actual cameras here
@@ -32,16 +33,6 @@ public class Vision extends SubsystemBase {
         rightPerimeterTable = NetworkTableInstance.getDefault().getTable(Constants.VisionConstants.RIGHT_PERIMETER_TABLE);
         leftReefTable = NetworkTableInstance.getDefault().getTable(Constants.VisionConstants.LEFT_REEF_TABLE);
         rightReefTable = NetworkTableInstance.getDefault().getTable(Constants.VisionConstants.RIGHT_REEF_TABLE);
-
-        LocalizationTables = List.of(
-            Constants.VisionConstants.LEFT_PERIMETER_TABLE,
-            Constants.VisionConstants.RIGHT_PERIMETER_TABLE
-        );
-
-        ServoTables = List.of(
-            Constants.VisionConstants.LEFT_REEF_TABLE,
-            Constants.VisionConstants.RIGHT_REEF_TABLE
-        );
     }
 
     @Override
@@ -104,5 +95,45 @@ public class Vision extends SubsystemBase {
         } else {
             return 0;
         }
+    }
+
+    public String getBestLimelight() {
+        LimelightHelpers.PoseEstimate leftPerimeterMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-lftper");
+        LimelightHelpers.PoseEstimate rightPerimeterMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-rghtper");
+        LimelightHelpers.PoseEstimate leftReefMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-lftrf");
+        LimelightHelpers.PoseEstimate rightReefMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-rghtrf");
+    
+        String bestLimelight = "";
+    
+        if (leftPerimeterMeasurement != null
+            && !reefTagIds.contains(getTagId(leftPerimeterTable))
+            && !bargeTagIds.contains(getTagId(leftPerimeterTable))) {
+          bestLimelight = "limelight-lftper";
+        }
+    
+        if (rightPerimeterMeasurement != null
+        && !reefTagIds.contains(getTagId(rightPerimeterTable))
+        && !bargeTagIds.contains(getTagId(rightPerimeterTable))
+        && ((leftPerimeterMeasurement != null  && rightPerimeterMeasurement.avgTagArea > leftPerimeterMeasurement.avgTagArea)
+            || bestLimelight.isEmpty())) {
+          bestLimelight = "limelight-rghtper";
+        }
+    
+        if (leftReefMeasurement != null
+        && !reefTagIds.contains(getTagId(leftReefTable))
+        && ((LimelightHelpers.getBotPoseEstimate_wpiBlue(bestLimelight) != null && LimelightHelpers.getBotPoseEstimate_wpiBlue(bestLimelight).avgTagArea < leftReefMeasurement.avgTagArea)
+            || bestLimelight.isEmpty())) {
+          bestLimelight = "limelight-lftrf";
+        }
+    
+        if (rightReefMeasurement != null
+        && !reefTagIds.contains(getTagId(rightReefTable))
+        && ((LimelightHelpers.getBotPoseEstimate_wpiBlue(bestLimelight) != null && LimelightHelpers.getBotPoseEstimate_wpiBlue(bestLimelight).avgTagArea < rightReefMeasurement.avgTagArea)
+            || bestLimelight.isEmpty())) {
+          bestLimelight = "limelight-rghtrf";
+        }
+
+        return bestLimelight;
+
     }
 } 

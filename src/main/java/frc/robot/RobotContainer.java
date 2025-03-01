@@ -56,8 +56,6 @@ public class RobotContainer {
   private final NetworkTableInstance inst;
   private final NetworkTable table;
   private final SendableChooser<Command> autoChooser;
-  // private final CommandXboxController copilotController;
-  // private final CommandXboxController testController;
 
   // private final Telemetry logger = new Telemetry(MAX_SPEED);
 
@@ -74,15 +72,11 @@ public class RobotContainer {
     // subsystems.getActionController().setDefaultCommand(new ActionRequestCommand(subsystems, Action.IDLE));
 
     driverController = new CommandXboxController(0);
-    // copilotController = new CommandXboxController(1);
-    // testController = new CommandXboxController(2);
     
     configurePilotBindings();
-    // configureCopilotBindings();
-    // configureTestBindings();
     inst = NetworkTableInstance.getDefault();
     table = inst.getTable("Vision Logging");
-    // registerNamedCommands();
+    registerNamedCommands();
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
@@ -97,26 +91,10 @@ public class RobotContainer {
     // reset the field-centric heading on left bumper press
     driverController.back().onTrue(subsystems.getDrivetrain().runOnce(() -> {
       subsystems.getDrivetrain().resetPose(new Pose2d());
-      // subsystems.getDrivetrain().seedFieldCentric();
     }));
-    // driverController.b().onTrue(new AutoFollowPathCommand(subsystems.getDrivetrain(), driverController, 13.29, 2.76, 120.0));
-    // driverController.x().onTrue(new AutoFollowPathCommand(subsystems.getDrivetrain(), driverController, 13.99, 3.26, 120.0));
-    // driverController.a().onTrue(new FollowPathCommand(subsystems.getDrivetrain(), driverController, 16, 1, 135));
-    // driverController.start().onTrue(new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.HOME_POSITION));
     driverController.rightBumper().whileTrue(
       new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L1_SCORE_POSITION));
     driverController.rightBumper().onFalse(new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors()));
-    // driverController.b().onTrue(new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L2_SCORE_POSITION));
-    // driverController.x().onTrue(new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L3_SCORE_POSITION));
-    // driverController.y().onTrue(new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L4_SCORE_POSITION));
-    // driverController.a().whileTrue(new ClimberCommand(subsystems.getClimber(), Constants.ClimberConstants.CLIMB_VOLTAGE));
-    // driverController.rightBumper().onTrue(
-    //   new HopperCommand(
-    //     subsystems.getHopper(),
-    //     subsystems.getSensors(),
-    //     Constants.HopperConstants.START_VOLTAGE,
-    //     (value) -> setHumanPlayerStation(value))
-    //     .alongWith(new InstantCommand(() -> setHumanPlayerStation("right"))));
     driverController.leftBumper().onTrue(
       new HopperCommand(
         subsystems.getHopper(),
@@ -130,69 +108,16 @@ public class RobotContainer {
 
     driverController.povLeft().onFalse(new SequentialCommandGroup(new WaitCommand(0.25), new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.HOME_POSITION)));;
 
-    
-    // driverController.rightBumper().whileTrue(new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE));
-
     // subsystems.getDrivetrain().registerTelemetry(logger::telemeterize);
-    
-    // driverController.y().whileTrue(new AlgaeWristCommand(subsystems.getAlgaeWrist(), 0.25)
-    // .alongWith(new AlgaeIntakeCommand(subsystems.getAlgaeIntake(), Constants.AlgaeIntakeConstants.INTAKE_VOLTAGE)));
   }
 
-  // private void configureCopilotBindings() {
-  //   copilotController.start().onTrue(new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.HOME_POSITION));
-  //   copilotController.a().onTrue(new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L1_SCORE_POSITION));
-  //   copilotController.b().onTrue(new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L2_SCORE_POSITION));
-  //   copilotController.x().onTrue(new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L3_SCORE_POSITION));
-  //   copilotController.y().onTrue(new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L4_SCORE_POSITION));
-  //   copilotController.rightBumper().onTrue(new HopperCommand(subsystems.getHopper(),subsystems.getEndEffector(), subsystems.getSensors(), Constants.HopperConstants.START_VOLTAGE, Constants.EndEffectorConstants.END_EFFECTOR_INTAKE_VOLTAGE));
-  //   copilotController.rightTrigger(0.5).whileTrue(new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE));
-  // }
-
-  // private void configureTestBindings() {
-  //   // testController.povUp().whileTrue(new ElevatorCommand(subsystems.getElevator(), Constants.ElevatorConstants.UP_VOLTAGE));
-  //   // testController.povDown().whileTrue(new ElevatorCommand(subsystems.getElevator(), Constants.ElevatorConstants.DOWN_VOLTAGE));
-  //   // testController.a().whileTrue(new HopperCommand(subsystems.getHopper(), Constants.HopperConstants.START_VOLTAGE));
-  //   testController.x().whileTrue(new AlgaeIntakeCommand(subsystems.getAlgaeIntake(), Constants.AlgaeIntakeConstants.INTAKE_VOLTAGE));
-  //   // testController.b().whileTrue(new AlgaeWristCommand(subsystems.getAlgaeWrist(), Constants.AlgaeWristConstants.WRIST_DOWN_VOLTAGE));
-  //   testController.y().whileTrue(new AlgaeWristCommand(subsystems.getAlgaeWrist(), 0.23));
-  //   testController.rightBumper().whileTrue(new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE));
-  //   testController.start().whileTrue(new ClimberCommand(subsystems.getClimber(), Constants.ClimberConstants.CLIMB_VOLTAGE));
-  //   testController.back().whileTrue(new ClimberCommand(subsystems.getClimber(), -Constants.ClimberConstants.CLIMB_VOLTAGE));
-  // }
-
-  // public Command getAutonomousCommand() {
-  //   /* First put the drivetrain into auto run mode, then run the auto */
-  //   return autoChooser.getSelected();
-  // }
+  public Command getAutonomousCommand() {
+    /* First put the drivetrain into auto run mode, then run the auto */
+    return autoChooser.getSelected();
+  }
 
   public void updatePose() {
-    LimelightHelpers.PoseEstimate leftPerimeterMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-lftper");
-    LimelightHelpers.PoseEstimate rightPerimeterMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-rghtper");
-    LimelightHelpers.PoseEstimate leftReefMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-lftrf");
-    LimelightHelpers.PoseEstimate rightReefMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-rghtrf");
-
-    String bestLimelight = "";
-
-    if (leftPerimeterMeasurement != null) {
-      bestLimelight = "limelight-lftper";
-    }
-
-    if (rightPerimeterMeasurement != null && ((leftPerimeterMeasurement != null  && rightPerimeterMeasurement.avgTagArea > leftPerimeterMeasurement.avgTagArea) || bestLimelight.isEmpty())) {
-      bestLimelight = "limelight-rghtper";
-    }
-
-    if (leftReefMeasurement != null && ((LimelightHelpers.getBotPoseEstimate_wpiBlue(bestLimelight) != null && LimelightHelpers.getBotPoseEstimate_wpiBlue(bestLimelight).avgTagArea < leftReefMeasurement.avgTagArea) || bestLimelight.isEmpty())) {
-      bestLimelight = "limelight-lftrf";
-    }
-
-    if (rightReefMeasurement != null && ((LimelightHelpers.getBotPoseEstimate_wpiBlue(bestLimelight) != null && LimelightHelpers.getBotPoseEstimate_wpiBlue(bestLimelight).avgTagArea < rightReefMeasurement.avgTagArea) || bestLimelight.isEmpty())) {
-      bestLimelight = "limelight-rghtrf";
-    }
-
-    if (bestLimelight.isEmpty()) {
-      return;
-    }
+    final String bestLimelight = subsystems.getVision().getBestLimelight();
 
     Pose3d pose = LimelightHelpers.getBotPose3d_wpiBlue(bestLimelight);
     LimelightHelpers.PoseEstimate bestMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(bestLimelight);
@@ -229,10 +154,6 @@ public class RobotContainer {
     frc.robot.utils.Utils.logMap(subsystems.getActionController().getCommandData(), "Command Data");
   }
 
-  private void setHumanPlayerStation(String station) {
-    humanPlayerStation = station;
-  }
-
   public void resetLocalization() {
     subsystems.getDrivetrain().resetPose(new Pose2d());
     // subsystems.getDrivetrain().seedFieldCentric();
@@ -242,63 +163,7 @@ public class RobotContainer {
     return subsystems;
   }
 
-  public Command getAutonomousCommand() {
-    Pose2d currentPose = subsystems.getDrivetrain().getState().Pose;
-    List<Waypoint> RedLeft1Waypoints = PathPlannerPath.waypointsFromPoses(
-      currentPose,
-      new Pose2d(12.35, 2.7, Rotation2d.fromDegrees(40))
-    );
-    List<Waypoint> RedLeft2Waypoints = PathPlannerPath.waypointsFromPoses(
-      new Pose2d(12.35, 2.7, Rotation2d.fromDegrees(-30)),
-      new Pose2d(16, 1, Rotation2d.fromDegrees(-15))
-    );
-    List<Waypoint> RedLeft3Waypoints = PathPlannerPath.waypointsFromPoses(
-      new Pose2d(16, 1, Rotation2d.fromDegrees(145)),
-      new Pose2d(14.1, 2.7, Rotation2d.fromDegrees(145))
-    );
-    List<Waypoint> RedLeft4Waypoints = PathPlannerPath.waypointsFromPoses(
-      new Pose2d(14.1, 2.7, Rotation2d.fromDegrees(-33)),
-      new Pose2d(16, 1, Rotation2d.fromDegrees(-33))
-    );
-    List<Waypoint> RedLeft5Waypoints = PathPlannerPath.waypointsFromPoses(
-      new Pose2d(16, 1, Rotation2d.fromDegrees(138)),
-      new Pose2d(14.3, 2.95, Rotation2d.fromDegrees(138))
-    );
-
-    return new SequentialCommandGroup(
-      AutoBuilder.followPath(getAutonomousPath(subsystems.getDrivetrain(), RedLeft1Waypoints, 60)),
-      new WaitCommand(1),
-      AutoBuilder.followPath(getAutonomousPath(subsystems.getDrivetrain(), RedLeft2Waypoints, 135)),
-      new WaitCommand(1),
-      AutoBuilder.followPath(getAutonomousPath(subsystems.getDrivetrain(), RedLeft3Waypoints, 120)),
-      new WaitCommand(1),
-      AutoBuilder.followPath(getAutonomousPath(subsystems.getDrivetrain(), RedLeft4Waypoints, 135)),
-      new WaitCommand(1),
-      AutoBuilder.followPath(getAutonomousPath(subsystems.getDrivetrain(), RedLeft5Waypoints, 120))
-    );
-  }
-
-  public PathPlannerPath getAutonomousPath(CommandSwerveDrivetrain drivetrain, List<Waypoint> waypoints, double endTheta) {// Create a list of waypoints from poses. Each pose represents one waypoint.
-    // The rotation component of the pose should be the direction of travel. Do not use holonomic rotation.
-
-    PathConstraints constraints = new PathConstraints(
-      3,
-      4,
-      Units.degreesToRadians(270),
-      Units.degreesToRadians(540));
-
-    // Create the path using the waypoints created above
-    PathPlannerPath path = new PathPlannerPath(
-      waypoints,
-      constraints,
-      null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-      new GoalEndState(0.0, Rotation2d.fromDegrees(endTheta)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
-    );
-
-    // Prevent the path from being flipped if the coordinates are already correct
-    path.preventFlipping = true;
-
-    System.out.println("Path created: " + path);
-    return path;
+  public void registerNamedCommands() {
+    
   }
 }
