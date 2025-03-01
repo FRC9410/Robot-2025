@@ -69,6 +69,8 @@ public class Elevator extends SubsystemBase {
 
     @Override
     public void periodic() {
+        updateData.accept("Elevator Position", getCurrentHeight());
+        updateData.accept("Elevator Setpoint", setpoint);
     }
 
     /**
@@ -94,7 +96,7 @@ public class Elevator extends SubsystemBase {
      * Returns whether the elevator is at its target position
      */
     public boolean atTargetPosition() {
-        return Math.abs(elevatorMotor.getClosedLoopError().getValue()) < 0.02; // 2cm tolerance
+        return Math.abs(elevatorMotor.getPosition().getValueAsDouble() - setpoint) < 0.05; // 2cm tolerance
     }
 
     public void setVoltage(double voltage) {

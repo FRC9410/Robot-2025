@@ -69,7 +69,7 @@ public final class Constants {
         public static final double kF = 0.0;
         public static final double STALL_FEEDFORWARD = 0.0;
         // Speeds for intake and outtake (placeholder values; adjust as needed)
-        public static final double INTAKE_VOLTAGE = 7;
+        public static final double INTAKE_VOLTAGE = 1.0;
         public static final double OUTTAKE_VOLTAGE = -0.7;
         public static final double STOP_VOLTAGE = 0.0;
     }
@@ -137,8 +137,8 @@ public final class Constants {
         public static final double kI = 0.0; 
         public static final double kD = 0.0; 
         public static final double kG = 0.34;
-        public static final double MOTION_MAGIC_ACCELERATION = 190.0;
-        public static final double MOTION_MAGIC_VELOCITY = 200.0;
+        public static final double MOTION_MAGIC_ACCELERATION = 400.0;
+        public static final double MOTION_MAGIC_VELOCITY = 300.0;
         
         // Elevator preset heights (in units; placeholders for L1-L4, home, algae layup, and algae place)
         public static final double HOME_POSITION = 0.0;
@@ -148,6 +148,9 @@ public final class Constants {
         public static final double L4_SCORE_POSITION = 55.75;
         public static final double ALGAE_LAYUP_POSITIONS = 0.6;
         public static final double ALGAE_PLACE_POSITION = 0.8;
+        public static final double L1_ALGAE_POSITION = 6.75;
+        // public static final double L1_ALGAE_POSITION = 12.75;
+        public static final double L2_ALGAE_POSITION = 21.75;
         
         public static final double UP_VOLTAGE = 0.2;
         public static final double DOWN_VOLTAGE = 0.05;

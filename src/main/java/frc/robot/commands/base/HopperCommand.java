@@ -16,14 +16,12 @@ public class HopperCommand extends Command {
   private final Hopper hopper;
   private final Sensors sensors;
   private final double hopperVoltage;
-  private final Consumer<String> playerStation;
   /** Creates a new DefaultHopper. */
-  public HopperCommand(Hopper hopper, Sensors sensors, double hopperVoltage, Consumer<String> playerStation) {
+  public HopperCommand(Hopper hopper, Sensors sensors, double hopperVoltage) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.hopper = hopper;
     this.sensors = sensors;
     this.hopperVoltage = hopperVoltage;
-    this.playerStation = playerStation;
 
     addRequirements(hopper);
   }
@@ -48,7 +46,6 @@ public class HopperCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     hopper.setVoltage(0);
-    playerStation.accept("");
   }
 
   // Returns true when the command should end.

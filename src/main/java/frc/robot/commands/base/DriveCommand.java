@@ -15,6 +15,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -26,11 +28,10 @@ public class DriveCommand extends Command {
   private final CommandSwerveDrivetrain drivetrain;
   private final CommandXboxController controller;
   private final Vision vision;
-  private final NetworkTableInstance inst;
-  private final NetworkTable table;
   private HolonomicDriveController holonomicController;
   private PIDController strafePidController;
   private PIDController forwardPidController;
+  private double direction;
 
   /** Creates a new DriveCommand. */
   public DriveCommand(CommandSwerveDrivetrain drivetrain,
@@ -39,15 +40,14 @@ public class DriveCommand extends Command {
     this.drivetrain = drivetrain;
     this.controller = controller;
     this.vision = vision;
-    inst = NetworkTableInstance.getDefault();
-    table = inst.getTable("Drive Command");
     this.holonomicController = new HolonomicDriveController(
       new PIDController(1, 0, 0),
       new PIDController(1.0, 0, 0),
       new ProfiledPIDController(7.0, 0, 0.0,
             new TrapezoidProfile.Constraints(drivetrain.MAX_ANGULAR_RATE*2, drivetrain.MAX_ANGULAR_RATE*4)));
-    this.strafePidController = new PIDController(0.01, 0, 0.0001);
+    this.strafePidController = new PIDController(0.004, 0, 0.0002);
     this.forwardPidController = new PIDController(0.04, 0, 0);
+    direction = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red ? -1.0 : 1.0;
 
     addRequirements(drivetrain);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -60,10 +60,6 @@ public class DriveCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    final Pose2d pose = drivetrain.getState().Pose;
-    table.getEntry("Heading").setDouble(pose.getRotation().getDegrees());
-    table.getEntry("X").setDouble(pose.getTranslation().getX());
-    table.getEntry("Y").setDouble(pose.getTranslation().getY());
     final int tagId = vision.getReefTag();
     final List<Integer> reefTagIds = Arrays.asList(6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22);
     if ((controller.getLeftTriggerAxis() > 0.5
@@ -71,13 +67,13 @@ public class DriveCommand extends Command {
       && reefTagIds.contains(tagId)) {
         drivetrain.setControl(drivetrain.ROBOT_RELATIVE
         // .withVelocityX(-getForward() * drivetrain.MAX_SPEED)
-          .withVelocityX(getForward() * drivetrain.MAX_SPEED)
-          .withVelocityY(getStrafe() * drivetrain.MAX_SPEED)
+          .withVelocityX(-direction * getForward() * drivetrain.MAX_SPEED)
+          .withVelocityY(-direction * getStrafe() * drivetrain.MAX_SPEED)
           .withRotationalRate(getRotation()));
       } else {
         drivetrain.setControl(drivetrain.FIELD_RELATIVE
-          .withVelocityX(Utils.squareInput(controller.getLeftY()) * drivetrain.MAX_SPEED)
-          .withVelocityY(Utils.squareInput(controller.getLeftX()) * drivetrain.MAX_SPEED)
+          .withVelocityX(direction * Utils.squareInput(controller.getLeftY()) * drivetrain.MAX_SPEED)
+          .withVelocityY(direction * Utils.squareInput(controller.getLeftX()) * drivetrain.MAX_SPEED)
           .withRotationalRate(getRotation()));
       }
 
@@ -100,21 +96,22 @@ public class DriveCommand extends Command {
   }
 
   private double getRotation() {
-    if (controller.leftBumper().getAsBoolean()) {
-      return holonomicController.calculate(
-        drivetrain.getState().Pose,
-        drivetrain.getState().Pose,
-        0.0,
-        Rotation2d.fromDegrees(125.0)
-      ).omegaRadiansPerSecond;
-    } else if (controller.rightBumper().getAsBoolean()) {
-      return holonomicController.calculate(
-        drivetrain.getState().Pose,
-        drivetrain.getState().Pose,
-        0.0,
-        Rotation2d.fromDegrees(-125.0)
-      ).omegaRadiansPerSecond;
-    } else if (controller.getLeftTriggerAxis() > 0.5
+    // if (controller.leftBumper().getAsBoolean()) {
+    //   return holonomicController.calculate(
+    //     drivetrain.getState().Pose,
+    //     drivetrain.getState().Pose,
+    //     0.0,
+    //     Rotation2d.fromDegrees(125.0)
+    //   ).omegaRadiansPerSecond;
+    // } else if (controller.rightBumper().getAsBoolean()) {
+    //   return holonomicController.calculate(
+    //     drivetrain.getState().Pose,
+    //     drivetrain.getState().Pose,
+    //     0.0,
+    //     Rotation2d.fromDegrees(-125.0)
+    //   ).omegaRadiansPerSecond;
+    // } else 
+    if (controller.getLeftTriggerAxis() > 0.5
       || controller.getRightTriggerAxis() > 0.5) {
         final double scoringAngle = getScoringAngle();
         if (scoringAngle != -1.0) {
@@ -136,9 +133,9 @@ public class DriveCommand extends Command {
         final List<Integer> reefTagIds = Arrays.asList(6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22);
         if (reefTagIds.contains(tagId)) {
           if (controller.getLeftTriggerAxis() > 0.5) {
-            return strafePidController.calculate((vision.getXOffset(vision.getRightReefTable()) + 10.0));
+            return strafePidController.calculate((vision.getXOffset(vision.getRightReefTable()) - 40.0));
           } else {
-            return strafePidController.calculate((vision.getXOffset(vision.getLeftReefTable()) - 10.0));
+            return strafePidController.calculate((vision.getXOffset(vision.getLeftReefTable()) + 40.0));
           }
         }
       }
@@ -151,10 +148,12 @@ public class DriveCommand extends Command {
       final int tagId = vision.getReefTag();
       final List<Integer> reefTagIds = Arrays.asList(6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22);
       if (reefTagIds.contains(tagId)) {
-        if (controller.getLeftTriggerAxis() > 0.5) {
-          return -forwardPidController.calculate((5.0 - vision.getArea(vision.getLeftReefTable())));
+        if (controller.getLeftTriggerAxis() > 0.5 && vision.getArea(vision.getLeftReefTable()) != 0) {
+          return -forwardPidController.calculate((8.0 - vision.getArea(vision.getLeftReefTable())));
+        } else if(vision.getArea(vision.getRightReefTable()) != 0) {
+          return -forwardPidController.calculate((8.0 - vision.getArea(vision.getRightReefTable())));
         } else {
-          return -forwardPidController.calculate((5.0 - vision.getArea(vision.getRightReefTable())));
+          return Utils.squareInput(controller.getLeftY()) * drivetrain.MAX_SPEED;
         }
       } else {
         return Utils.squareInput(controller.getLeftY()) * drivetrain.MAX_SPEED;

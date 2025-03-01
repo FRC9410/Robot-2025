@@ -46,7 +46,7 @@ public class AlgaeIntake extends SubsystemBase {
      * @param speed The motor output in the range [-1, 1].
      */
     public void setVoltage(double speed) {
-        intakeMotor.setControl(new DutyCycleOut(-speed));
+        intakeMotor.setVoltage(voltage);
         // if (voltage != this.voltage) {
         //     this.voltage = voltage;
         //     intakeMotor.setVoltage(voltage);

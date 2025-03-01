@@ -43,8 +43,8 @@ private final BiConsumer<String, Object> updateData;
   @Override
   public void periodic() {
     // // This method will be called once per scheduler run
-    updateData.accept("intakeLaserBroken", getIntakeLaserBroken());
-    updateData.accept("outtakeLaserBroken", getOuttakeLaserBroken());
+    // updateData.accept("intakeLaserBroken", getIntakeLaserBroken());
+    // updateData.accept("outtakeLaserBroken", getOuttakeLaserBroken());
   }
 
   

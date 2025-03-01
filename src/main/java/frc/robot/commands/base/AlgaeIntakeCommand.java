@@ -30,7 +30,7 @@ public class AlgaeIntakeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    algaeIntake.setVoltage(1);
+    algaeIntake.setVoltage(12);
   }
 
   // Called once the command ends or is interrupted.

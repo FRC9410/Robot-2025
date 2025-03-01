@@ -46,10 +46,10 @@ public class Vision extends SubsystemBase {
 
     @Override
     public void periodic() {
-        updateData.accept("leftrfTA", getArea(getLeftReefTable()));
-        updateData.accept("rightrfT", getArea(getRightReefTable()));
-        updateData.accept("leftXOffset", getXOffset(getLeftReefTable()));
-        updateData.accept("rightXOffset", getXOffset(getRightReefTable()));
+        // updateData.accept("leftrfTA", getArea(getLeftReefTable()));
+        // updateData.accept("rightrfT", getArea(getRightReefTable()));
+        // updateData.accept("leftXOffset", getXOffset(getLeftReefTable()));
+        // updateData.accept("rightXOffset", getXOffset(getRightReefTable()));
 
     }
 

@@ -67,9 +67,9 @@ public class AlgaeWrist extends SubsystemBase {
     
     @Override
     public void periodic() {
-        updateData.accept("wristVoltage", wristMotor.getOutputCurrent());
-        updateData.accept("wristPosition", encoder.getPosition());
-        updateData.accept("wristSetpoint", wristMotor.getAppliedOutput());
+        // updateData.accept("wristVoltage", wristMotor.getOutputCurrent());
+        // updateData.accept("wristPosition", encoder.getPosition());
+        // updateData.accept("wristSetpoint", wristMotor.getAppliedOutput());
     }
 
     /**

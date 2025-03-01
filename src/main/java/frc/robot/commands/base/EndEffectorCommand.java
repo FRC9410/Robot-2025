@@ -8,17 +8,23 @@ import java.util.function.Function;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.EndEffector;
+import frc.robot.subsystems.Sensors;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class EndEffectorCommand extends Command {
   private final EndEffector endEffector;
   private final double voltage;
+  private final Elevator elevator;
+  private final Sensors sensors;
   /** Creates a new DefaultEndEffector. */
-  public EndEffectorCommand(EndEffector endEffector, double voltage) {
+  public EndEffectorCommand(EndEffector endEffector, double voltage, Elevator elevator, Sensors sensors) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.endEffector = endEffector;
     this.voltage = voltage;
+    this.elevator = elevator;
+    this.sensors = sensors;
 
     addRequirements(endEffector);
   }
@@ -30,7 +36,9 @@ public class EndEffectorCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    endEffector.setVoltage(voltage);
+    if (elevator.atTargetPosition() && elevator.getCurrentHeight() > 10) {
+      endEffector.setVoltage(voltage);
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -42,6 +50,9 @@ public class EndEffectorCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if (!sensors.getOuttakeLaserBroken()) {
+      return true;
+    }
     return false;
   }
 }

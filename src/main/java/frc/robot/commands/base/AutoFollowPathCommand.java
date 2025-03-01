@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class FollowPathCommand extends Command {
+public class AutoFollowPathCommand extends Command {
   private final CommandSwerveDrivetrain drivetrain;
   private final CommandXboxController controller;
   private final double x;
@@ -31,7 +31,7 @@ public class FollowPathCommand extends Command {
   private Command pathFollowCommand;
 
   /** Creates a new FollowPathCommand. */
-  public FollowPathCommand(
+  public AutoFollowPathCommand(
     CommandSwerveDrivetrain drivetrain,
     CommandXboxController controller,
     double x,

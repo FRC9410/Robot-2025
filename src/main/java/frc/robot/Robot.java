@@ -4,28 +4,47 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.*;
+
+import java.util.List;
+
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.commands.PathfindingCommand;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
 
 import au.grapplerobotics.CanBridge;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.PixelFormat;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Subsystems;
 
 public class Robot extends TimedRobot {
   private Command autonomousCommand;
 
   private final RobotContainer robotContainer;
+  private final NetworkTableInstance inst;
+  private final NetworkTable table;
 
   public Robot() {
     robotContainer = new RobotContainer();
     CanBridge.runTCP();
     robotContainer.resetLocalization();
     // robotContainer.getSubsystems().getDrivetrain().configureAutoBuilder();
-    CameraServer.startAutomaticCapture().setVideoMode(PixelFormat.kMJPEG, 320,240,30);
+    // CameraServer.startAutomaticCapture().setVideoMode(PixelFormat.kMJPEG, 640,4800,30);
+    inst = NetworkTableInstance.getDefault();
+    table = inst.getTable("Drive Command");
   }
 
   @Override
@@ -37,8 +56,14 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+    // System.out.println(Math.pow(RotationsPerSecond.of(0.75).in(RadiansPerSecond),2));
+    // System.out.println(RotationsPerSecond.of(0.75).in(RadiansPerSecond));
 
     robotContainer.updatePose();
+    final Pose2d pose = robotContainer.getSubsystems().getDrivetrain().getState().Pose;
+    table.getEntry("Heading").setDouble(pose.getRotation().getDegrees());
+    table.getEntry("X").setDouble(pose.getTranslation().getX());
+    table.getEntry("Y").setDouble(pose.getTranslation().getY());
   }
 
   @Override
