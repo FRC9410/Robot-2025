@@ -59,8 +59,6 @@ public class RobotContainer {
 
   // private final Telemetry logger = new Telemetry(MAX_SPEED);
 
-  private String humanPlayerStation = "";
-
   public RobotContainer() {
     subsystems = new Subsystems();
     // subsystems.getHopper().setDefaultCommand(new ActionHopperCommand(subsystems.getHopper(), subsystems.getActionController()));
@@ -86,27 +84,29 @@ public class RobotContainer {
       new DriveCommand(
         subsystems.getDrivetrain(),
         driverController, 
-        subsystems.getVision()));
+        subsystems.getDashboard()));
 
     // reset the field-centric heading on left bumper press
     driverController.back().onTrue(subsystems.getDrivetrain().runOnce(() -> {
       subsystems.getDrivetrain().resetPose(new Pose2d());
     }));
     driverController.rightBumper().whileTrue(
-      new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L1_SCORE_POSITION));
-    driverController.rightBumper().onFalse(new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors()));
+      new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard()));
+    driverController.rightBumper().onFalse(new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard()));
     driverController.leftBumper().onTrue(
       new HopperCommand(
         subsystems.getHopper(),
         subsystems.getSensors(),
         Constants.HopperConstants.START_VOLTAGE));
 
-    driverController.povLeft().onTrue(new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L1_ALGAE_POSITION)
+    driverController.povLeft().onTrue(new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L1_ALGAE_POSITION)
     .alongWith(new AlgaeWristCommand(subsystems.getAlgaeWrist(), 0.40)
     // .alongWith(new AlgaeIntakeCommand(subsystems.getAlgaeIntake(), Constants.AlgaeIntakeConstants.INTAKE_VOLTAGE))
     ));
 
-    driverController.povLeft().onFalse(new SequentialCommandGroup(new WaitCommand(0.25), new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.HOME_POSITION)));;
+    driverController.povLeft().onFalse(new SequentialCommandGroup(new WaitCommand(0.25), new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.HOME_POSITION)));
+
+    driverController.y().whileTrue(new ClimberCommand(subsystems.getClimber()));
 
     // subsystems.getDrivetrain().registerTelemetry(logger::telemeterize);
   }
@@ -119,20 +119,23 @@ public class RobotContainer {
   public void updatePose() {
     final String bestLimelight = subsystems.getVision().getBestLimelight();
 
+    if (bestLimelight.isEmpty()) {
+      return;
+    }
+
     Pose3d pose = LimelightHelpers.getBotPose3d_wpiBlue(bestLimelight);
     LimelightHelpers.PoseEstimate bestMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(bestLimelight);
     
 
-    if (bestMeasurement != null && bestMeasurement.avgTagArea > 0.2) {
+    if (bestMeasurement != null && bestMeasurement.avgTagArea > 0.1) {
       Pose2d newPose = pose.toPose2d();
       subsystems.getDrivetrain().resetRotation(newPose.getRotation());
-    } 
+      LimelightHelpers.SetRobotOrientation("limelight-left", newPose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
+      LimelightHelpers.SetRobotOrientation("limelight-right", newPose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
+    }  else {
+      return;
+    }
 
-
-    LimelightHelpers.SetRobotOrientation("limelight-lftper", subsystems.getDrivetrain().getState().Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
-    LimelightHelpers.SetRobotOrientation("limelight-rghtper", subsystems.getDrivetrain().getState().Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
-    LimelightHelpers.SetRobotOrientation("limelight-lftrf", subsystems.getDrivetrain().getState().Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
-    LimelightHelpers.SetRobotOrientation("limelight-rghtrf", subsystems.getDrivetrain().getState().Pose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
     LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(bestLimelight);
     table.getEntry("tag-count").setDouble(mt2.tagCount);
     table.getEntry("angular-velo").setBoolean(Math.abs(subsystems.getDrivetrain().getPigeon2().getRate()) < 720);
@@ -164,6 +167,6 @@ public class RobotContainer {
   }
 
   public void registerNamedCommands() {
-    
+
   }
 }
