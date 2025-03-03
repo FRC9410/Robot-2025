@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import java.util.function.BiConsumer;
 
+import com.ctre.phoenix6.Utils;
+
 import au.grapplerobotics.ConfigurationFailedException;
 import au.grapplerobotics.LaserCan;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,21 +24,24 @@ private final BiConsumer<String, Object> updateData;
     
     this.updateData = updateData;
 
-    try {
-      intakeLaser.setRangingMode(LaserCan.RangingMode.SHORT);
-      intakeLaser.setRegionOfInterest(new LaserCan.RegionOfInterest(0, 16, 2, 2));
-      intakeLaser.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_20MS);
-    } catch (ConfigurationFailedException e) {
-      System.out.println("Configuration failed! " + e);
-    }
+    
+    if (!Utils.isSimulation()) {
+      try {
+        intakeLaser.setRangingMode(LaserCan.RangingMode.SHORT);
+        intakeLaser.setRegionOfInterest(new LaserCan.RegionOfInterest(0, 16, 2, 2));
+        intakeLaser.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_20MS);
+      } catch (ConfigurationFailedException e) {
+        System.out.println("Configuration failed! " + e);
+      }
 
- 
-    try {
-      outtakeLaser.setRangingMode(LaserCan.RangingMode.SHORT);
-      outtakeLaser.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 2, 2));
-      outtakeLaser.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_20MS);
-    } catch (ConfigurationFailedException e) {
-      System.out.println("Configuration failed! " + e);
+  
+      try {
+        outtakeLaser.setRangingMode(LaserCan.RangingMode.SHORT);
+        outtakeLaser.setRegionOfInterest(new LaserCan.RegionOfInterest(8, 8, 2, 2));
+        outtakeLaser.setTimingBudget(LaserCan.TimingBudget.TIMING_BUDGET_20MS);
+      } catch (ConfigurationFailedException e) {
+        System.out.println("Configuration failed! " + e);
+      }
     }
 }
   
@@ -58,11 +63,19 @@ private final BiConsumer<String, Object> updateData;
   }
   
   public boolean getIntakeLaserBroken() {
+    if (Utils.isSimulation()) {
+      return false;
+    }
+
     double measurement = intakeLaser.getMeasurement().distance_mm;
     return measurement <= Constants.SensorConstants.INTAKE_BREAKBEAM;
   }
   
   public boolean getOuttakeLaserBroken() {
+    if (Utils.isSimulation()) {
+      return false;
+    }
+    
     double measurement = outtakeLaser.getMeasurement().distance_mm;
     return measurement <= Constants.SensorConstants.OUTTAKE_BREAKBEAM;
   }

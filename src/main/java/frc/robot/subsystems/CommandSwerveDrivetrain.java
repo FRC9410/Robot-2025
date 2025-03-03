@@ -338,7 +338,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     public enum DriveMode {
-    ROBOT_RELATIVE, FIELD_RELATIVE
+        ROBOT_RELATIVE, FIELD_RELATIVE
     }
 
     public void configureAutoBuilder() {
