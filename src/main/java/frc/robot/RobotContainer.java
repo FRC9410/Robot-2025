@@ -99,10 +99,11 @@ public class RobotContainer {
         subsystems.getSensors(),
         Constants.HopperConstants.START_VOLTAGE));
 
-    driverController.povLeft().onTrue(new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L1_ALGAE_POSITION)
-    .alongWith(new AlgaeWristCommand(subsystems.getAlgaeWrist(), 0.40)
-    // .alongWith(new AlgaeIntakeCommand(subsystems.getAlgaeIntake(), Constants.AlgaeIntakeConstants.INTAKE_VOLTAGE))
+    driverController.povLeft().onTrue(new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L2_ALGAE_POSITION)
+    .alongWith(new AlgaeWristCommand(subsystems.getAlgaeWrist(), 0.35)
     ));
+
+    driverController.povLeft().whileTrue(new AlgaeIntakeCommand(subsystems.getAlgaeIntake(), Constants.AlgaeIntakeConstants.INTAKE_VOLTAGE));
 
     driverController.povLeft().onFalse(new SequentialCommandGroup(new WaitCommand(0.25), new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.HOME_POSITION)));
 

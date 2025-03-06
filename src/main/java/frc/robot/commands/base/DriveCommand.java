@@ -54,12 +54,12 @@ public class DriveCommand extends Command {
               new TrapezoidProfile.Constraints(drivetrain.MAX_ANGULAR_RATE*2, drivetrain.MAX_ANGULAR_RATE*4)));
       direction = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red ? -1.0 : 1.0;
 
-      table.getEntry("X P").setDouble(0.45);
-      table.getEntry("X D").setDouble(0.00015);
-      table.getEntry("Y P").setDouble(0.45);
-      table.getEntry("Y D").setDouble(0.00015);
-      table.getEntry("Rotation P").setDouble(1);
-      table.getEntry("Rotation D").setDouble(0);
+      table.getEntry("X P").setDouble(1);
+      table.getEntry("X D").setDouble(0.0025);
+      table.getEntry("Y P").setDouble(1);
+      table.getEntry("Y D").setDouble(0.0025);
+      table.getEntry("Rotation P").setDouble(1.2);
+      table.getEntry("Rotation D").setDouble(0.0025);
 
       addRequirements(drivetrain);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -83,11 +83,13 @@ public class DriveCommand extends Command {
         0.0,
         targetPose.getRotation()
       );
-      System.out.println("x speed: " + ChassisSpeeds.vxMetersPerSecond);
-      System.out.println("y speed: " + ChassisSpeeds.vyMetersPerSecond);
+      table.getEntry("Y Delta").setDouble(targetPose.getTranslation().getX() - currentPose.getTranslation().getX());
+      table.getEntry("X Delta").setDouble(targetPose.getTranslation().getY() - currentPose.getTranslation().getY());
+      table.getEntry("Rotation Delta").setDouble(targetPose.getRotation().getDegrees() - currentPose.getRotation().getDegrees());
+
       drivetrain.setControl(drivetrain.ROBOT_RELATIVE
-        .withVelocityX(ChassisSpeeds.vxMetersPerSecond * drivetrain.MAX_SPEED)
-        .withVelocityY(ChassisSpeeds.vyMetersPerSecond * drivetrain.MAX_SPEED)
+        .withVelocityX(ChassisSpeeds.vxMetersPerSecond * drivetrain.MAX_SPEED*0.90)
+        .withVelocityY(ChassisSpeeds.vyMetersPerSecond * drivetrain.MAX_SPEED*0.90)
         .withRotationalRate(ChassisSpeeds.omegaRadiansPerSecond * drivetrain.MAX_ANGULAR_RATE));
     } else if (dashboard.getIsClimbing()) {
       drivetrain.setControl(drivetrain.FIELD_RELATIVE

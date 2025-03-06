@@ -133,7 +133,7 @@ public final class Constants {
     public static final class ElevatorConstants {
         public static final int PRIMARY_CAN_ID = 22;
         public static final int SECONDARY_CAN_ID = 21;
-        public static final double ELEVATOR_DEFAULT_HEIGHT = 0.0; // Placeholder value
+        public static final double ELEVATOR_DEFAULT_HEIGHT = 0.05; // Placeholder value
         
         // PID Constants (placeholders—adjust as needed)
         public static final double kP = 4.0; 
@@ -151,9 +151,10 @@ public final class Constants {
         public static final double L4_SCORE_POSITION = 55.75;
         public static final double ALGAE_LAYUP_POSITIONS = 0.6;
         public static final double ALGAE_PLACE_POSITION = 0.8;
-        public static final double L1_ALGAE_POSITION = 6.75;
+        public static final double L1_ALGAE_POSITION = 18;
         // public static final double L1_ALGAE_POSITION = 12.75;
-        public static final double L2_ALGAE_POSITION = 21.75;
+        public static final double L2_ALGAE_POSITION = 32;
+        public static final double Posible_yeet = 30;
         
         public static final double UP_VOLTAGE = 0.2;
         public static final double DOWN_VOLTAGE = 0.05;
@@ -177,23 +178,23 @@ public final class Constants {
 
     public static final class ScoringConstants {
         // Red Side
-        public static final Pose2d RED_FRONT_LEFT = new Pose2d(14.48, 3.86, Rotation2d.fromDegrees(180.0));
-        public static final Pose2d RED_FRONT_RIGHT = new Pose2d(14.48, 4.19, Rotation2d.fromDegrees(180.0));
+        public static final Pose2d RED_FRONT_LEFT = new Pose2d(14.43, 3.86, Rotation2d.fromDegrees(180.0));
+        public static final Pose2d RED_FRONT_RIGHT = new Pose2d(14.43, 4.19, Rotation2d.fromDegrees(180.0));
 
-        public static final Pose2d RED_FRONT_LEFT_LEFT = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(120.0));
-        public static final Pose2d RED_FRONT_LEFT_RIGHT = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(120.0));
+        public static final Pose2d RED_FRONT_LEFT_LEFT = new Pose2d(13.6, 2.75, Rotation2d.fromDegrees(120.0));
+        public static final Pose2d RED_FRONT_LEFT_RIGHT = new Pose2d(13.88, 2.92, Rotation2d.fromDegrees(120.0));
 
-        public static final Pose2d RED_FRONT_RIGHT_LEFT = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(-120.0));
-        public static final Pose2d RED_FRONT_RIGHT_RIGHT = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(-120.0));
+        public static final Pose2d RED_FRONT_RIGHT_LEFT = new Pose2d(13.9, 5.16, Rotation2d.fromDegrees(-120.0));
+        public static final Pose2d RED_FRONT_RIGHT_RIGHT = new Pose2d(13.62, 5.3, Rotation2d.fromDegrees(-120.0));
 
-        public static final Pose2d RED_BACK_LEFT = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
-        public static final Pose2d RED_BACK_RIGHT = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
+        public static final Pose2d RED_BACK_LEFT = new Pose2d(11.69, 4.19, Rotation2d.fromDegrees(0.0));
+        public static final Pose2d RED_BACK_RIGHT = new Pose2d(11.69, 3.86, Rotation2d.fromDegrees(0.0));
 
-        public static final Pose2d RED_BACK_LEFT_LEFT = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(60.0));
-        public static final Pose2d RED_BACK_LEFT_RIGHT = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(60.0));
+        public static final Pose2d RED_BACK_LEFT_LEFT = new Pose2d(12.23, 2.9, Rotation2d.fromDegrees(60.0));
+        public static final Pose2d RED_BACK_LEFT_RIGHT = new Pose2d(12.52, 2.74, Rotation2d.fromDegrees(60.0));
 
-        public static final Pose2d RED_BACK_RIGHT_LEFT = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(-60.0));
-        public static final Pose2d RED_BACK_RIGHT_RIGHT = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(-60.0));
+        public static final Pose2d RED_BACK_RIGHT_LEFT = new Pose2d(12.52, 5.31, Rotation2d.fromDegrees(-60.0));
+        public static final Pose2d RED_BACK_RIGHT_RIGHT = new Pose2d(12.22, 5.15, Rotation2d.fromDegrees(-60.0));
 
         // Blue Side
         public static final Pose2d BLUE_FRONT_LEFT = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(180.0));
