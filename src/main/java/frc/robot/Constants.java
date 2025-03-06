@@ -1,5 +1,4 @@
 package frc.robot;
-import static edu.wpi.first.units.Units.Rotation;
 
 import java.util.List;
 
@@ -26,6 +25,9 @@ public final class Constants {
          // Ramsete controller constants (placeholders; tune as needed)
          public static final double RAMSETE_B = 2.0;
          public static final double RAMSETE_ZETA = 0.7;
+
+         public static final double TRANSLATION_TOLERANCE = 2.0;
+         public static final double ROTATION_TOLERANCE = 0.05;
     }
     
     public static final class VisionConstants {
@@ -109,8 +111,18 @@ public final class Constants {
         public static final String CLIMBER_POSITION = "climberPosition";
         public static final String WRIST_POSITION = "wristPosition";
         public static final String INTAKE_VOLTAGE = "intakeSpeed";
+        public static final String POSE = "pose";
+        public static final String TARGET_ROTATION = "targetRotation";
+        public static final String TARGET_POSE = "targetPose";
+        public static final String HAS_PIECE = "hasPiece";
+    }
 
-
+    public static final class FieldConstants {
+        public static final double X_MIN = 0.0;
+        public static final double Y_MIN = 0.0;
+        public static final double X_MAX = 16.0;
+        public static final double Y_MAX = 16.0;
+        public static final double TOL = 3.0;
     }
 
     public static final class ClimberConstants {

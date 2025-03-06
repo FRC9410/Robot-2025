@@ -32,10 +32,10 @@ public class ActionHopperCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    final Object speed = controller.getCommandField(Constants.MapConstants.HOPPER_VOLTAGE);
-    if (speed != null) {
+    final Object voltage = controller.getCommandField(Constants.MapConstants.HOPPER_VOLTAGE);
+    if (voltage != null) {
       // Use the speed variable as needed
-      hopper.setVoltage((double) speed);
+      hopper.setVoltage((double) voltage);
     } else {
       hopper.setVoltage(Constants.HopperConstants.STOP_VOLTAGE);
     }

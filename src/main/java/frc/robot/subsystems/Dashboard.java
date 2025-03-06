@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.BiConsumer;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -11,6 +13,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.MapConstants;
 
 public class Dashboard extends SubsystemBase {
   private final NetworkTableInstance inst;
@@ -19,9 +22,11 @@ public class Dashboard extends SubsystemBase {
   private CoralSide coralSide;
   private CoralLevel coralLevel;
   private boolean isClimbing;
+  private final BiConsumer<String, Object> updateData;
   
   /** Creates a new Dashboard. */
-  public Dashboard() {
+  public Dashboard(BiConsumer<String, Object> updateData) {
+    this.updateData = updateData;
     inst = NetworkTableInstance.getDefault();
     table = inst.getTable("Scoring");
 
@@ -62,6 +67,9 @@ public class Dashboard extends SubsystemBase {
     }
 
     isClimbing = table.getEntry("isClimbing").getBoolean(false);
+
+    updateData.accept(MapConstants.TARGET_POSE, getScoringPose());
+    updateData.accept(MapConstants.ELEVATOR_POSITION, getSelectedCoralLevel());
   }
 
   public ReefSide getReefSide() {

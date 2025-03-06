@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
+import frc.robot.subsystems.ActionController;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.Vision;
@@ -36,17 +37,20 @@ public class DriveCommand extends Command {
   private Dashboard dashboard;
   private final NetworkTableInstance inst;
   private final NetworkTable table;
+  private final ActionController actionController;
 
   /** Creates a new DriveCommand. */
   public DriveCommand(CommandSwerveDrivetrain drivetrain,
     CommandXboxController controller,
-    Dashboard dashboard) {
+    Dashboard dashboard,
+    ActionController actionController) {
       inst = NetworkTableInstance.getDefault();
       table = inst.getTable("Driving PIDs");
 
       this.drivetrain = drivetrain;
       this.controller = controller;
       this.dashboard = dashboard;
+      this.actionController = actionController;
       this.holonomicController = new HolonomicDriveController(
         new PIDController(0.06, 0, 0.0002),
         new PIDController(0.06, 0, 0),
@@ -54,11 +58,11 @@ public class DriveCommand extends Command {
               new TrapezoidProfile.Constraints(drivetrain.MAX_ANGULAR_RATE*2, drivetrain.MAX_ANGULAR_RATE*4)));
       direction = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red ? -1.0 : 1.0;
 
-      table.getEntry("X P").setDouble(1);
+      table.getEntry("X P").setDouble(0.6);
       table.getEntry("X D").setDouble(0.0025);
-      table.getEntry("Y P").setDouble(1);
+      table.getEntry("Y P").setDouble(0.6);
       table.getEntry("Y D").setDouble(0.0025);
-      table.getEntry("Rotation P").setDouble(1.2);
+      table.getEntry("Rotation P").setDouble(1);
       table.getEntry("Rotation D").setDouble(0.0025);
 
       addRequirements(drivetrain);
@@ -74,9 +78,8 @@ public class DriveCommand extends Command {
   public void execute() {
     setRotationPid();
     final Pose2d currentPose = drivetrain.getState().Pose;
-    final Pose2d targetPose = dashboard.getScoringPose();
-    System.out.println("target pose: " + targetPose);
-    if ((controller.getRightTriggerAxis() > 0.5) && currentPose != null && targetPose != null) {
+    if (currentPose != null && actionController.getCommandField(Constants.MapConstants.TARGET_POSE) != null) {
+      final Pose2d targetPose = (Pose2d) actionController.getCommandField(Constants.MapConstants.TARGET_POSE);
       final ChassisSpeeds ChassisSpeeds = holonomicController.calculate(
         currentPose,
         targetPose,

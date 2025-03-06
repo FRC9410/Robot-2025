@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.MapConstants;
 import frc.robot.commands.actionRequestHandlers.*;
 import frc.team9410.lib.interfaces.ActionRequestHandler;
 
@@ -17,7 +18,8 @@ import frc.team9410.lib.interfaces.ActionRequestHandler;
  */
 public class ActionController extends SubsystemBase {
     private Map<String, Object> commandData;
-    
+    private Map<String, Object> subsystemData;
+    private CommandSwerveDrivetrain drivetrain;
   
     private final List<ActionRequestHandler> requestHandlers = List.of(
         new Climb(),
@@ -31,15 +33,26 @@ public class ActionController extends SubsystemBase {
         new ScoreCoral(),
         new Idle()
     );
+    
+  
+    private final List<ActionRequestHandler> autoRequestHandlers = List.of(
+        new AutoIntaking(),
+        new Idle()
+    );
 
-    public ActionController() {
+    public ActionController(Map<String, Object> subsytemData, CommandSwerveDrivetrain drivetrain) {
         // Initialization code for the action controller subsystem
         commandData = new HashMap<>();
+        this.subsystemData = subsytemData;
+        this.drivetrain = drivetrain;
+
     }   
 
     @Override
     public void periodic() {
-        // Put code here to be run every scheduling cycle
+        subsystemData.put(MapConstants.POSE, drivetrain.getState().Pose);
+
+        doAutoRequest(subsystemData);
     }
     
     /**
@@ -53,6 +66,19 @@ public class ActionController extends SubsystemBase {
             }
         }
     }
+    
+    /**
+     * Example method that performs an action.
+     */
+    public void doAutoRequest(Map<String, Object> state) {
+        for (ActionRequestHandler handler : autoRequestHandlers) {
+            if (handler.matches(state, null)) {
+                handler.execute(state, this);
+                break;
+            }
+        }
+    }
+
     public void setCommandData(Map<String, Object> newCommandData) {
         this.commandData = newCommandData;
     }
