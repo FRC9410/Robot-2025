@@ -7,6 +7,7 @@ package frc.robot.commands.base;
 import java.util.function.Consumer;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.HopperConstants;
 import frc.robot.subsystems.EndEffector;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Sensors;
@@ -15,13 +16,11 @@ import frc.robot.subsystems.Sensors;
 public class HopperCommand extends Command {
   private final Hopper hopper;
   private final Sensors sensors;
-  private final double hopperVoltage;
   /** Creates a new DefaultHopper. */
-  public HopperCommand(Hopper hopper, Sensors sensors, double hopperVoltage) {
+  public HopperCommand(Hopper hopper, Sensors sensors) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.hopper = hopper;
     this.sensors = sensors;
-    this.hopperVoltage = hopperVoltage;
 
     addRequirements(hopper);
   }
@@ -35,10 +34,10 @@ public class HopperCommand extends Command {
   @Override
   public void execute() {
     if (sensors.getIntakeLaserBroken()) {
-      hopper.setVoltage(hopperVoltage);
+      hopper.setVoltage(HopperConstants.STOP_VOLTAGE);
     }
     else {
-      hopper.setVoltage(hopperVoltage);
+      hopper.setVoltage(HopperConstants.START_VOLTAGE);
     }
   }
 

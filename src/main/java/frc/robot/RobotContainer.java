@@ -66,7 +66,7 @@ public class RobotContainer {
     subsystems.getElevator().setDefaultCommand(new ActionElevatorCommand(subsystems.getElevator(), subsystems.getActionController()));
     // subsystems.getAlgaeIntake().setDefaultCommand(new ActionAlgaeIntakeCommand(subsystems.getAlgaeIntake(), subsystems.getActionController()));
     // subsystems.getAlgaeWrist().setDefaultCommand(new ActionAlgaeWristCommand(subsystems.getAlgaeWrist(), subsystems.getActionController()));
-    subsystems.getEndEffector().setDefaultCommand(new DefaultEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator()));
+    subsystems.getEndEffector().setDefaultCommand(new DefaultEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()));
     // subsystems.getClimber().setDefaultCommand(new ActionClimberCommand(subsystems.getClimber(), subsystems.getActionController()));
     // subsystems.getActionController().setDefaultCommand(new ActionRequestCommand(subsystems, Action.IDLE));
 
@@ -92,9 +92,28 @@ public class RobotContainer {
     driverController.back().onTrue(subsystems.getDrivetrain().runOnce(() -> {
       subsystems.getDrivetrain().resetPose(new Pose2d());
     }));
-    // driverController.rightBumper().whileTrue(
-    //   new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard()));
-    // driverController.rightBumper().onFalse(new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard()));
+
+    driverController.start().onTrue(subsystems.getActionController().runOnce(() -> {
+      subsystems.getActionController().toggleAutoMode();
+    }));
+
+
+
+    driverController.rightTrigger(0.5).and(driverController.leftTrigger(0.5).negate()).onTrue(new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard()));
+    driverController.rightBumper().and(driverController.leftTrigger(0.5).negate()).onTrue(new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController()));
+    driverController.povRight().and(driverController.leftTrigger(0.5).negate()).onTrue(new HopperCommand(subsystems.getHopper(), subsystems.getSensors()));
+    driverController.a().onTrue(new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.HOME_POSITION));
+
+
+
+    driverController.rightTrigger(0.5).and(driverController.leftTrigger(0.5)).onTrue(new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard()));
+    driverController.rightBumper().and(driverController.leftTrigger(0.5)).onTrue(new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController()));
+    driverController.povRight().and(driverController.leftTrigger(0.5)).onTrue(new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.HOME_POSITION));
+
+
+
+
+
 
     driverController.povLeft().onTrue(new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L2_ALGAE_POSITION)
     .alongWith(new AlgaeWristCommand(subsystems.getAlgaeWrist(), 0.35)
@@ -105,10 +124,6 @@ public class RobotContainer {
     driverController.povLeft().onFalse(new SequentialCommandGroup(new WaitCommand(0.25), new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.HOME_POSITION)));
 
     driverController.y().whileTrue(new ClimberCommand(subsystems.getClimber()));
-
-    driverController.x().onTrue(subsystems.getActionController().runOnce(() -> {
-      subsystems.getActionController().toggleAutoMode();
-    }));
 
     // subsystems.getDrivetrain().registerTelemetry(logger::telemeterize);
   }

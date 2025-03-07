@@ -8,6 +8,7 @@ import java.util.function.Function;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.subsystems.ActionController;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.EndEffector;
@@ -20,14 +21,16 @@ public class EndEffectorCommand extends Command {
   private final Elevator elevator;
   private final Sensors sensors;
   private final Dashboard dashboard;
+  private final ActionController controller;
   /** Creates a new DefaultEndEffector. */
-  public EndEffectorCommand(EndEffector endEffector, double voltage, Elevator elevator, Sensors sensors, Dashboard dashboard) {
+  public EndEffectorCommand(EndEffector endEffector, double voltage, Elevator elevator, Sensors sensors, Dashboard dashboard, ActionController controller) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.endEffector = endEffector;
     this.voltage = voltage;
     this.elevator = elevator;
     this.sensors = sensors;
     this.dashboard = dashboard;
+    this.controller = controller;
 
     addRequirements(endEffector);
   }
@@ -49,6 +52,7 @@ public class EndEffectorCommand extends Command {
   public void end(boolean interrupted) {
     endEffector.setVoltage(Constants.EndEffectorConstants.STOP_VOLTAGE);
     dashboard.clearSelections();
+    controller.toggleAutoMode();
   }
 
   // Returns true when the command should end.

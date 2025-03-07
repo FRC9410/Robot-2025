@@ -19,14 +19,7 @@ public final class Constants {
     }
     
     public static final class AutoConstants {
-         // Autonomous mode settings (placeholders; adjust as needed)
-         public static final double MAX_SPEED_METERS_PER_SECOND = 3.0;
-         public static final double MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 2.0;
-         // Ramsete controller constants (placeholders; tune as needed)
-         public static final double RAMSETE_B = 2.0;
-         public static final double RAMSETE_ZETA = 0.7;
-
-         public static final double TRANSLATION_TOLERANCE = 0.1;
+         public static final double TRANSLATION_TOLERANCE = 0.05;
          public static final double ROTATION_TOLERANCE = 2.0;
     }
     

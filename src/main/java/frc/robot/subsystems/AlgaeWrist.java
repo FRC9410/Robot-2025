@@ -43,7 +43,8 @@ public class AlgaeWrist extends SubsystemBase {
             .pid(
                 AlgaeWristConstants.kP,
                 AlgaeWristConstants.kI,
-                AlgaeWristConstants.kD
+                AlgaeWristConstants.kD,
+                ClosedLoopSlot.kSlot0
             )
             .maxMotion
                 // Set MAXMotion parameters for position control
@@ -83,7 +84,7 @@ public class AlgaeWrist extends SubsystemBase {
     public void setPosition(double position) {
         if (position != setpoint) {
             setpoint = position;
-            pidController.setReference(position, ControlType.kPosition);
+            pidController.setReference(position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
         }
     }
 

@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.MapConstants;
 import frc.robot.commands.actionRequestHandlers.*;
+import frc.robot.subsystems.ActionController.Action;
 import frc.team9410.lib.interfaces.ActionRequestHandler;
 
 /**
@@ -127,8 +128,8 @@ public class ActionController extends SubsystemBase {
     }
     
     public void toggleAutoMode() {
-        if (autoMode) {
-            idleHandler.execute(subsystemData, this);
+        if (!autoMode) {
+            setCommandData(Map.of());
         }
 
         autoMode = !autoMode;
