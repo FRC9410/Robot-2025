@@ -12,6 +12,7 @@ import au.grapplerobotics.ConfigurationFailedException;
 import au.grapplerobotics.LaserCan;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.MapConstants;
 
 public class Sensors extends SubsystemBase {
 private final BiConsumer<String, Object> updateData;
@@ -47,9 +48,7 @@ private final BiConsumer<String, Object> updateData;
   
   @Override
   public void periodic() {
-    // // This method will be called once per scheduler run
-    // updateData.accept("intakeLaserBroken", getIntakeLaserBroken());
-    // updateData.accept("outtakeLaserBroken", getOuttakeLaserBroken());
+    updateData.accept(MapConstants.HAS_PIECE, getOuttakeLaserBroken() && !getIntakeLaserBroken());
   }
 
   

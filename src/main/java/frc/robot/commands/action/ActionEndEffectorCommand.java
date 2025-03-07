@@ -31,10 +31,10 @@ public class ActionEndEffectorCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    final Object speed = controller.getCommandField(Constants.MapConstants.END_EFFECTOR_VOLTAGE);
-    if (speed != null) {
+    final Object voltage = controller.getCommandField(Constants.MapConstants.END_EFFECTOR_VOLTAGE);
+    if (voltage != null) {
       // Use the speed variable as needed
-      endEffector.setVoltage((double) speed);
+      endEffector.setVoltage((double) voltage);
     } else {
       endEffector.setVoltage(Constants.EndEffectorConstants.STOP_VOLTAGE);
     }

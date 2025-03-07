@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
+import frc.robot.subsystems.ActionController;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.Vision;
@@ -36,30 +37,33 @@ public class DriveCommand extends Command {
   private Dashboard dashboard;
   private final NetworkTableInstance inst;
   private final NetworkTable table;
+  private final ActionController actionController;
 
   /** Creates a new DriveCommand. */
   public DriveCommand(CommandSwerveDrivetrain drivetrain,
     CommandXboxController controller,
-    Dashboard dashboard) {
+    Dashboard dashboard,
+    ActionController actionController) {
       inst = NetworkTableInstance.getDefault();
       table = inst.getTable("Driving PIDs");
 
       this.drivetrain = drivetrain;
       this.controller = controller;
       this.dashboard = dashboard;
+      this.actionController = actionController;
       this.holonomicController = new HolonomicDriveController(
-        new PIDController(0.06, 0, 0.0002),
-        new PIDController(0.06, 0, 0),
+        new PIDController(0.08, 0, 0.0002),
+        new PIDController(0.08, 0, 0),
         new ProfiledPIDController(0.06, 0, 0.0,
               new TrapezoidProfile.Constraints(drivetrain.MAX_ANGULAR_RATE*2, drivetrain.MAX_ANGULAR_RATE*4)));
       direction = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red ? -1.0 : 1.0;
 
-      table.getEntry("X P").setDouble(1);
-      table.getEntry("X D").setDouble(0.0025);
-      table.getEntry("Y P").setDouble(1);
-      table.getEntry("Y D").setDouble(0.0025);
+      table.getEntry("X P").setDouble(0.8);
+      table.getEntry("X D").setDouble(0.05);
+      table.getEntry("Y P").setDouble(0.8);
+      table.getEntry("Y D").setDouble(0.05);
       table.getEntry("Rotation P").setDouble(1.2);
-      table.getEntry("Rotation D").setDouble(0.0025);
+      table.getEntry("Rotation D").setDouble(0.05);
 
       addRequirements(drivetrain);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -74,9 +78,13 @@ public class DriveCommand extends Command {
   public void execute() {
     setRotationPid();
     final Pose2d currentPose = drivetrain.getState().Pose;
-    final Pose2d targetPose = dashboard.getScoringPose();
-    System.out.println("target pose: " + targetPose);
-    if ((controller.getRightTriggerAxis() > 0.5) && currentPose != null && targetPose != null) {
+    System.out.println(actionController.getCommandField(Constants.MapConstants.TARGET_POSE));
+    if (currentPose != null
+    && actionController.getCommandField(Constants.MapConstants.TARGET_POSE) != null
+    && Math.abs(controller.getLeftX()) < 0.10
+    && Math.abs(controller.getLeftY()) < 0.10
+    && Math.abs(controller.getRightX()) < 0.10) {
+      final Pose2d targetPose = (Pose2d) actionController.getCommandField(Constants.MapConstants.TARGET_POSE);
       final ChassisSpeeds ChassisSpeeds = holonomicController.calculate(
         currentPose,
         targetPose,
@@ -87,19 +95,31 @@ public class DriveCommand extends Command {
       table.getEntry("X Delta").setDouble(targetPose.getTranslation().getY() - currentPose.getTranslation().getY());
       table.getEntry("Rotation Delta").setDouble(targetPose.getRotation().getDegrees() - currentPose.getRotation().getDegrees());
 
+      final double xSpeed = ChassisSpeeds.vxMetersPerSecond * drivetrain.MAX_SPEED;
+      final double xSpeedDirection = xSpeed > 1.0 ? 1 : -1;
+      final double ySpeed = ChassisSpeeds.vyMetersPerSecond * drivetrain.MAX_SPEED;
+      final double ySpeedDirection = ySpeed > 1.0 ? 1 : -1;
+      final double maxSpeed = 0.5 * drivetrain.MAX_SPEED;
+
       drivetrain.setControl(drivetrain.ROBOT_RELATIVE
-        .withVelocityX(ChassisSpeeds.vxMetersPerSecond * drivetrain.MAX_SPEED*0.90)
-        .withVelocityY(ChassisSpeeds.vyMetersPerSecond * drivetrain.MAX_SPEED*0.90)
+        .withVelocityX(Math.abs(xSpeed) > maxSpeed ? maxSpeed * xSpeedDirection  : xSpeed)
+        .withVelocityY(Math.abs(ySpeed) > maxSpeed ? maxSpeed * ySpeedDirection : ySpeed)
         .withRotationalRate(ChassisSpeeds.omegaRadiansPerSecond * drivetrain.MAX_ANGULAR_RATE));
     } else if (dashboard.getIsClimbing()) {
       drivetrain.setControl(drivetrain.FIELD_RELATIVE
         .withVelocityX(direction * Utils.squareInput(controller.getLeftY()) * drivetrain.MAX_SPEED/5)
         .withVelocityY(direction * Utils.squareInput(controller.getLeftX()) * drivetrain.MAX_SPEED/5)
         .withRotationalRate(getRotation()));
+    } else if (actionController.getCommandField(Constants.MapConstants.ELEVATOR_POSITION) != null
+    && (Double) actionController.getCommandField(Constants.MapConstants.ELEVATOR_POSITION) > 0.0) {
+      drivetrain.setControl(drivetrain.FIELD_RELATIVE
+        .withVelocityX(direction * Utils.squareInput(controller.getLeftY()) * drivetrain.MAX_SPEED/5)
+        .withVelocityY(direction * Utils.squareInput(controller.getLeftX()) * drivetrain.MAX_SPEED/5)
+        .withRotationalRate(getRotation()));
     } else {
       drivetrain.setControl(drivetrain.FIELD_RELATIVE
-        .withVelocityX(direction * Utils.squareInput(controller.getLeftY()) * drivetrain.MAX_SPEED)
-        .withVelocityY(direction * Utils.squareInput(controller.getLeftX()) * drivetrain.MAX_SPEED)
+        .withVelocityX(direction * Utils.cubeInput(controller.getLeftY()) * drivetrain.MAX_SPEED)
+        .withVelocityY(direction * Utils.cubeInput(controller.getLeftX()) * drivetrain.MAX_SPEED)
         .withRotationalRate(getRotation()));
     }
   }

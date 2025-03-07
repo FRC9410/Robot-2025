@@ -34,10 +34,10 @@ public class Subsystems {
         endEffector = new EndEffector((key, value) -> updateSubsystemData(key, value));
         vision = new Vision((key, value) -> updateSubsystemData(key, value));
         sensors = new Sensors((key, value) -> updateSubsystemData(key, value));
-        dashboard = new Dashboard();
+        dashboard = new Dashboard((key, value) -> updateSubsystemData(key, value));
         
         subsystemData = new HashMap<>();
-        actionController = new ActionController();
+        actionController = new ActionController(subsystemData, drivetrain);
     }
     
     // Accessor methods to retrieve subsystems:

@@ -4,23 +4,20 @@
 
 package frc.robot.commands.action;
 
-import java.util.function.Function;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.ActionController;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Sensors;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ActionElevatorCommand extends Command {
   private final Elevator elevator;
-  private final Sensors sensors;
+  private final ActionController controller;
   /** Creates a new DefaultElevator. */
-  public ActionElevatorCommand(Elevator elevator, Sensors sensors) {
+  public ActionElevatorCommand(Elevator elevator, ActionController controller) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.elevator = elevator;
-    this.sensors = sensors;
+    this.controller = controller;
 
     addRequirements(elevator);
   }
@@ -32,7 +29,11 @@ public class ActionElevatorCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!sensors.getOuttakeLaserBroken()) {
+    final Object position = controller.getCommandField(Constants.MapConstants.ELEVATOR_POSITION);
+    if (position != null) {
+      // Use the speed variable as needed
+      elevator.setPosition((double) position);
+    } else {
       elevator.setPosition(Constants.ElevatorConstants.HOME_POSITION);
     }
   }

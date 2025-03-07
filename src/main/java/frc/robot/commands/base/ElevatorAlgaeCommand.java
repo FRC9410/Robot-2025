@@ -8,23 +8,24 @@ import java.util.function.Function;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.EndEffector;
 import frc.robot.subsystems.Sensors;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class DefaultEndEffectorCommand extends Command {
-  private final EndEffector endEffector;
-  private final Sensors sensors;
+public class ElevatorAlgaeCommand extends Command {
   private final Elevator elevator;
-  /** Creates a new DefaultEndEffector. */
-  public DefaultEndEffectorCommand(EndEffector endEffector, Sensors sensors, Elevator elevator) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    this.endEffector = endEffector;
-    this.sensors = sensors;
-    this.elevator = elevator;
+  private final Dashboard dashboard;
+  private final Sensors sensors;
 
-    addRequirements(endEffector);
+  /** Creates a new DefaultElevator. */
+  public ElevatorAlgaeCommand(Elevator elevator, Sensors sensors, Dashboard dashboard) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    this.elevator = elevator;
+    this.dashboard = dashboard;
+    this.sensors = sensors;
+
+    addRequirements(elevator);
   }
 
   // Called when the command is initially scheduled.
@@ -34,23 +35,15 @@ public class DefaultEndEffectorCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (sensors.getIntakeLaserBroken() && sensors.getOuttakeLaserBroken()) {
-      endEffector.setVoltage(Constants.EndEffectorConstants.END_EFFECTOR_INTAKE_VOLTAGE/2);
-    }
-    else if (sensors.getIntakeLaserBroken() && !sensors.getOuttakeLaserBroken()) {
-      endEffector.setVoltage(Constants.EndEffectorConstants.END_EFFECTOR_INTAKE_VOLTAGE);
-    } else {
-      endEffector.setVoltage(Constants.EndEffectorConstants.STOP_VOLTAGE);
-    }
-
-    if (elevator.atTargetPosition() && elevator.getCurrentHeight() > 10) {
-      endEffector.setVoltage(Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE);
+    if (!sensors.getIntakeLaserBroken()) {
+      elevator.setPosition(dashboard.getSelectedCoralLevel());
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    elevator.setPosition(Constants.ElevatorConstants.HOME_POSITION);
   }
 
   // Returns true when the command should end.

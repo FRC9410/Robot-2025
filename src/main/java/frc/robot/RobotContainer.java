@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.action.ActionElevatorCommand;
+import frc.robot.commands.action.ActionHopperCommand;
 import frc.robot.commands.base.*;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Subsystems;
@@ -61,11 +62,11 @@ public class RobotContainer {
 
   public RobotContainer() {
     subsystems = new Subsystems();
-    // subsystems.getHopper().setDefaultCommand(new ActionHopperCommand(subsystems.getHopper(), subsystems.getActionController()));
+    subsystems.getHopper().setDefaultCommand(new ActionHopperCommand(subsystems.getHopper(), subsystems.getActionController()));
+    subsystems.getElevator().setDefaultCommand(new ActionElevatorCommand(subsystems.getElevator(), subsystems.getActionController()));
     // subsystems.getAlgaeIntake().setDefaultCommand(new ActionAlgaeIntakeCommand(subsystems.getAlgaeIntake(), subsystems.getActionController()));
     // subsystems.getAlgaeWrist().setDefaultCommand(new ActionAlgaeWristCommand(subsystems.getAlgaeWrist(), subsystems.getActionController()));
-    subsystems.getElevator().setDefaultCommand(new ActionElevatorCommand(subsystems.getElevator(), subsystems.getSensors()));
-    subsystems.getEndEffector().setDefaultCommand(new DefaultEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors()));
+    subsystems.getEndEffector().setDefaultCommand(new DefaultEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator()));
     // subsystems.getClimber().setDefaultCommand(new ActionClimberCommand(subsystems.getClimber(), subsystems.getActionController()));
     // subsystems.getActionController().setDefaultCommand(new ActionRequestCommand(subsystems, Action.IDLE));
 
@@ -84,20 +85,16 @@ public class RobotContainer {
       new DriveCommand(
         subsystems.getDrivetrain(),
         driverController, 
-        subsystems.getDashboard()));
+        subsystems.getDashboard(),
+        subsystems.getActionController()));
 
     // reset the field-centric heading on left bumper press
     driverController.back().onTrue(subsystems.getDrivetrain().runOnce(() -> {
       subsystems.getDrivetrain().resetPose(new Pose2d());
     }));
-    driverController.rightBumper().whileTrue(
-      new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard()));
-    driverController.rightBumper().onFalse(new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard()));
-    driverController.leftBumper().onTrue(
-      new HopperCommand(
-        subsystems.getHopper(),
-        subsystems.getSensors(),
-        Constants.HopperConstants.START_VOLTAGE));
+    // driverController.rightBumper().whileTrue(
+    //   new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard()));
+    // driverController.rightBumper().onFalse(new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard()));
 
     driverController.povLeft().onTrue(new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L2_ALGAE_POSITION)
     .alongWith(new AlgaeWristCommand(subsystems.getAlgaeWrist(), 0.35)
@@ -108,6 +105,10 @@ public class RobotContainer {
     driverController.povLeft().onFalse(new SequentialCommandGroup(new WaitCommand(0.25), new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.HOME_POSITION)));
 
     driverController.y().whileTrue(new ClimberCommand(subsystems.getClimber()));
+
+    driverController.x().onTrue(subsystems.getActionController().runOnce(() -> {
+      subsystems.getActionController().toggleAutoMode();
+    }));
 
     // subsystems.getDrivetrain().registerTelemetry(logger::telemeterize);
   }
@@ -128,7 +129,7 @@ public class RobotContainer {
     LimelightHelpers.PoseEstimate bestMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(bestLimelight);
     
 
-    if (bestMeasurement != null && bestMeasurement.avgTagArea > 0.1) {
+    if (bestMeasurement != null && bestMeasurement.avgTagArea > 0.25) {
       Pose2d newPose = pose.toPose2d();
       subsystems.getDrivetrain().resetRotation(newPose.getRotation());
       LimelightHelpers.SetRobotOrientation("limelight-left", newPose.getRotation().getDegrees(), 0, 0, 0, 0, 0);
