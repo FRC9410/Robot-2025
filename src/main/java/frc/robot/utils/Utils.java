@@ -136,8 +136,11 @@ public class Utils {
         new Point2D.Double(ReefConstants.RED_RIGHT.getX(), ReefConstants.RED_RIGHT.getY())
     );
 
+    // Define robot width
+    private static final double ROBOT_WIDTH = 1.5; // Adjust as needed
+
     /**
-     * Checks if the direct path between start and target intersects the hexagonal zone.
+     * Checks if the given line (robot's path) or its offset lines intersect the hexagon.
      */
     public static boolean pathIntersectsHexagon(Point2D.Double start, Point2D.Double target) {
         final List<Point2D.Double> HEXAGON_VERTICES = getAllianceColor().equals("red") ? RED_HEXAGON_VERTICES : BLUE_HEXAGON_VERTICES;
@@ -145,11 +148,39 @@ public class Utils {
             Point2D.Double p1 = HEXAGON_VERTICES.get(i);
             Point2D.Double p2 = HEXAGON_VERTICES.get((i + 1) % HEXAGON_VERTICES.size());
 
+            // Check if the main path intersects
             if (Line2D.linesIntersect(start.x, start.y, target.x, target.y, p1.x, p1.y, p2.x, p2.y)) {
+                return true;
+            }
+
+            // Check if the offset paths intersect
+            Point2D.Double leftOffsetStart = offsetPoint(start, target, -ROBOT_WIDTH / 2);
+            Point2D.Double leftOffsetEnd = offsetPoint(target, start, -ROBOT_WIDTH / 2);
+            Point2D.Double rightOffsetStart = offsetPoint(start, target, ROBOT_WIDTH / 2);
+            Point2D.Double rightOffsetEnd = offsetPoint(target, start, ROBOT_WIDTH / 2);
+
+            if (Line2D.linesIntersect(leftOffsetStart.x, leftOffsetStart.y, leftOffsetEnd.x, leftOffsetEnd.y, p1.x, p1.y, p2.x, p2.y)
+             || Line2D.linesIntersect(rightOffsetStart.x, rightOffsetStart.y, rightOffsetEnd.x, rightOffsetEnd.y, p1.x, p1.y, p2.x, p2.y)) {
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * Offsets a point perpendicular to the line formed by (start, target).
+     */
+    private static Point2D.Double offsetPoint(Point2D.Double start, Point2D.Double target, double offset) {
+        double dx = target.x - start.x;
+        double dy = target.y - start.y;
+        double length = Math.sqrt(dx * dx + dy * dy);
+
+        // Normalize perpendicular vector
+        double perpX = -dy / length;
+        double perpY = dx / length;
+
+        // Apply perpendicular offset
+        return new Point2D.Double(start.x + perpX * offset, start.y + perpY * offset);
     }
 
     /**
