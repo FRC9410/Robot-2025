@@ -84,7 +84,8 @@ public class DriveCommand extends Command {
     && Math.abs(controller.getLeftX()) < 0.10
     && Math.abs(controller.getLeftY()) < 0.10
     && Math.abs(controller.getRightX()) < 0.10) {
-      final Pose2d targetPose = (Pose2d) actionController.getCommandField(Constants.MapConstants.TARGET_POSE);
+      final Pose2d requestedPose = (Pose2d) actionController.getCommandField(Constants.MapConstants.TARGET_POSE);
+      final Pose2d targetPose = Utils.pathIntersectsHexagon(currentPose, requestedPose) ? Utils.findSafeWaypoint(currentPose, requestedPose) : requestedPose;
       final ChassisSpeeds ChassisSpeeds = holonomicController.calculate(
         currentPose,
         targetPose,

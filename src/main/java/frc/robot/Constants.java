@@ -4,6 +4,7 @@ import java.util.List;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import java.awt.geom.Point2D;
 
 public final class Constants {
 
@@ -251,29 +252,29 @@ public final class Constants {
 
     public static final class ReefConstants {
         // Red Side
-        public static final Pose2d RED_FRONT_LEFT = new Pose2d(14.244, 3.364, Rotation2d.fromDegrees(135.0));
+        public static final Point2D.Double RED_FRONT_LEFT = new Point2D.Double(14.244, 3.364);
 
-        public static final Pose2d RED_FRONT_RIGHT = new Pose2d(14.244, 4.704, Rotation2d.fromDegrees(-135.0));
+        public static final Point2D.Double RED_FRONT_RIGHT = new Point2D.Double(14.244, 4.704);
 
-        public static final Pose2d RED_BACK_LEFT = new Pose2d(11.885, 3.364, Rotation2d.fromDegrees(45.0));
+        public static final Point2D.Double RED_BACK_LEFT = new Point2D.Double(11.885, 3.364);
 
-        public static final Pose2d RED_BACK_RIGHT = new Pose2d(11.885, 4.704, Rotation2d.fromDegrees(-45.0));
+        public static final Point2D.Double RED_BACK_RIGHT = new Point2D.Double(11.885, 4.704);
 
-        public static final Pose2d RED_LEFT = new Pose2d(13.064, 2.702, Rotation2d.fromDegrees(-90.0));
+        public static final Point2D.Double RED_LEFT = new Point2D.Double(13.064, 2.702);
 
-        public static final Pose2d RED_RIGHT = new Pose2d(13.064, 5.419, Rotation2d.fromDegrees(90.0));
+        public static final Point2D.Double RED_RIGHT = new Point2D.Double(13.064, 5.419);
 
         // Blue Side
-        public static final Pose2d BLUE_FRONT_LEFT = new Pose2d(3.324, 4.704, Rotation2d.fromDegrees(-45.0));
+        public static final Point2D.Double BLUE_FRONT_LEFT = new Point2D.Double(3.324, 4.704);
         
-        public static final Pose2d BLUE_FRONT_RIGHT = new Pose2d(3.324, 3.364, Rotation2d.fromDegrees(45.0));
+        public static final Point2D.Double BLUE_FRONT_RIGHT = new Point2D.Double(3.324, 3.364);
 
-        public static final Pose2d BLUE_BACK_LEFT = new Pose2d(5.665, 4.704, Rotation2d.fromDegrees(-135.0));
+        public static final Point2D.Double BLUE_BACK_LEFT = new Point2D.Double(5.665, 4.704);
 
-        public static final Pose2d BLUE_BACK_RIGHT = new Pose2d(5.665, 3.364, Rotation2d.fromDegrees(135.0));
+        public static final Point2D.Double BLUE_BACK_RIGHT = new Point2D.Double(5.665, 3.364);
 
-        public static final Pose2d BLUE_LEFT = new Pose2d(4.475, 5.419, Rotation2d.fromDegrees(-90.0));
+        public static final Point2D.Double BLUE_LEFT = new Point2D.Double(4.475, 5.419);
 
-        public static final Pose2d BLUE_RIGHT = new Pose2d(4.475, 2.702, Rotation2d.fromDegrees(90.0));
+        public static final Point2D.Double BLUE_RIGHT = new Point2D.Double(4.475, 2.702);
     }
 }

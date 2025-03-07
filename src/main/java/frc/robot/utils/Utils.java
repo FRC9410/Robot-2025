@@ -1,11 +1,19 @@
 package frc.robot.utils;
 
+import java.awt.Point;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.Constants.ReefConstants;
+import frc.robot.Constants.WaypointConstants;
 
 public class Utils {
     /**
@@ -88,5 +96,83 @@ public class Utils {
             table.getEntry(entry.getKey()).setString(entry.getValue().toString());
             }
         }
+    }
+    
+    // Define hexagon vertices (assuming known, in counterclockwise order)
+    private static final List<Point2D.Double> BLUE_HEXAGON_VERTICES = Arrays.asList(
+        ReefConstants.BLUE_BACK_LEFT,
+        ReefConstants.BLUE_FRONT_LEFT,
+        ReefConstants.BLUE_FRONT_RIGHT,
+        ReefConstants.BLUE_BACK_RIGHT,
+        ReefConstants.BLUE_LEFT,
+        ReefConstants.BLUE_RIGHT
+    );
+
+    private static final List<Point2D.Double> RED_HEXAGON_VERTICES = Arrays.asList(
+        ReefConstants.RED_BACK_LEFT,
+        ReefConstants.RED_FRONT_LEFT,
+        ReefConstants.RED_FRONT_RIGHT,
+        ReefConstants.RED_BACK_RIGHT,
+        ReefConstants.RED_LEFT,
+        ReefConstants.RED_RIGHT
+    );
+
+    // Define predefined safe waypoints around the hexagon
+    private static final List<Point2D.Double> BLUE_SAFE_WAYPOINTS = Arrays.asList(
+        new Point2D.Double(ReefConstants.BLUE_BACK_LEFT.getX(), ReefConstants.BLUE_BACK_LEFT.getY()),
+        new Point2D.Double(ReefConstants.BLUE_FRONT_LEFT.getX(), ReefConstants.BLUE_FRONT_LEFT.getY()),
+        new Point2D.Double(ReefConstants.BLUE_FRONT_RIGHT.getX(), ReefConstants.BLUE_FRONT_RIGHT.getY()),
+        new Point2D.Double(ReefConstants.BLUE_BACK_RIGHT.getX(), ReefConstants.BLUE_BACK_RIGHT.getY()),
+        new Point2D.Double(ReefConstants.BLUE_LEFT.getX(), ReefConstants.BLUE_LEFT.getY()),
+        new Point2D.Double(ReefConstants.BLUE_RIGHT.getX(), ReefConstants.BLUE_RIGHT.getY())
+    );
+
+    private static final List<Point2D.Double> RED_SAFE_WAYPOINTS = Arrays.asList(
+        new Point2D.Double(ReefConstants.RED_BACK_LEFT.getX(), ReefConstants.RED_BACK_LEFT.getY()),
+        new Point2D.Double(ReefConstants.RED_FRONT_LEFT.getX(), ReefConstants.RED_FRONT_LEFT.getY()),
+        new Point2D.Double(ReefConstants.RED_FRONT_RIGHT.getX(), ReefConstants.RED_FRONT_RIGHT.getY()),
+        new Point2D.Double(ReefConstants.RED_BACK_RIGHT.getX(), ReefConstants.RED_BACK_RIGHT.getY()),
+        new Point2D.Double(ReefConstants.RED_LEFT.getX(), ReefConstants.RED_LEFT.getY()),
+        new Point2D.Double(ReefConstants.RED_RIGHT.getX(), ReefConstants.RED_RIGHT.getY())
+    );
+
+    /**
+     * Checks if the direct path between start and target intersects the hexagonal zone.
+     */
+    public static boolean pathIntersectsHexagon(Pose2d startPose, Pose2d targetPose) {
+        final Point2D.Double start = new Point2D.Double(startPose.getX(), startPose.getY());
+        final Point2D.Double target = new Point2D.Double(targetPose.getX(), targetPose.getY());
+        final List<Point2D.Double> HEXAGON_VERTICES = getAllianceColor().equals("red") ? RED_HEXAGON_VERTICES : BLUE_HEXAGON_VERTICES;
+        for (int i = 0; i < HEXAGON_VERTICES.size(); i++) {
+            Point2D.Double p1 = HEXAGON_VERTICES.get(i);
+            Point2D.Double p2 = HEXAGON_VERTICES.get((i + 1) % HEXAGON_VERTICES.size());
+
+            if (Line2D.linesIntersect(start.x, start.y, target.x, target.y, p1.x, p1.y, p2.x, p2.y)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Finds the closest safe waypoint to the robot that does not cross the hexagon.
+     */
+    public static Pose2d findSafeWaypoint(Pose2d startPose, Pose2d targetPose) {
+        final Point2D.Double start = new Point2D.Double(startPose.getX(), startPose.getY());
+        final Point2D.Double target = new Point2D.Double(targetPose.getX(), targetPose.getY());
+        final List<Point2D.Double> SAFE_WAYPOINTS = getAllianceColor().equals("red") ? RED_SAFE_WAYPOINTS : BLUE_SAFE_WAYPOINTS;
+        Point2D.Double bestWaypoint = null;
+        double minDistance = Double.MAX_VALUE;
+
+        for (Point2D.Double waypoint : SAFE_WAYPOINTS) {
+            if (!pathIntersectsHexagon(start, waypoint) && !pathIntersectsHexagon(waypoint, target)) {
+                double distance = start.distance(waypoint);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    bestWaypoint = waypoint;
+                }
+            }
+        }
+        return new Pose2d(bestWaypoint.x, bestWaypoint.y, targetPose.getRotation());
     }
 } 
