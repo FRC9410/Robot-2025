@@ -10,7 +10,9 @@ import frc.team9410.lib.interfaces.ActionRequestHandler;
 
 public class AutoDriving implements ActionRequestHandler {
     public boolean matches(Map<String, Object> state, Action action) {
-        if (state.get(MapConstants.POSE) != null && state.get(MapConstants.HAS_PIECE) != null){
+        if (state.get(MapConstants.POSE) != null
+        && state.get(MapConstants.HAS_PIECE) != null
+        && state.get(MapConstants.TARGET_POSE) != null) {
             return ((Boolean) state.get(MapConstants.HAS_PIECE));
         }
         return false;

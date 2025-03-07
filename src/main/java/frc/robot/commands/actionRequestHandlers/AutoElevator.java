@@ -25,7 +25,7 @@ public class AutoElevator implements ActionRequestHandler {
             final boolean isWithinTolerance = Math.abs(currentPose.getTranslation().getX() - targetPose.getTranslation().getX()) < AutoConstants.TRANSLATION_TOLERANCE &&
                 Math.abs(currentPose.getTranslation().getY() - targetPose.getTranslation().getY()) < AutoConstants.TRANSLATION_TOLERANCE
                 && Math.abs(currentPose.getRotation().getRadians() - targetPose.getRotation().getRadians()) < AutoConstants.ROTATION_TOLERANCE;
-            return FieldLocations.isNearHp(currentPose) && ((Boolean) state.get(MapConstants.HAS_PIECE)) && isWithinTolerance;
+            return ((Boolean) state.get(MapConstants.HAS_PIECE)) && isWithinTolerance;
         }
         return false;
     }

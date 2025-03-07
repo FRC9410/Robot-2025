@@ -26,8 +26,8 @@ public final class Constants {
          public static final double RAMSETE_B = 2.0;
          public static final double RAMSETE_ZETA = 0.7;
 
-         public static final double TRANSLATION_TOLERANCE = 2.0;
-         public static final double ROTATION_TOLERANCE = 0.05;
+         public static final double TRANSLATION_TOLERANCE = 0.1;
+         public static final double ROTATION_TOLERANCE = 2.0;
     }
     
     public static final class VisionConstants {
@@ -120,9 +120,9 @@ public final class Constants {
     public static final class FieldConstants {
         public static final double X_MIN = 0.0;
         public static final double Y_MIN = 0.0;
-        public static final double X_MAX = 16.0;
-        public static final double Y_MAX = 16.0;
-        public static final double TOL = 3.0;
+        public static final double X_MAX = 17.5;
+        public static final double Y_MAX = 8.0;
+        public static final double TOL = 2.0;
     }
 
     public static final class ClimberConstants {
@@ -158,8 +158,8 @@ public final class Constants {
         // Elevator preset heights (in units; placeholders for L1-L4, home, algae layup, and algae place)
         public static final double HOME_POSITION = 0.0;
         public static final double L1_SCORE_POSITION = 30.0;
-        public static final double L2_SCORE_POSITION = 21.75;
-        public static final double L3_SCORE_POSITION = 33.75;
+        public static final double L2_SCORE_POSITION = 24.5;
+        public static final double L3_SCORE_POSITION = 36.5;
         public static final double L4_SCORE_POSITION = 55.75;
         public static final double ALGAE_LAYUP_POSITIONS = 0.6;
         public static final double ALGAE_PLACE_POSITION = 0.8;

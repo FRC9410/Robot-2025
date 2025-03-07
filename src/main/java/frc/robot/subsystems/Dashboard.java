@@ -318,9 +318,9 @@ public class Dashboard extends SubsystemBase {
 
     switch (coralLevel) {
       case L1:
-        return Constants.ElevatorConstants.L1_ALGAE_POSITION;
+        return Constants.ElevatorConstants.L1_SCORE_POSITION;
       case L2:
-        return Constants.ElevatorConstants.L2_ALGAE_POSITION;
+        return Constants.ElevatorConstants.L2_SCORE_POSITION;
       case L3:
         return Constants.ElevatorConstants.L3_SCORE_POSITION;
       case L4:

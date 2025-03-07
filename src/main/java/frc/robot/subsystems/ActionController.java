@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.MapConstants;
 import frc.robot.commands.actionRequestHandlers.*;
@@ -20,6 +23,8 @@ public class ActionController extends SubsystemBase {
     private Map<String, Object> commandData;
     private Map<String, Object> subsystemData;
     private CommandSwerveDrivetrain drivetrain;
+    private boolean autoMode;
+    private Idle idleHandler = new Idle();
   
     private final List<ActionRequestHandler> requestHandlers = List.of(
         new Climb(),
@@ -31,13 +36,15 @@ public class ActionController extends SubsystemBase {
         new PlaceAlgae(),
         new ProcessAlgae(),
         new ScoreCoral(),
-        new Idle()
+        idleHandler
     );
     
   
     private final List<ActionRequestHandler> autoRequestHandlers = List.of(
+        new AutoElevator(),
         new AutoIntaking(),
-        new Idle()
+        new AutoDriving(),
+        idleHandler
     );
 
     public ActionController(Map<String, Object> subsytemData, CommandSwerveDrivetrain drivetrain) {
@@ -45,14 +52,20 @@ public class ActionController extends SubsystemBase {
         commandData = new HashMap<>();
         this.subsystemData = subsytemData;
         this.drivetrain = drivetrain;
-
+        this.autoMode = false;
     }   
 
     @Override
     public void periodic() {
         subsystemData.put(MapConstants.POSE, drivetrain.getState().Pose);
 
-        doAutoRequest(subsystemData);
+        System.out.println(autoMode);
+
+        if (autoMode) {
+            doAutoRequest(subsystemData);
+        } else {
+            idleHandler.execute(subsystemData, this);
+        }
     }
     
     /**
@@ -72,7 +85,7 @@ public class ActionController extends SubsystemBase {
      */
     public void doAutoRequest(Map<String, Object> state) {
         for (ActionRequestHandler handler : autoRequestHandlers) {
-            if (handler.matches(state, null)) {
+            if (handler.matches(state, Action.IDLE)) {
                 handler.execute(state, this);
                 break;
             }
@@ -106,9 +119,19 @@ public class ActionController extends SubsystemBase {
             return (Integer) value;
         } else if (value instanceof Double) {
             return (Double) value;
+        } else if (value instanceof Pose2d) {
+            return (Pose2d) value;
         } else {
             return null; // Handle cases where the value is not of expected type
         }
+    }
+    
+    public void toggleAutoMode() {
+        if (autoMode) {
+            idleHandler.execute(subsystemData, this);
+        }
+
+        autoMode = !autoMode;
     }
   
 

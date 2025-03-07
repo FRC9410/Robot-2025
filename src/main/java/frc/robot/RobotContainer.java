@@ -66,7 +66,7 @@ public class RobotContainer {
     subsystems.getElevator().setDefaultCommand(new ActionElevatorCommand(subsystems.getElevator(), subsystems.getActionController()));
     // subsystems.getAlgaeIntake().setDefaultCommand(new ActionAlgaeIntakeCommand(subsystems.getAlgaeIntake(), subsystems.getActionController()));
     // subsystems.getAlgaeWrist().setDefaultCommand(new ActionAlgaeWristCommand(subsystems.getAlgaeWrist(), subsystems.getActionController()));
-    subsystems.getEndEffector().setDefaultCommand(new DefaultEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors()));
+    subsystems.getEndEffector().setDefaultCommand(new DefaultEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator()));
     // subsystems.getClimber().setDefaultCommand(new ActionClimberCommand(subsystems.getClimber(), subsystems.getActionController()));
     // subsystems.getActionController().setDefaultCommand(new ActionRequestCommand(subsystems, Action.IDLE));
 
@@ -106,6 +106,10 @@ public class RobotContainer {
 
     driverController.y().whileTrue(new ClimberCommand(subsystems.getClimber()));
 
+    driverController.x().onTrue(subsystems.getActionController().runOnce(() -> {
+      subsystems.getActionController().toggleAutoMode();
+    }));
+
     // subsystems.getDrivetrain().registerTelemetry(logger::telemeterize);
   }
 
@@ -125,7 +129,7 @@ public class RobotContainer {
     LimelightHelpers.PoseEstimate bestMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(bestLimelight);
     
 
-    if (bestMeasurement != null && bestMeasurement.avgTagArea > 0.1) {
+    if (bestMeasurement != null && bestMeasurement.avgTagArea > 0.25) {
       Pose2d newPose = pose.toPose2d();
       subsystems.getDrivetrain().resetRotation(newPose.getRotation());
       LimelightHelpers.SetRobotOrientation("limelight-left", newPose.getRotation().getDegrees(), 0, 0, 0, 0, 0);

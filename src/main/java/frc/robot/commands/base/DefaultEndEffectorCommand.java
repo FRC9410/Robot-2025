@@ -8,6 +8,7 @@ import java.util.function.Function;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.EndEffector;
 import frc.robot.subsystems.Sensors;
 
@@ -15,11 +16,13 @@ import frc.robot.subsystems.Sensors;
 public class DefaultEndEffectorCommand extends Command {
   private final EndEffector endEffector;
   private final Sensors sensors;
+  private final Elevator elevator;
   /** Creates a new DefaultEndEffector. */
-  public DefaultEndEffectorCommand(EndEffector endEffector, Sensors sensors) {
+  public DefaultEndEffectorCommand(EndEffector endEffector, Sensors sensors, Elevator elevator) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.endEffector = endEffector;
     this.sensors = sensors;
+    this.elevator = elevator;
 
     addRequirements(endEffector);
   }
@@ -38,6 +41,10 @@ public class DefaultEndEffectorCommand extends Command {
       endEffector.setVoltage(Constants.EndEffectorConstants.END_EFFECTOR_INTAKE_VOLTAGE);
     } else {
       endEffector.setVoltage(Constants.EndEffectorConstants.STOP_VOLTAGE);
+    }
+
+    if (elevator.atTargetPosition() && elevator.getCurrentHeight() > 10) {
+      endEffector.setVoltage(Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE);
     }
   }
 
