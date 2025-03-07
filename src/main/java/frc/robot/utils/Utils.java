@@ -139,9 +139,7 @@ public class Utils {
     /**
      * Checks if the direct path between start and target intersects the hexagonal zone.
      */
-    public static boolean pathIntersectsHexagon(Pose2d startPose, Pose2d targetPose) {
-        final Point2D.Double start = new Point2D.Double(startPose.getX(), startPose.getY());
-        final Point2D.Double target = new Point2D.Double(targetPose.getX(), targetPose.getY());
+    public static boolean pathIntersectsHexagon(Point2D.Double start, Point2D.Double target) {
         final List<Point2D.Double> HEXAGON_VERTICES = getAllianceColor().equals("red") ? RED_HEXAGON_VERTICES : BLUE_HEXAGON_VERTICES;
         for (int i = 0; i < HEXAGON_VERTICES.size(); i++) {
             Point2D.Double p1 = HEXAGON_VERTICES.get(i);

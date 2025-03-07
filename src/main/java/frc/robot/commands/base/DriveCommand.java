@@ -4,6 +4,7 @@
 
 package frc.robot.commands.base;
 
+import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.List;
 
@@ -85,7 +86,7 @@ public class DriveCommand extends Command {
     && Math.abs(controller.getLeftY()) < 0.10
     && Math.abs(controller.getRightX()) < 0.10) {
       final Pose2d requestedPose = (Pose2d) actionController.getCommandField(Constants.MapConstants.TARGET_POSE);
-      final Pose2d targetPose = Utils.pathIntersectsHexagon(currentPose, requestedPose) ? Utils.findSafeWaypoint(currentPose, requestedPose) : requestedPose;
+      final Pose2d targetPose = Utils.pathIntersectsHexagon(new Point2D.Double(currentPose.getX(), currentPose.getY()), new Point2D.Double(requestedPose.getX(), requestedPose.getY())) ? Utils.findSafeWaypoint(currentPose, requestedPose) : requestedPose;
       final ChassisSpeeds ChassisSpeeds = holonomicController.calculate(
         currentPose,
         targetPose,
