@@ -1,0 +1,424 @@
+{
+  "version": 1.0,
+  "grid_size": 64,
+  "tabs": [
+    {
+      "name": "Autonomous",
+      "grid_layout": {
+        "layouts": [],
+        "containers": []
+      }
+    },
+    {
+      "name": "Teleoperated",
+      "grid_layout": {
+        "layouts": [],
+        "containers": [
+          {
+            "title": "Heading",
+            "x": 128.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Drive Command/Heading",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "X",
+            "x": 0.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Drive Command/X",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Y",
+            "x": 256.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Drive Command/Y",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Auto Chooser",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/Auto Chooser",
+              "period": 0.06,
+              "sort_options": false
+            }
+          },
+          {
+            "title": "back",
+            "x": 1024.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Toggle Button",
+            "properties": {
+              "topic": "/Scoring/back",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "back_left",
+            "x": 896.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Toggle Button",
+            "properties": {
+              "topic": "/Scoring/back_left",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "back_right",
+            "x": 1152.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Toggle Button",
+            "properties": {
+              "topic": "/Scoring/back_right",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "front",
+            "x": 640.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Toggle Button",
+            "properties": {
+              "topic": "/Scoring/front",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "front_left",
+            "x": 512.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Toggle Button",
+            "properties": {
+              "topic": "/Scoring/front_left",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "front_right",
+            "x": 768.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Toggle Button",
+            "properties": {
+              "topic": "/Scoring/front_right",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "l1",
+            "x": 1280.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Toggle Button",
+            "properties": {
+              "topic": "/Scoring/l1",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "l2",
+            "x": 1280.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Toggle Button",
+            "properties": {
+              "topic": "/Scoring/l2",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "l3",
+            "x": 1280.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Toggle Button",
+            "properties": {
+              "topic": "/Scoring/l3",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "l4",
+            "x": 1280.0,
+            "y": 0.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Toggle Button",
+            "properties": {
+              "topic": "/Scoring/l4",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "right",
+            "x": 896.0,
+            "y": 256.0,
+            "width": 384.0,
+            "height": 128.0,
+            "type": "Toggle Button",
+            "properties": {
+              "topic": "/Scoring/right",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "left",
+            "x": 512.0,
+            "y": 256.0,
+            "width": 384.0,
+            "height": 128.0,
+            "type": "Toggle Button",
+            "properties": {
+              "topic": "/Scoring/left",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "isClimbing",
+            "x": 1152.0,
+            "y": 0.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Toggle Button",
+            "properties": {
+              "topic": "/Scoring/isClimbing",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "Rotation D",
+            "x": 256.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Driving PIDs/Rotation D",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Rotation P",
+            "x": 256.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Driving PIDs/Rotation P",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "X P",
+            "x": 0.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Driving PIDs/X P",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "X D",
+            "x": 0.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Driving PIDs/X D",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Y P",
+            "x": 128.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Driving PIDs/Y P",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Y D",
+            "x": 128.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Driving PIDs/Y D",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "X Delta",
+            "x": 0.0,
+            "y": 512.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Driving PIDs/X Delta",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Rotation Delta",
+            "x": 256.0,
+            "y": 512.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Driving PIDs/Rotation Delta",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Y Delta",
+            "x": 128.0,
+            "y": 512.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Driving PIDs/Y Delta",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "invert controls",
+            "x": 1152.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Toggle Button",
+            "properties": {
+              "topic": "/Driving PIDs/invert controls",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "source",
+            "x": 640.0,
+            "y": 0.0,
+            "width": 384.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/CameraPublisher/USB Camera 0/source",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "streams",
+            "x": 384.0,
+            "y": 512.0,
+            "width": 1024.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/CameraPublisher/USB Camera 0/streams",
+              "period": 0.06,
+              "data_type": "string[]",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "USB Camera 0",
+            "x": 384.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/USB Camera 0",
+              "period": 0.06
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
