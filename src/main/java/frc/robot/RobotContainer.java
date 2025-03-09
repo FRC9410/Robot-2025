@@ -31,9 +31,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.ScoringConstants;
 import frc.robot.commands.action.ActionElevatorCommand;
 import frc.robot.commands.action.ActionHopperCommand;
 import frc.robot.commands.base.*;
@@ -62,11 +64,11 @@ public class RobotContainer {
 
   public RobotContainer() {
     subsystems = new Subsystems();
-    subsystems.getHopper().setDefaultCommand(new ActionHopperCommand(subsystems.getHopper(), subsystems.getActionController()));
+    subsystems.getHopper().setDefaultCommand(new ActionHopperCommand(subsystems.getHopper(), subsystems.getActionController(), subsystems.getSensors()));
     subsystems.getElevator().setDefaultCommand(new ActionElevatorCommand(subsystems.getElevator(), subsystems.getActionController()));
     // subsystems.getAlgaeIntake().setDefaultCommand(new ActionAlgaeIntakeCommand(subsystems.getAlgaeIntake(), subsystems.getActionController()));
     // subsystems.getAlgaeWrist().setDefaultCommand(new ActionAlgaeWristCommand(subsystems.getAlgaeWrist(), subsystems.getActionController()));
-    subsystems.getEndEffector().setDefaultCommand(new DefaultEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator()));
+    subsystems.getEndEffector().setDefaultCommand(new DefaultEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()));
     // subsystems.getClimber().setDefaultCommand(new ActionClimberCommand(subsystems.getClimber(), subsystems.getActionController()));
     // subsystems.getActionController().setDefaultCommand(new ActionRequestCommand(subsystems, Action.IDLE));
 
@@ -82,33 +84,99 @@ public class RobotContainer {
 
   private void configurePilotBindings() {
     subsystems.getDrivetrain().setDefaultCommand(
-      new DriveCommand(
+      new ProfiledDriveCommand(
         subsystems.getDrivetrain(),
         driverController, 
         subsystems.getDashboard(),
-        subsystems.getActionController()));
+        subsystems.getActionController(),
+        subsystems.getElevator()));
 
     // reset the field-centric heading on left bumper press
     driverController.back().onTrue(subsystems.getDrivetrain().runOnce(() -> {
       subsystems.getDrivetrain().resetPose(new Pose2d());
     }));
-    // driverController.rightBumper().whileTrue(
-    //   new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard()));
-    // driverController.rightBumper().onFalse(new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard()));
 
-    driverController.povLeft().onTrue(new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L2_ALGAE_POSITION)
-    .alongWith(new AlgaeWristCommand(subsystems.getAlgaeWrist(), 0.35)
-    ));
+    // driverController.start().onTrue(subsystems.getActionController().runOnce(() -> {
+    //   subsystems.getActionController().toggleAutoMode();
+    // }));
 
-    driverController.povLeft().whileTrue(new AlgaeIntakeCommand(subsystems.getAlgaeIntake(), Constants.AlgaeIntakeConstants.INTAKE_VOLTAGE));
-
-    driverController.povLeft().onFalse(new SequentialCommandGroup(new WaitCommand(0.25), new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.HOME_POSITION)));
-
-    driverController.y().whileTrue(new ClimberCommand(subsystems.getClimber()));
-
-    driverController.x().onTrue(subsystems.getActionController().runOnce(() -> {
-      subsystems.getActionController().toggleAutoMode();
+    driverController.rightTrigger(0.5).and(driverController.leftTrigger(0.5).negate()).onTrue(subsystems.getActionController().runOnce(() -> {
+      subsystems.getActionController().setAutoMode(true);
     }));
+
+    driverController.rightTrigger(0.5).and(driverController.leftTrigger(0.5).negate()).onFalse(subsystems.getActionController().runOnce(() -> {
+      subsystems.getActionController().setAutoMode(false);
+    }));
+
+
+
+    // driverController.rightTrigger(0.5).and(driverController.leftTrigger(0.5).negate()).onTrue(new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard()));
+    driverController.rightBumper().and(driverController.leftTrigger(0.5).negate()).whileTrue(new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController()));
+    driverController.povRight().and(driverController.leftTrigger(0.5).negate()).whileTrue(new HopperCommand(subsystems.getHopper(), subsystems.getSensors()));
+    driverController.a().onTrue(new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.HOME_POSITION, false));
+
+
+
+    // driverController.rightTrigger(0.5).and(driverController.leftTrigger(0.5)).onTrue(new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard()));
+    // driverController.rightBumper().and(driverController.leftTrigger(0.5)).onTrue(new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController()));
+    // driverController.povRight().and(driverController.leftTrigger(0.5)).onTrue(new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.HOME_POSITION));
+
+    
+    driverController.leftBumper().and(driverController.leftTrigger(0.5)).onTrue(new AlgaeWristCommand(subsystems.getAlgaeWrist(), 0.37, subsystems.getAlgaeIntake())
+      .alongWith(new AlgaeIntakeCommand(subsystems.getAlgaeIntake(), Constants.AlgaeIntakeConstants.INTAKE_VOLTAGE)));
+    
+      driverController.leftBumper().and(driverController.leftTrigger(0.5)).onFalse(new AlgaeWristCommand(subsystems.getAlgaeWrist(), 0.07, subsystems.getAlgaeIntake())
+        .alongWith(new SequentialCommandGroup(
+          new WaitCommand(0.25),
+          new AlgaeStopIntakeCommand(subsystems.getAlgaeIntake(), Constants.AlgaeIntakeConstants.STOP_VOLTAGE)
+        )));
+      
+    driverController.povLeft().and(driverController.leftTrigger(0.5)).whileTrue(new AlgaeWristCommand(subsystems.getAlgaeWrist(), 0.33, subsystems.getAlgaeIntake())
+    .alongWith(new AlgaeOuttakeCommand(subsystems.getAlgaeIntake(), Constants.AlgaeIntakeConstants.INTAKE_VOLTAGE)));
+    
+    driverController.rightTrigger(0.5).and(driverController.leftTrigger(0.5)).whileTrue(new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L4_SCORE_POSITION, true)
+      .alongWith(new AlgaeWristCommand(subsystems.getAlgaeWrist(), 0.13, subsystems.getAlgaeIntake())
+      .alongWith(new SequentialCommandGroup(
+        new WaitCommand(0.25),
+        new AlgaeOuttakeCommand(subsystems.getAlgaeIntake(), Constants.AlgaeIntakeConstants.INTAKE_VOLTAGE)
+      ))));
+
+      driverController.rightBumper().and(driverController.leftTrigger(0.5)).onTrue(new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L1_ALGAE_POSITION, true)
+        .alongWith(new AlgaeWristCommand(subsystems.getAlgaeWrist(), 0.31, subsystems.getAlgaeIntake())
+        .alongWith(new AlgaeIntakeCommand(subsystems.getAlgaeIntake(), Constants.AlgaeIntakeConstants.INTAKE_VOLTAGE))));
+  
+      driverController.rightBumper().and(driverController.leftTrigger(0.5)).onFalse(new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.HOME_POSITION, true)
+      .alongWith(new SequentialCommandGroup(
+        new WaitCommand(0.0),
+        new AlgaeWristCommand(subsystems.getAlgaeWrist(), 0.05, subsystems.getAlgaeIntake()))
+      .alongWith(new AlgaeStopIntakeCommand(subsystems.getAlgaeIntake(), Constants.AlgaeIntakeConstants.INTAKE_VOLTAGE))));
+
+      driverController.povRight().and(driverController.leftTrigger(0.5)).onTrue(new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L2_ALGAE_POSITION, true)
+        .alongWith(new AlgaeWristCommand(subsystems.getAlgaeWrist(), 0.31, subsystems.getAlgaeIntake())
+        .alongWith(new AlgaeOuttakeCommand(subsystems.getAlgaeIntake(), Constants.AlgaeIntakeConstants.INTAKE_VOLTAGE))));
+  
+      driverController.povRight().and(driverController.leftTrigger(0.5)).onFalse(new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.HOME_POSITION, true)
+      .alongWith(new SequentialCommandGroup(
+        new WaitCommand(0.25),
+        new AlgaeWristCommand(subsystems.getAlgaeWrist(), 0.05
+        
+        , subsystems.getAlgaeIntake()))
+      .alongWith(new AlgaeStopIntakeCommand(subsystems.getAlgaeIntake(), Constants.AlgaeIntakeConstants.INTAKE_VOLTAGE))));
+
+
+
+
+
+    // driverController.povLeft().onTrue(new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L2_ALGAE_POSITION)
+    // .alongWith(new AlgaeWristCommand(subsystems.getAlgaeWrist(), 0.35)
+    // ));
+
+    // driverController.povLeft().whileTrue(new AlgaeIntakeCommand(subsystems.getAlgaeIntake(), Constants.AlgaeIntakeConstants.INTAKE_VOLTAGE));
+
+    // driverController.povLeft().onFalse(new SequentialCommandGroup(new WaitCommand(0.25), new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.HOME_POSITION)));
+
+    driverController.y().whileTrue(new ClimberCommand(subsystems.getClimber(), 1));
+    driverController.x().whileTrue(new ClimberCommand(subsystems.getClimber(), -1));
 
     // subsystems.getDrivetrain().registerTelemetry(logger::telemeterize);
   }
@@ -170,5 +238,30 @@ public class RobotContainer {
 
   public void registerNamedCommands() {
 
+  }
+
+  public Command getRedLeftCommand() {
+    return new SequentialCommandGroup(
+      new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.RED_BACK_LEFT_RIGHT),
+      new ParallelRaceGroup(
+        new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L4_SCORE_POSITION, false),
+        new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController())
+      ),
+      new GotoDriveCommand(subsystems.getDrivetrain(), new Pose2d(12.536, 1.715, Rotation2d.fromDegrees(60.0))),
+      new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.RED_HP_LEFT),
+      new WaitCommand(1),
+      new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.RED_FRONT_LEFT_LEFT),
+      new ParallelRaceGroup(
+        new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L4_SCORE_POSITION, false),
+        new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController())
+      ),
+      new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.RED_HP_LEFT),
+      new WaitCommand(1),
+      new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.RED_FRONT_LEFT_RIGHT),
+      new ParallelRaceGroup(
+        new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L4_SCORE_POSITION, false),
+        new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController())
+      )
+    );
   }
 }

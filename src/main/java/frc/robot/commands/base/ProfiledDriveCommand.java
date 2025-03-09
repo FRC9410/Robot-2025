@@ -4,7 +4,6 @@
 
 package frc.robot.commands.base;
 
-import java.awt.geom.Point2D;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,24 +26,52 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Dashboard;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Dashboard.CoralSide;
+import frc.robot.subsystems.Elevator;
 import frc.robot.utils.Utils;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class DriveCommand extends Command {
+public class ProfiledDriveCommand extends Command {
   private final CommandSwerveDrivetrain drivetrain;
   private final CommandXboxController controller;
   private HolonomicDriveController holonomicController;
   private double direction;
   private Dashboard dashboard;
+  private final Elevator elevator;
   private final NetworkTableInstance inst;
   private final NetworkTable table;
   private final ActionController actionController;
 
+
+
+  ///////////////////////////////////////////////////////////////////////////////////////
+  //
+  //  Profiled Motion Testing
+  //
+  ///////////////////////////////////////////////////////////////////////////////////////
+
+  
+  private final HolonomicDriveController profiledHolonomicController;
+
+  private final TrapezoidProfile.Constraints xConstraints;
+  private final TrapezoidProfile.Constraints yConstraints;
+  
+  private TrapezoidProfile.State xState = new TrapezoidProfile.State(0, 0);
+  private TrapezoidProfile.State yState = new TrapezoidProfile.State(0, 0);
+
+  private final ProfiledPIDController thetaController;
+
+  ///////////////////////////////////////////////////////////////////////////////////////
+  //
+  //  Profiled Motion Testing END
+  //
+  ///////////////////////////////////////////////////////////////////////////////////////
+
   /** Creates a new DriveCommand. */
-  public DriveCommand(CommandSwerveDrivetrain drivetrain,
+  public ProfiledDriveCommand(CommandSwerveDrivetrain drivetrain,
     CommandXboxController controller,
     Dashboard dashboard,
-    ActionController actionController) {
+    ActionController actionController,
+    Elevator elevator) {
       inst = NetworkTableInstance.getDefault();
       table = inst.getTable("Driving PIDs");
 
@@ -52,21 +79,46 @@ public class DriveCommand extends Command {
       this.controller = controller;
       this.dashboard = dashboard;
       this.actionController = actionController;
+      this.elevator = elevator;
       this.holonomicController = new HolonomicDriveController(
-        new PIDController(0.08, 0, 0.0002),
-        new PIDController(0.08, 0, 0),
-        new ProfiledPIDController(0.06, 0, 0.0,
+        new PIDController(0.6, 0, 0.01),
+        new PIDController(0.6, 0, 0.01),
+        new ProfiledPIDController(1, 0, 0.00025,
               new TrapezoidProfile.Constraints(drivetrain.MAX_ANGULAR_RATE*2, drivetrain.MAX_ANGULAR_RATE*4)));
-      direction = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red ? -1.0 : 1.0;
+      // direction = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red ? -1.0 : 1.0;//
+      table.getEntry("invert controls").setBoolean(false);
 
-      table.getEntry("X P").setDouble(0.45);
-      table.getEntry("X D").setDouble(0.00015);
-      table.getEntry("Y P").setDouble(0.45);
-      table.getEntry("Y D").setDouble(0.00015);
-      table.getEntry("Rotation P").setDouble(0.8);
-      table.getEntry("Rotation D").setDouble(0.00015);
+      // table.getEntry("X P").setDouble(0.5);
+      // table.getEntry("X D").setDouble(0.01);
+      // table.getEntry("Y P").setDouble(0.5);
+      // table.getEntry("Y D").setDouble(0.01);
+      // table.getEntry("Rotation P").setDouble(01);
+      // table.getEntry("Rotation D").setDouble(0.00025);
+
+      ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+      //
+      //
+
+      thetaController = new ProfiledPIDController(1, 0, 0.00025,
+        new TrapezoidProfile.Constraints(drivetrain.MAX_ANGULAR_RATE*2, drivetrain.MAX_ANGULAR_RATE*4));
+        
+        xConstraints = new TrapezoidProfile.Constraints(drivetrain.MAX_SPEED/4, drivetrain.MAX_SPEED);
+        yConstraints = new TrapezoidProfile.Constraints(drivetrain.MAX_SPEED/4, drivetrain.MAX_SPEED);
+
+      profiledHolonomicController = new HolonomicDriveController(
+        new PIDController(0.8, 0, 0.01),  // X Translation PID
+        new PIDController(0.8, 0, 0.01),  // Y Translation PID
+        thetaController);                // Rotation ProfiledPID
+
+      thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
       addRequirements(drivetrain);
+
+      //
+      //
+      ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+      
+      
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -77,22 +129,24 @@ public class DriveCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    setRotationPid();
+    // setRotationPid();
+      direction = table.getEntry("invert controls").getBoolean(false) ? 1 : -1;
     final Pose2d currentPose = drivetrain.getState().Pose;
-    System.out.println(actionController.getCommandField(Constants.MapConstants.TARGET_POSE));
     if (currentPose != null
     && actionController.getCommandField(Constants.MapConstants.TARGET_POSE) != null
     && Math.abs(controller.getLeftX()) < 0.10
     && Math.abs(controller.getLeftY()) < 0.10
     && Math.abs(controller.getRightX()) < 0.10) {
-      final Pose2d requestedPose = (Pose2d) actionController.getCommandField(Constants.MapConstants.TARGET_POSE);
-      final Pose2d targetPose = Utils.getNextPose(currentPose, requestedPose);
-      final ChassisSpeeds ChassisSpeeds = holonomicController.calculate(
-        currentPose,
-        targetPose,
-        0.0,
-        targetPose.getRotation()
-      );
+      // final Pose2d requestedPose = (Pose2d) actionController.getCommandField(Constants.MapConstants.TARGET_POSE);
+      // final Pose2d targetPose = Utils.getNextPose(currentPose, requestedPose);
+      final Pose2d targetPose = (Pose2d) actionController.getCommandField(Constants.MapConstants.TARGET_POSE);
+      // final ChassisSpeeds ChassisSpeeds = holonomicController.calculate(
+      //   currentPose,
+      //   targetPose,
+      //   0.0,
+      //   targetPose.getRotation()
+      // );
+      final ChassisSpeeds ChassisSpeeds = calculate(currentPose, targetPose, 0.02);
       final double xDelta = targetPose.getTranslation().getX() - currentPose.getTranslation().getX();
       final double yDelta = targetPose.getTranslation().getY() - currentPose.getTranslation().getY();
       final double rotationDelta = targetPose.getRotation().getDegrees() - currentPose.getRotation().getDegrees();
@@ -104,7 +158,7 @@ public class DriveCommand extends Command {
         Math.abs(yDelta) < Constants.AutoConstants.TRANSLATION_TOLERANCE
         && Math.abs(rotationDelta) < Constants.AutoConstants.ROTATION_TOLERANCE;
 
-      if (isWithinTolerance) {
+      if (!isWithinTolerance) {
         final double xChassisSpeed = ChassisSpeeds.vxMetersPerSecond * drivetrain.MAX_SPEED;
         final double yChassisSpeed = ChassisSpeeds.vyMetersPerSecond * drivetrain.MAX_SPEED;
         final double chassisTurnSpeed = ChassisSpeeds.omegaRadiansPerSecond * drivetrain.MAX_ANGULAR_RATE;
@@ -113,11 +167,11 @@ public class DriveCommand extends Command {
         final double ySpeedDirection = yChassisSpeed > 1.0 ? 1 : -1;
         final double turnSpeedDirection = chassisTurnSpeed > 1.0 ? 1 : -1;
 
-        final double maxSpeed = 0.5 * drivetrain.MAX_SPEED;
-        final double minSpeed = 0.1 * drivetrain.MAX_SPEED;
+        final double maxSpeed = 0.9 * drivetrain.MAX_SPEED;
+        final double minSpeed = 0.0 * drivetrain.MAX_SPEED;
 
-        final double maxTurnSpeed = 0.5 * drivetrain.MAX_ANGULAR_RATE;
-        final double minTurnSpeed = 0.1 * drivetrain.MAX_ANGULAR_RATE;
+        final double maxTurnSpeed = 0.9 * drivetrain.MAX_ANGULAR_RATE;
+        final double minTurnSpeed = 0.0 * drivetrain.MAX_ANGULAR_RATE;
 
         final double xSpeed = Math.abs(xChassisSpeed) < maxSpeed && Math.abs(xChassisSpeed) > minSpeed
           ? xChassisSpeed
@@ -147,20 +201,31 @@ public class DriveCommand extends Command {
         .withVelocityX(direction * Utils.squareInput(controller.getLeftY()) * drivetrain.MAX_SPEED/5)
         .withVelocityY(direction * Utils.squareInput(controller.getLeftX()) * drivetrain.MAX_SPEED/5)
         .withRotationalRate(getRotation()));
-        // actionController.toggleAutoMode();
-    } else if (actionController.getCommandField(Constants.MapConstants.ELEVATOR_POSITION) != null
-    && (Double) actionController.getCommandField(Constants.MapConstants.ELEVATOR_POSITION) > 0.0) {
+        // if (Math.abs(controller.getLeftX()) > 0.10
+        // || Math.abs(controller.getLeftY()) > 0.10
+        // || Math.abs(controller.getRightX()) > 0.10) {
+        //   actionController.setAutoMode(false);
+        // }
+    } else if (elevator.getCurrentHeight() > 5) {
       drivetrain.setControl(drivetrain.FIELD_RELATIVE
         .withVelocityX(direction * Utils.squareInput(controller.getLeftY()) * drivetrain.MAX_SPEED/5)
         .withVelocityY(direction * Utils.squareInput(controller.getLeftX()) * drivetrain.MAX_SPEED/5)
         .withRotationalRate(getRotation()));
-        // actionController.toggleAutoMode();
+        // if (Math.abs(controller.getLeftX()) > 0.10
+        // || Math.abs(controller.getLeftY()) > 0.10
+        // || Math.abs(controller.getRightX()) > 0.10) {
+        //   actionController.setAutoMode(false);
+        // }
     } else {
       drivetrain.setControl(drivetrain.FIELD_RELATIVE
         .withVelocityX(direction * Utils.cubeInput(controller.getLeftY()) * drivetrain.MAX_SPEED)
         .withVelocityY(direction * Utils.cubeInput(controller.getLeftX()) * drivetrain.MAX_SPEED)
         .withRotationalRate(getRotation()));
-        // actionController.toggleAutoMode();
+        // if (Math.abs(controller.getLeftX()) > 0.10
+        // || Math.abs(controller.getLeftY()) > 0.10
+        // || Math.abs(controller.getRightX()) > 0.10) {
+        //   actionController.setAutoMode(false);
+        // }
     }
   }
 
@@ -192,11 +257,28 @@ public class DriveCommand extends Command {
   }
 
   public void setRotationPid () {
-    holonomicController.getXController().setP(table.getEntry("X P").getDouble(0.006));
-    holonomicController.getXController().setD(table.getEntry("X D").getDouble(0));
-    holonomicController.getYController().setP(table.getEntry("Y P").getDouble(0.006));
-    holonomicController.getYController().setD(table.getEntry("Y D").getDouble(0));
-    holonomicController.getThetaController().setP(table.getEntry("Rotation P").getDouble(0.006));
-    holonomicController.getThetaController().setD(table.getEntry("Rotation D").getDouble(0));
+    profiledHolonomicController.getXController().setP(table.getEntry("X P").getDouble(0.006));
+    profiledHolonomicController.getXController().setD(table.getEntry("X D").getDouble(0));
+    profiledHolonomicController.getYController().setP(table.getEntry("Y P").getDouble(0.006));
+    profiledHolonomicController.getYController().setD(table.getEntry("Y D").getDouble(0));
+    profiledHolonomicController.getThetaController().setP(table.getEntry("Rotation P").getDouble(0.006));
+    profiledHolonomicController.getThetaController().setD(table.getEntry("Rotation D").getDouble(0));
   }
+
+  public ChassisSpeeds calculate(Pose2d currentPose, Pose2d targetPose, double dt) {
+    // Generate trapezoidal profiles for X and Y
+    TrapezoidProfile xProfile = new TrapezoidProfile(xConstraints);
+    TrapezoidProfile yProfile = new TrapezoidProfile(yConstraints);
+
+    // Update profile states
+    xState = xProfile.calculate(dt, new TrapezoidProfile.State(targetPose.getX(), 0), xState);
+    yState = yProfile.calculate(dt, new TrapezoidProfile.State(targetPose.getY(), 0), yState);
+
+    // Create the new desired pose with profiled X & Y motion
+    Pose2d profiledTarget = new Pose2d(xState.position, yState.position, targetPose.getRotation());
+
+    // Compute the desired chassis speeds using the holonomic controller
+    return profiledHolonomicController.calculate(currentPose, profiledTarget, 0, targetPose.getRotation());
+}
+
 }

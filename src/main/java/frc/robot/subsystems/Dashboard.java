@@ -18,6 +18,7 @@ import frc.robot.Constants.MapConstants;
 public class Dashboard extends SubsystemBase {
   private final NetworkTableInstance inst;
   private final NetworkTable table;
+  private final NetworkTable drivingTable;
   private ReefSide reefSide;
   private CoralSide coralSide;
   private CoralLevel coralLevel;
@@ -29,6 +30,7 @@ public class Dashboard extends SubsystemBase {
     this.updateData = updateData;
     inst = NetworkTableInstance.getDefault();
     table = inst.getTable("Scoring");
+    drivingTable = inst.getTable("Driving PIDs");
 
     table.getEntry("front").setBoolean(false);
     table.getEntry("front_left").setBoolean(false);
@@ -226,7 +228,8 @@ public class Dashboard extends SubsystemBase {
   }
 
   public Pose2d getScoringPose () {
-    final boolean isRed = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red;
+    final boolean isRed = drivingTable.getEntry("invert controls").getBoolean(false);
+
 
     if (reefSide == null || coralSide == null) {
       return null;

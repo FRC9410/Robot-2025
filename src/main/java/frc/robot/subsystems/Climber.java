@@ -52,6 +52,7 @@ public class Climber extends SubsystemBase {
 
     @Override
     public void periodic() {
+        // System.out.println("Climber position: " + climberMotor.getPosition().getValueAsDouble());
     }
 
     /**

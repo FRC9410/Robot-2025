@@ -17,13 +17,15 @@ public class ElevatorPositionCommand extends Command {
   private final Elevator elevator;
   private final double position;
   private final Sensors sensors;
+  private boolean override;
 
   /** Creates a new DefaultElevator. */
-  public ElevatorPositionCommand(Elevator elevator, Sensors sensors, double position) {
+  public ElevatorPositionCommand(Elevator elevator, Sensors sensors, double position, boolean override) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.elevator = elevator;
     this.position = position;
     this.sensors = sensors;
+    this.override = override;
 
     addRequirements(elevator);
   }
@@ -35,7 +37,7 @@ public class ElevatorPositionCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (sensors.getOuttakeLaserBroken() || position == Constants.ElevatorConstants.HOME_POSITION) {
+    if (sensors.getOuttakeLaserBroken() || position == Constants.ElevatorConstants.HOME_POSITION || override) {
       elevator.setPosition(position);
     }
   }
@@ -47,13 +49,15 @@ public class ElevatorPositionCommand extends Command {
       elevator.setPosition(Constants.ElevatorConstants.HOME_POSITION);
     } else if (!elevator.atTargetPosition()) {
       elevator.setPosition(Constants.ElevatorConstants.HOME_POSITION);
+    } else if (override) {
+      elevator.setPosition(Constants.ElevatorConstants.HOME_POSITION);
     }
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (!sensors.getOuttakeLaserBroken()) {
+    if (!sensors.getOuttakeLaserBroken() && !override) {
       return true;
     }
     return false;

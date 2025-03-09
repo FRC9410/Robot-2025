@@ -4,6 +4,7 @@ import java.util.List;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import java.awt.geom.Point2D;
 
 public final class Constants {
 
@@ -19,15 +20,8 @@ public final class Constants {
     }
     
     public static final class AutoConstants {
-         // Autonomous mode settings (placeholders; adjust as needed)
-         public static final double MAX_SPEED_METERS_PER_SECOND = 3.0;
-         public static final double MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 2.0;
-         // Ramsete controller constants (placeholders; tune as needed)
-         public static final double RAMSETE_B = 2.0;
-         public static final double RAMSETE_ZETA = 0.7;
-
          public static final double TRANSLATION_TOLERANCE = 0.1;
-         public static final double ROTATION_TOLERANCE = 2.0;
+         public static final double ROTATION_TOLERANCE = 1.0;
     }
     
     public static final class VisionConstants {
@@ -81,15 +75,18 @@ public final class Constants {
     
     public static final class AlgaeWristConstants {
         public static final int CAN_ID = 24; 
+        public static final int ENCODER_CAN_ID = 26; 
         // PID Constants (placeholders—adjust as needed)
-        public static final double kP = 3;
-        public static final double kI = 0.0;
-        public static final double kD = 0.0;
-        public static final double kF = 0.0;
+        public static final double kP = 50.0; 
+        public static final double kI = 0.0; 
+        public static final double kD = 0.0; 
+        public static final double kG = 1.0;
+        public static final double MOTION_MAGIC_ACCELERATION = 6.0;
+        public static final double MOTION_MAGIC_VELOCITY = 4.0;
 
         public static final double MIN_POSITION = 0.0;  // Placeholder
         public static final double MAX_POSITION = 0.0;    // Placeholder
-        public static final double OFFSET_POSITION = 0.068;       // Placeholder
+        public static final double OFFSET_POSITION = -0.16;       // Placeholder
         // Additional preset angles for Algae Wrist positions (in units; placeholders)
         public static final double REEF_POSITION = 0.0;    // Placeholder value for reef angle
         public static final double LAYUP_POSITION = 0.0;   // Placeholder value for layup angle
@@ -156,7 +153,7 @@ public final class Constants {
         public static final double MOTION_MAGIC_VELOCITY = 200.0;
         
         // Elevator preset heights (in units; placeholders for L1-L4, home, algae layup, and algae place)
-        public static final double HOME_POSITION = 0.0;
+        public static final double HOME_POSITION = 0.25;
         public static final double L1_SCORE_POSITION = 30.0;
         public static final double L2_SCORE_POSITION = 24.5;
         public static final double L3_SCORE_POSITION = 36.5;
@@ -190,41 +187,103 @@ public final class Constants {
 
     public static final class ScoringConstants {
         // Red Side
-        public static final Pose2d RED_FRONT_LEFT = new Pose2d(14.43, 3.86, Rotation2d.fromDegrees(180.0));
-        public static final Pose2d RED_FRONT_RIGHT = new Pose2d(14.43, 4.19, Rotation2d.fromDegrees(180.0));
+        public static final Pose2d RED_FRONT_LEFT = new Pose2d(14.535, 3.902, Rotation2d.fromDegrees(180.0));
+        public static final Pose2d RED_FRONT_RIGHT = new Pose2d(14.535, 4.248, Rotation2d.fromDegrees(180.0));
 
-        public static final Pose2d RED_FRONT_LEFT_LEFT = new Pose2d(13.6, 2.75, Rotation2d.fromDegrees(120.0));
-        public static final Pose2d RED_FRONT_LEFT_RIGHT = new Pose2d(13.88, 2.92, Rotation2d.fromDegrees(120.0));
+        public static final Pose2d RED_FRONT_LEFT_LEFT = new Pose2d(13.708, 2.715, Rotation2d.fromDegrees(120.0));
+        public static final Pose2d RED_FRONT_LEFT_RIGHT = new Pose2d(13.994, 2.895, Rotation2d.fromDegrees(120.0));
 
-        public static final Pose2d RED_FRONT_RIGHT_LEFT = new Pose2d(13.9, 5.16, Rotation2d.fromDegrees(-120.0));
-        public static final Pose2d RED_FRONT_RIGHT_RIGHT = new Pose2d(13.62, 5.3, Rotation2d.fromDegrees(-120.0));
+        public static final Pose2d RED_FRONT_RIGHT_LEFT = new Pose2d(13.994, 5.255, Rotation2d.fromDegrees(-120.0));
+        public static final Pose2d RED_FRONT_RIGHT_RIGHT = new Pose2d(13.708, 5.435, Rotation2d.fromDegrees(-120.0));
 
-        public static final Pose2d RED_BACK_LEFT = new Pose2d(11.69, 4.19, Rotation2d.fromDegrees(0.0));
-        public static final Pose2d RED_BACK_RIGHT = new Pose2d(11.69, 3.86, Rotation2d.fromDegrees(0.0));
+        public static final Pose2d RED_BACK_LEFT = new Pose2d(11.585, 4.198, Rotation2d.fromDegrees(0.0));
+        public static final Pose2d RED_BACK_RIGHT = new Pose2d(11.585, 3.852, Rotation2d.fromDegrees(0.0));
 
-        public static final Pose2d RED_BACK_LEFT_LEFT = new Pose2d(12.23, 2.9, Rotation2d.fromDegrees(60.0));
-        public static final Pose2d RED_BACK_LEFT_RIGHT = new Pose2d(12.52, 2.74, Rotation2d.fromDegrees(60.0));
+        public static final Pose2d RED_BACK_LEFT_LEFT = new Pose2d(12.236, 2.895, Rotation2d.fromDegrees(60.0));
+        public static final Pose2d RED_BACK_LEFT_RIGHT = new Pose2d(12.536, 2.715, Rotation2d.fromDegrees(60.0));
 
-        public static final Pose2d RED_BACK_RIGHT_LEFT = new Pose2d(12.52, 5.31, Rotation2d.fromDegrees(-60.0));
-        public static final Pose2d RED_BACK_RIGHT_RIGHT = new Pose2d(12.22, 5.15, Rotation2d.fromDegrees(-60.0));
+        public static final Pose2d RED_BACK_RIGHT_LEFT = new Pose2d(12.536, 5.435, Rotation2d.fromDegrees(-60.0));
+        public static final Pose2d RED_BACK_RIGHT_RIGHT = new Pose2d(12.236, 5.255, Rotation2d.fromDegrees(-60.0));
 
         // Blue Side
-        public static final Pose2d BLUE_FRONT_LEFT = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(180.0));
-        public static final Pose2d BLUE_FRONT_RIGHT = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(180.0));
+        public static final Pose2d BLUE_FRONT_LEFT = new Pose2d(3.185, 4.188, Rotation2d.fromDegrees(0.0));
+        public static final Pose2d BLUE_FRONT_RIGHT = new Pose2d(3.185, 3.852, Rotation2d.fromDegrees(0.0));
 
-        public static final Pose2d BLUE_FRONT_LEFT_LEFT = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(120.0));
-        public static final Pose2d BLUE_FRONT_LEFT_RIGHT = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(120.0));
+        public static final Pose2d BLUE_FRONT_LEFT_LEFT = new Pose2d(3.957, 5.235, Rotation2d.fromDegrees(-60.0));
+        public static final Pose2d BLUE_FRONT_LEFT_RIGHT = new Pose2d(3.656, 5.135, Rotation2d.fromDegrees(-60.0));
 
-        public static final Pose2d BLUE_FRONT_RIGHT_LEFT = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(-120.0));
-        public static final Pose2d BLUE_FRONT_RIGHT_RIGHT = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(-120.0));
+        public static final Pose2d BLUE_FRONT_RIGHT_LEFT = new Pose2d(3.656, 2.965, Rotation2d.fromDegrees(60.0));
+        public static final Pose2d BLUE_FRONT_RIGHT_RIGHT = new Pose2d(3.957, 2.815, Rotation2d.fromDegrees(60.0));
 
-        public static final Pose2d BLUE_BACK_LEFT = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
-        public static final Pose2d BLUE_BACK_RIGHT = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
+        public static final Pose2d BLUE_BACK_LEFT = new Pose2d(5.815, 3.852, Rotation2d.fromDegrees(180.0));
+        public static final Pose2d BLUE_BACK_RIGHT = new Pose2d(5.815, 4.188, Rotation2d.fromDegrees(180.0));
 
-        public static final Pose2d BLUE_BACK_LEFT_LEFT = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(60.0));
-        public static final Pose2d BLUE_BACK_LEFT_RIGHT = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(60.0));
+        public static final Pose2d BLUE_BACK_LEFT_LEFT = new Pose2d(5.304, 5.135, Rotation2d.fromDegrees(-120.0));
+        public static final Pose2d BLUE_BACK_LEFT_RIGHT = new Pose2d(5.014, 5.235, Rotation2d.fromDegrees(-120.0));
 
-        public static final Pose2d BLUE_BACK_RIGHT_LEFT = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(-60.0));
-        public static final Pose2d BLUE_BACK_RIGHT_RIGHT = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(-60.0));
+        public static final Pose2d BLUE_BACK_RIGHT_LEFT = new Pose2d(5.014, 2.815, Rotation2d.fromDegrees(120.0));
+        public static final Pose2d BLUE_BACK_RIGHT_RIGHT = new Pose2d(5.304, 2.965, Rotation2d.fromDegrees(120.0));
+
+        public static final Pose2d RED_HP_LEFT = new Pose2d(16.267, 1.022, Rotation2d.fromDegrees(125.0));
+        public static final Pose2d RED_HP_RIGHT = new Pose2d(16.267, 7, Rotation2d.fromDegrees(-125.0));
+
+        public static final Pose2d BLUE_HP_LEFT = new Pose2d(1.25, 7, Rotation2d.fromDegrees(-55.0));
+        public static final Pose2d BLUE_HP_RIGHT = new Pose2d(1.25, 1.022, Rotation2d.fromDegrees(55.0));
+    }
+
+    public static final class WaypointConstants {
+        // Red Side
+        public static final Pose2d RED_FRONT_LEFT = new Pose2d(14.844, 3.064, Rotation2d.fromDegrees(135.0));
+
+        public static final Pose2d RED_FRONT_RIGHT = new Pose2d(14.844, 5.004, Rotation2d.fromDegrees(225.0));
+
+        public static final Pose2d RED_BACK_LEFT = new Pose2d(11.585, 3.064, Rotation2d.fromDegrees(45.0));
+
+        public static final Pose2d RED_BACK_RIGHT = new Pose2d(11.585, 4.004, Rotation2d.fromDegrees(315.0));
+
+        public static final Pose2d RED_LEFT = new Pose2d(13.064, 2.302, Rotation2d.fromDegrees(270.0));
+
+        public static final Pose2d RED_RIGHT = new Pose2d(13.064, 5.819, Rotation2d.fromDegrees(90.0));
+
+        // Blue Side
+        public static final Pose2d BLUE_FRONT_LEFT = new Pose2d(3.024, 5.004, Rotation2d.fromDegrees(-45.0));
+        
+        public static final Pose2d BLUE_FRONT_RIGHT = new Pose2d(3.024, 3.064, Rotation2d.fromDegrees(45.0));
+
+        public static final Pose2d BLUE_BACK_LEFT = new Pose2d(5.965, 5.004, Rotation2d.fromDegrees(-135.0));
+
+        public static final Pose2d BLUE_BACK_RIGHT = new Pose2d(5.965, 3.064, Rotation2d.fromDegrees(135.0));
+
+        public static final Pose2d BLUE_LEFT = new Pose2d(4.475, 5.819, Rotation2d.fromDegrees(-90.0));
+
+        public static final Pose2d BLUE_RIGHT = new Pose2d(4.475, 2.302, Rotation2d.fromDegrees(90.0));
+    }
+
+    public static final class ReefConstants {
+        // Red Side
+        public static final Point2D.Double RED_FRONT_LEFT = new Point2D.Double(14.244, 3.364);
+
+        public static final Point2D.Double RED_FRONT_RIGHT = new Point2D.Double(14.244, 4.704);
+
+        public static final Point2D.Double RED_BACK_LEFT = new Point2D.Double(11.885, 3.364);
+
+        public static final Point2D.Double RED_BACK_RIGHT = new Point2D.Double(11.885, 4.704);
+
+        public static final Point2D.Double RED_LEFT = new Point2D.Double(13.064, 2.702);
+
+        public static final Point2D.Double RED_RIGHT = new Point2D.Double(13.064, 5.419);
+
+        // Blue Side
+        public static final Point2D.Double BLUE_FRONT_LEFT = new Point2D.Double(3.324, 4.704);
+        
+        public static final Point2D.Double BLUE_FRONT_RIGHT = new Point2D.Double(3.324, 3.364);
+
+        public static final Point2D.Double BLUE_BACK_LEFT = new Point2D.Double(5.665, 4.704);
+
+        public static final Point2D.Double BLUE_BACK_RIGHT = new Point2D.Double(5.665, 3.364);
+
+        public static final Point2D.Double BLUE_LEFT = new Point2D.Double(4.475, 5.419);
+
+        public static final Point2D.Double BLUE_RIGHT = new Point2D.Double(4.475, 2.702);
     }
 }
