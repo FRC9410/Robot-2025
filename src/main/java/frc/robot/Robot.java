@@ -42,7 +42,7 @@ public class Robot extends TimedRobot {
     CanBridge.runTCP();
     robotContainer.resetLocalization();
     // robotContainer.getSubsystems().getDrivetrain().configureAutoBuilder();
-    CameraServer.startAutomaticCapture().setVideoMode(PixelFormat.kMJPEG, 320,240,30);
+    CameraServer.startAutomaticCapture();
     inst = NetworkTableInstance.getDefault();
     table = inst.getTable("Drive Command");
   }

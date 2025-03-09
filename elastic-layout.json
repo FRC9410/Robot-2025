@@ -1,6 +1,6 @@
 {
   "version": 1.0,
-  "grid_size": 64,
+  "grid_size": 32,
   "tabs": [
     {
       "name": "Autonomous",
@@ -16,8 +16,8 @@
         "containers": [
           {
             "title": "Heading",
-            "x": 128.0,
-            "y": 128.0,
+            "x": 256.0,
+            "y": 320.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -31,7 +31,7 @@
           {
             "title": "X",
             "x": 0.0,
-            "y": 128.0,
+            "y": 320.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -44,8 +44,8 @@
           },
           {
             "title": "Y",
-            "x": 256.0,
-            "y": 128.0,
+            "x": 128.0,
+            "y": 320.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -71,8 +71,8 @@
           },
           {
             "title": "back",
-            "x": 1024.0,
-            "y": 384.0,
+            "x": 896.0,
+            "y": 448.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Toggle Button",
@@ -84,8 +84,8 @@
           },
           {
             "title": "back_left",
-            "x": 896.0,
-            "y": 384.0,
+            "x": 768.0,
+            "y": 448.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Toggle Button",
@@ -97,8 +97,8 @@
           },
           {
             "title": "back_right",
-            "x": 1152.0,
-            "y": 384.0,
+            "x": 1024.0,
+            "y": 448.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Toggle Button",
@@ -110,8 +110,8 @@
           },
           {
             "title": "front",
-            "x": 640.0,
-            "y": 384.0,
+            "x": 512.0,
+            "y": 448.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Toggle Button",
@@ -123,8 +123,8 @@
           },
           {
             "title": "front_left",
-            "x": 512.0,
-            "y": 384.0,
+            "x": 384.0,
+            "y": 448.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Toggle Button",
@@ -136,8 +136,8 @@
           },
           {
             "title": "front_right",
-            "x": 768.0,
-            "y": 384.0,
+            "x": 640.0,
+            "y": 448.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Toggle Button",
@@ -149,8 +149,8 @@
           },
           {
             "title": "l1",
-            "x": 1280.0,
-            "y": 384.0,
+            "x": 1152.0,
+            "y": 448.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Toggle Button",
@@ -162,8 +162,8 @@
           },
           {
             "title": "l2",
-            "x": 1280.0,
-            "y": 256.0,
+            "x": 1152.0,
+            "y": 320.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Toggle Button",
@@ -175,8 +175,8 @@
           },
           {
             "title": "l3",
-            "x": 1280.0,
-            "y": 128.0,
+            "x": 1152.0,
+            "y": 192.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Toggle Button",
@@ -188,8 +188,8 @@
           },
           {
             "title": "l4",
-            "x": 1280.0,
-            "y": 0.0,
+            "x": 1152.0,
+            "y": 64.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Toggle Button",
@@ -201,8 +201,8 @@
           },
           {
             "title": "right",
-            "x": 896.0,
-            "y": 256.0,
+            "x": 768.0,
+            "y": 320.0,
             "width": 384.0,
             "height": 128.0,
             "type": "Toggle Button",
@@ -214,8 +214,8 @@
           },
           {
             "title": "left",
-            "x": 512.0,
-            "y": 256.0,
+            "x": 384.0,
+            "y": 320.0,
             "width": 384.0,
             "height": 128.0,
             "type": "Toggle Button",
@@ -227,8 +227,8 @@
           },
           {
             "title": "isClimbing",
-            "x": 1152.0,
-            "y": 0.0,
+            "x": 128.0,
+            "y": 128.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Toggle Button",
@@ -239,93 +239,9 @@
             }
           },
           {
-            "title": "Rotation D",
-            "x": 256.0,
-            "y": 384.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/Driving PIDs/Rotation D",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Rotation P",
-            "x": 256.0,
-            "y": 256.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/Driving PIDs/Rotation P",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "X P",
-            "x": 0.0,
-            "y": 256.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/Driving PIDs/X P",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "X D",
-            "x": 0.0,
-            "y": 384.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/Driving PIDs/X D",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Y P",
-            "x": 128.0,
-            "y": 256.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/Driving PIDs/Y P",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Y D",
-            "x": 128.0,
-            "y": 384.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/Driving PIDs/Y D",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
             "title": "X Delta",
             "x": 0.0,
-            "y": 512.0,
+            "y": 448.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -339,7 +255,7 @@
           {
             "title": "Rotation Delta",
             "x": 256.0,
-            "y": 512.0,
+            "y": 448.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -353,7 +269,7 @@
           {
             "title": "Y Delta",
             "x": 128.0,
-            "y": 512.0,
+            "y": 448.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -366,7 +282,7 @@
           },
           {
             "title": "invert controls",
-            "x": 1152.0,
+            "x": 0.0,
             "y": 128.0,
             "width": 128.0,
             "height": 128.0,
@@ -378,43 +294,29 @@
             }
           },
           {
-            "title": "source",
-            "x": 640.0,
+            "title": "limelight-left",
+            "x": 256.0,
             "y": 0.0,
-            "width": 384.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/CameraPublisher/USB Camera 0/source",
-              "period": 0.06,
-              "data_type": "string",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "streams",
-            "x": 384.0,
-            "y": 512.0,
-            "width": 1024.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/CameraPublisher/USB Camera 0/streams",
-              "period": 0.06,
-              "data_type": "string[]",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "USB Camera 0",
-            "x": 384.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 256.0,
+            "width": 320.0,
+            "height": 320.0,
             "type": "Camera Stream",
             "properties": {
-              "topic": "/CameraPublisher/USB Camera 0",
-              "period": 0.06
+              "topic": "/CameraPublisher/limelight-left",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "limelight-right",
+            "x": 576.0,
+            "y": 0.0,
+            "width": 320.0,
+            "height": 320.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-right",
+              "period": 0.06,
+              "rotation_turns": 0
             }
           }
         ]

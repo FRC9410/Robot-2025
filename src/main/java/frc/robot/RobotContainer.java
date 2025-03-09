@@ -56,6 +56,7 @@ public class RobotContainer {
 
   private final Subsystems subsystems;
   private final CommandXboxController driverController;
+  private final CommandXboxController testController;
   private final NetworkTableInstance inst;
   private final NetworkTable table;
   private final SendableChooser<Command> autoChooser;
@@ -73,8 +74,10 @@ public class RobotContainer {
     // subsystems.getActionController().setDefaultCommand(new ActionRequestCommand(subsystems, Action.IDLE));
 
     driverController = new CommandXboxController(0);
+    testController = new CommandXboxController(5);
     
     configurePilotBindings();
+    configureTestBindings();
     inst = NetworkTableInstance.getDefault();
     table = inst.getTable("Vision Logging");
     registerNamedCommands();
@@ -112,7 +115,7 @@ public class RobotContainer {
 
     // driverController.rightTrigger(0.5).and(driverController.leftTrigger(0.5).negate()).onTrue(new ElevatorCommand(subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard()));
     driverController.rightBumper().and(driverController.leftTrigger(0.5).negate()).whileTrue(new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController()));
-    driverController.povRight().and(driverController.leftTrigger(0.5).negate()).whileTrue(new HopperCommand(subsystems.getHopper(), subsystems.getSensors()));
+    driverController.b().and(driverController.leftTrigger(0.5).negate()).whileTrue(new HopperCommand(subsystems.getHopper(), subsystems.getSensors()));
     driverController.a().onTrue(new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.HOME_POSITION, false));
 
 
@@ -131,7 +134,7 @@ public class RobotContainer {
           new AlgaeStopIntakeCommand(subsystems.getAlgaeIntake(), Constants.AlgaeIntakeConstants.STOP_VOLTAGE)
         )));
       
-    driverController.povLeft().and(driverController.leftTrigger(0.5)).whileTrue(new AlgaeWristCommand(subsystems.getAlgaeWrist(), 0.33, subsystems.getAlgaeIntake())
+    driverController.x().and(driverController.leftTrigger(0.5)).whileTrue(new AlgaeWristCommand(subsystems.getAlgaeWrist(), 0.33, subsystems.getAlgaeIntake())
     .alongWith(new AlgaeOuttakeCommand(subsystems.getAlgaeIntake(), Constants.AlgaeIntakeConstants.INTAKE_VOLTAGE)));
     
     driverController.rightTrigger(0.5).and(driverController.leftTrigger(0.5)).whileTrue(new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L4_SCORE_POSITION, true)
@@ -151,11 +154,11 @@ public class RobotContainer {
         new AlgaeWristCommand(subsystems.getAlgaeWrist(), 0.05, subsystems.getAlgaeIntake()))
       .alongWith(new AlgaeStopIntakeCommand(subsystems.getAlgaeIntake(), Constants.AlgaeIntakeConstants.INTAKE_VOLTAGE))));
 
-      driverController.povRight().and(driverController.leftTrigger(0.5)).onTrue(new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L2_ALGAE_POSITION, true)
+      driverController.b().and(driverController.leftTrigger(0.5)).onTrue(new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L2_ALGAE_POSITION, true)
         .alongWith(new AlgaeWristCommand(subsystems.getAlgaeWrist(), 0.31, subsystems.getAlgaeIntake())
         .alongWith(new AlgaeOuttakeCommand(subsystems.getAlgaeIntake(), Constants.AlgaeIntakeConstants.INTAKE_VOLTAGE))));
   
-      driverController.povRight().and(driverController.leftTrigger(0.5)).onFalse(new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.HOME_POSITION, true)
+      driverController.b().and(driverController.leftTrigger(0.5)).onFalse(new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.HOME_POSITION, true)
       .alongWith(new SequentialCommandGroup(
         new WaitCommand(0.25),
         new AlgaeWristCommand(subsystems.getAlgaeWrist(), 0.05
@@ -176,9 +179,14 @@ public class RobotContainer {
     // driverController.povLeft().onFalse(new SequentialCommandGroup(new WaitCommand(0.25), new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.HOME_POSITION)));
 
     driverController.y().whileTrue(new ClimberCommand(subsystems.getClimber(), 1));
-    driverController.x().whileTrue(new ClimberCommand(subsystems.getClimber(), -1));
 
     // subsystems.getDrivetrain().registerTelemetry(logger::telemeterize);
+  }
+
+  
+  private void configureTestBindings() {
+    testController.y().whileTrue(new ClimberCommand(subsystems.getClimber(), 1));
+    testController.x().whileTrue(new ClimberCommand(subsystems.getClimber(), -1));
   }
 
   public Command getAutonomousCommand() {

@@ -206,6 +206,27 @@ public class ProfiledDriveCommand extends Command {
         // || Math.abs(controller.getRightX()) > 0.10) {
         //   actionController.setAutoMode(false);
         // }
+    } else if (controller.povLeft().getAsBoolean() || controller.povRight().getAsBoolean() || controller.povUp().getAsBoolean() || controller.povDown().getAsBoolean()) {
+      double dpadLeftRightDirection = 0;
+      double dpadUpDownDirection = 0;
+
+      if (controller.povLeft().getAsBoolean() || controller.povRight().getAsBoolean()) {
+        dpadLeftRightDirection = controller.povRight().getAsBoolean() ? -1.0 : 1.0;
+      }
+      
+      if (controller.povUp().getAsBoolean() || controller.povDown().getAsBoolean()) {
+        dpadUpDownDirection = controller.povUp().getAsBoolean() ? 1.0 : -1.0;
+      }
+
+      drivetrain.setControl(drivetrain.ROBOT_RELATIVE
+        .withVelocityY(dpadLeftRightDirection * drivetrain.MAX_SPEED/10)
+        .withVelocityX(dpadUpDownDirection * drivetrain.MAX_SPEED/10)
+        .withRotationalRate(getRotation()));
+        // if (Math.abs(controller.getLeftX()) > 0.10
+        // || Math.abs(controller.getLeftY()) > 0.10
+        // || Math.abs(controller.getRightX()) > 0.10) {
+        //   actionController.setAutoMode(false);
+        // }
     } else if (elevator.getCurrentHeight() > 5) {
       drivetrain.setControl(drivetrain.FIELD_RELATIVE
         .withVelocityX(direction * Utils.squareInput(controller.getLeftY()) * drivetrain.MAX_SPEED/5)
