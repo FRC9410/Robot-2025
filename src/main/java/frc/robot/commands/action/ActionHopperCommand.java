@@ -9,18 +9,22 @@ import java.util.function.Function;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.Constants.HopperConstants;
 import frc.robot.subsystems.ActionController;
 import frc.robot.subsystems.Hopper;
+import frc.robot.subsystems.Sensors;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ActionHopperCommand extends Command {
   private final Hopper hopper;
   private final ActionController controller;
+  private final Sensors sensors;
   /** Creates a new DefaultHopper. */
-  public ActionHopperCommand(Hopper hopper, ActionController controller) {
+  public ActionHopperCommand(Hopper hopper, ActionController controller, Sensors sensors) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.hopper = hopper;
     this.controller = controller;
+    this.sensors = sensors;
 
     addRequirements(hopper);
   }
@@ -36,6 +40,8 @@ public class ActionHopperCommand extends Command {
     if (voltage != null) {
       // Use the speed variable as needed
       hopper.setVoltage((double) voltage);
+    // } else if (!sensors.getIntakeLaserBroken()) {
+    //   hopper.setVoltage((double) HopperConstants.START_VOLTAGE);
     } else {
       hopper.setVoltage(Constants.HopperConstants.STOP_VOLTAGE);
     }

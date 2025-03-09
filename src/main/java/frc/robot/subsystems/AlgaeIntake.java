@@ -7,6 +7,8 @@ import java.util.function.BiConsumer;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.NeutralOut;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -16,6 +18,8 @@ public class AlgaeIntake extends SubsystemBase {
     private static final NeutralOut brake = new NeutralOut();
     private final BiConsumer<String, Object> updateData;
     private double voltage;
+    private boolean hasGamePiece = false;
+    private static final VelocityVoltage voltageVelocity = new VelocityVoltage(-100);
     
     /**
      * Constructor for the Algae Intake subsystem.
@@ -34,6 +38,8 @@ public class AlgaeIntake extends SubsystemBase {
         this.updateData = updateData;
 
         voltage = Constants.AlgaeIntakeConstants.STOP_VOLTAGE;
+        setIntakeConfigs(intakeMotor);
+        intakeMotor.setNeutralMode(NeutralModeValue.Brake);
     }
     
     /**
@@ -55,6 +61,7 @@ public class AlgaeIntake extends SubsystemBase {
     
     @Override
     public void periodic() {
+        // System.out.println(getHasGamePiece());
     }
 
     /**
@@ -62,6 +69,33 @@ public class AlgaeIntake extends SubsystemBase {
      * using closed-loop PID control.
      */
     public void stallIntake() {
+        // this.intakeMotor.setControl(voltageVelocity.withVelocity(25).withFeedForward(-9));
+        intakeMotor.setControl(new DutyCycleOut(0.2));
+    }
+
+    public void intakeAlgae() {
+        this.intakeMotor.setControl(voltageVelocity.withVelocity(50).withFeedForward(10));
+    }
+
+    public void outtakeAlgae() {
+        this.intakeMotor.setControl(voltageVelocity.withVelocity(-50).withFeedForward(-8));
+        setHasGamePiece(false);
+    }
+
+    public void stopIntake() {
+        this.intakeMotor.setControl(brake);
+    }
+
+    public double getVelocity() {
+        return intakeMotor.getRotorVelocity().getValueAsDouble();
+    }
+
+    public void setHasGamePiece(boolean hasGamePiece) {
+        this.hasGamePiece = hasGamePiece;
+    }
+
+    public boolean getHasGamePiece() {
+        return hasGamePiece;
     }
 
     /**
@@ -77,5 +111,19 @@ public class AlgaeIntake extends SubsystemBase {
          config.Slot0.kG = Constants.AlgaeIntakeConstants.kF;
          // Apply the configuration
          intakeMotor.getConfigurator().apply(config);
+    }
+
+    private static void setIntakeConfigs(TalonFX motor) {
+      TalonFXConfiguration configs = new TalonFXConfiguration();
+      /* Voltage-based velocity requires a feed forward to account for the back-emf of the motor */
+      configs.Slot0.kP = 0.3; // An error of 1 rotation per second results in 2V output
+      configs.Slot0.kI = 0.0; // An error of 1 rotation per second increases output by 0.5V every second
+      configs.Slot0.kD = 0.0000; // A change of 1 rotation per second squared results in 0.01 volts output
+      configs.Slot0.kV = 0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
+      // Peak output of 8 volts
+      configs.Voltage.PeakForwardVoltage = 12;
+      configs.Voltage.PeakReverseVoltage = -12;
+  
+      motor.getConfigurator().apply(configs);
     }
 } 

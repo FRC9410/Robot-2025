@@ -86,7 +86,7 @@ public class DriveCommand extends Command {
     && Math.abs(controller.getLeftY()) < 0.10
     && Math.abs(controller.getRightX()) < 0.10) {
       final Pose2d requestedPose = (Pose2d) actionController.getCommandField(Constants.MapConstants.TARGET_POSE);
-      final Pose2d targetPose = Utils.pathIntersectsHexagon(new Point2D.Double(currentPose.getX(), currentPose.getY()), new Point2D.Double(requestedPose.getX(), requestedPose.getY())) ? Utils.findSafeWaypoint(currentPose, requestedPose) : requestedPose;
+      final Pose2d targetPose = Utils.getNextPose(currentPose, requestedPose);
       final ChassisSpeeds ChassisSpeeds = holonomicController.calculate(
         currentPose,
         targetPose,
@@ -147,20 +147,20 @@ public class DriveCommand extends Command {
         .withVelocityX(direction * Utils.squareInput(controller.getLeftY()) * drivetrain.MAX_SPEED/5)
         .withVelocityY(direction * Utils.squareInput(controller.getLeftX()) * drivetrain.MAX_SPEED/5)
         .withRotationalRate(getRotation()));
-        actionController.toggleAutoMode();
+        // actionController.toggleAutoMode();
     } else if (actionController.getCommandField(Constants.MapConstants.ELEVATOR_POSITION) != null
     && (Double) actionController.getCommandField(Constants.MapConstants.ELEVATOR_POSITION) > 0.0) {
       drivetrain.setControl(drivetrain.FIELD_RELATIVE
         .withVelocityX(direction * Utils.squareInput(controller.getLeftY()) * drivetrain.MAX_SPEED/5)
         .withVelocityY(direction * Utils.squareInput(controller.getLeftX()) * drivetrain.MAX_SPEED/5)
         .withRotationalRate(getRotation()));
-        actionController.toggleAutoMode();
+        // actionController.toggleAutoMode();
     } else {
       drivetrain.setControl(drivetrain.FIELD_RELATIVE
         .withVelocityX(direction * Utils.cubeInput(controller.getLeftY()) * drivetrain.MAX_SPEED)
         .withVelocityY(direction * Utils.cubeInput(controller.getLeftX()) * drivetrain.MAX_SPEED)
         .withRotationalRate(getRotation()));
-        actionController.toggleAutoMode();
+        // actionController.toggleAutoMode();
     }
   }
 

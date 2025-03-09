@@ -46,10 +46,10 @@ public class DefaultEndEffectorCommand extends Command {
       endEffector.setVoltage(Constants.EndEffectorConstants.STOP_VOLTAGE);
     }
 
-    if (elevator.atTargetPosition() && elevator.getCurrentHeight() > 10) {
-      endEffector.setVoltage(Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE);
-      dashboard.clearSelections();
-    }
+    // if (elevator.atTargetPosition() && elevator.getCurrentHeight() > 10) {
+    //   endEffector.setVoltage(Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE);
+    //   dashboard.clearSelections();
+    // }
   }
 
   // Called once the command ends or is interrupted.

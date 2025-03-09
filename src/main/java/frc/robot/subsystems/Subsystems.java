@@ -20,6 +20,7 @@ public class Subsystems {
     private final Sensors sensors;
     private final CommandSwerveDrivetrain drivetrain;
     private final Dashboard dashboard;
+    private final Leds leds;
     
     /**
      * Constructor for the Subsystems container.
@@ -35,6 +36,7 @@ public class Subsystems {
         vision = new Vision((key, value) -> updateSubsystemData(key, value));
         sensors = new Sensors((key, value) -> updateSubsystemData(key, value));
         dashboard = new Dashboard((key, value) -> updateSubsystemData(key, value));
+        leds = new Leds();
         
         subsystemData = new HashMap<>();
         actionController = new ActionController(subsystemData, drivetrain);
@@ -83,6 +85,10 @@ public class Subsystems {
 
     public Dashboard getDashboard() {
         return dashboard;
+    }
+
+    public Leds getLeds() {
+        return leds;
     }
 
     public void updateSubsystemData(String key, Object value) {

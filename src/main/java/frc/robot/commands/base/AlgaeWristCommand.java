@@ -8,6 +8,7 @@ import java.util.function.Function;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.subsystems.AlgaeIntake;
 import frc.robot.subsystems.AlgaeWrist;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -15,10 +16,12 @@ public class AlgaeWristCommand extends Command {
   /** Creates a new DefaultAlgaeWrist. */
   private final AlgaeWrist algaeWrist;
   private final double position;
-  public AlgaeWristCommand(AlgaeWrist algaeWrist, double position) {
+  private final AlgaeIntake algaeIntake;
+  public AlgaeWristCommand(AlgaeWrist algaeWrist, double position, AlgaeIntake algaeIntake) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.algaeWrist = algaeWrist;
     this.position = position;
+    this.algaeIntake = algaeIntake;
 
     addRequirements(algaeWrist);
   }
@@ -30,13 +33,17 @@ public class AlgaeWristCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    algaeWrist.setPosition(position);
+    // if (algaeIntake.getHasGamePiece()) {
+    //   algaeWrist.setGamePiecePosition(position);
+    // } else {
+      algaeWrist.setPosition(position);
+    // }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    algaeWrist.setPosition(0.8);
+      algaeWrist.setPosition(0.07);
   }
 
   // Returns true when the command should end.

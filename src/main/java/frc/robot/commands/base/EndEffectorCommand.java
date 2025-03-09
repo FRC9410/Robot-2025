@@ -52,7 +52,7 @@ public class EndEffectorCommand extends Command {
   public void end(boolean interrupted) {
     endEffector.setVoltage(Constants.EndEffectorConstants.STOP_VOLTAGE);
     dashboard.clearSelections();
-    controller.toggleAutoMode();
+    // controller.toggleAutoMode();
   }
 
   // Returns true when the command should end.

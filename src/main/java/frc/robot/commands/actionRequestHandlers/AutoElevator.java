@@ -33,8 +33,8 @@ public class AutoElevator implements ActionRequestHandler {
     public void execute(Map<String, Object> state, ActionController controller) {
 
 
-        controller.setCommandData(Map.of(
-            MapConstants.ELEVATOR_POSITION, state.get(MapConstants.ELEVATOR_POSITION)
-        ));
+        // controller.setCommandData(Map.of(
+        //     MapConstants.ELEVATOR_POSITION, state.get(MapConstants.ELEVATOR_POSITION)
+        // ));
     }
 }

@@ -60,12 +60,13 @@ public class ActionController extends SubsystemBase {
     public void periodic() {
         subsystemData.put(MapConstants.POSE, drivetrain.getState().Pose);
 
-        System.out.println(autoMode);
-
         if (autoMode) {
             doAutoRequest(subsystemData);
         } else {
-            idleHandler.execute(subsystemData, this);
+            idleHandler.execute(commandData, this);
+            if (subsystemData.get(MapConstants.HAS_PIECE) != null && !((Boolean) subsystemData.get(MapConstants.HAS_PIECE))) {
+                setCommandData(Map.of());
+            }
         }
     }
     
@@ -133,6 +134,10 @@ public class ActionController extends SubsystemBase {
         }
 
         autoMode = !autoMode;
+    }
+
+    public void setAutoMode(boolean mode) {
+        autoMode = mode;
     }
   
 

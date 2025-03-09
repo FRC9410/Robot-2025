@@ -4,6 +4,8 @@ import java.awt.Point;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -97,6 +99,63 @@ public class Utils {
             }
         }
     }
+
+    // Define field center (adjust as needed)
+    private static final Point2D.Double RED_FIELD_CENTER = new Point2D.Double(13.066, 4.02);
+    private static final Point2D.Double BLUE_FIELD_CENTER = new Point2D.Double(4.49, 4.02);
+    
+
+    private static final Map<String, Double> BLUE_ZONE_ANGLES = new LinkedHashMap<>();
+
+    static {
+        BLUE_ZONE_ANGLES.put("ZONE_1", WaypointConstants.BLUE_FRONT_LEFT.getRotation().getDegrees());
+        BLUE_ZONE_ANGLES.put("ZONE_2", WaypointConstants.BLUE_LEFT.getRotation().getDegrees());
+        BLUE_ZONE_ANGLES.put("ZONE_3", WaypointConstants.BLUE_BACK_LEFT.getRotation().getDegrees());
+        BLUE_ZONE_ANGLES.put("ZONE_4", WaypointConstants.BLUE_BACK_RIGHT.getRotation().getDegrees());
+        BLUE_ZONE_ANGLES.put("ZONE_5", WaypointConstants.BLUE_RIGHT.getRotation().getDegrees());
+        BLUE_ZONE_ANGLES.put("ZONE_6", WaypointConstants.BLUE_FRONT_RIGHT.getRotation().getDegrees());
+    }
+
+    private static final Map<String, Double> RED_ZONE_ANGLES = new LinkedHashMap<>();
+
+    static {
+        RED_ZONE_ANGLES.put("ZONE_1", WaypointConstants.RED_FRONT_LEFT.getRotation().getDegrees());
+        RED_ZONE_ANGLES.put("ZONE_2", WaypointConstants.RED_LEFT.getRotation().getDegrees());
+        RED_ZONE_ANGLES.put("ZONE_3", WaypointConstants.RED_BACK_LEFT.getRotation().getDegrees());
+        RED_ZONE_ANGLES.put("ZONE_4", WaypointConstants.RED_BACK_RIGHT.getRotation().getDegrees());
+        RED_ZONE_ANGLES.put("ZONE_5", WaypointConstants.RED_RIGHT.getRotation().getDegrees());
+        RED_ZONE_ANGLES.put("ZONE_6", WaypointConstants.RED_FRONT_RIGHT.getRotation().getDegrees());
+    }
+    /**
+     * Determines which zone a given position belongs to.
+     */
+    public static String getZone(Point2D.Double position) {
+        Point2D.Double FIELD_CENTER = getAllianceColor().equals("red") ? RED_FIELD_CENTER : BLUE_FIELD_CENTER;
+        double angle = computeAngle(FIELD_CENTER, position);
+        Map<String, Double> ZONE_ANGLES = getAllianceColor().equals("red") ? RED_ZONE_ANGLES : BLUE_ZONE_ANGLES;
+
+        // Find the appropriate zone based on angle
+        String lastZone = null;
+        for (Map.Entry<String, Double> entry : ZONE_ANGLES.entrySet()) {
+            if (angle < entry.getValue()) {
+                return lastZone != null ? lastZone : entry.getKey();
+            }
+            lastZone = entry.getKey();
+        }
+        return "ZONE_1"; // Wrap around (default to first zone if angle exceeds last boundary)
+    }
+
+    /**
+     * Computes the angle (in degrees) from the center to a given point.
+     */
+    private static double computeAngle(Point2D.Double center, Point2D.Double point) {
+        double dx = point.x - center.x;
+        double dy = point.y - center.y;
+        double radians = Math.atan2(dy, dx);
+        double degrees = Math.toDegrees(radians);
+
+        return (degrees + 360) % 360; // Normalize angle to range [0, 360)
+    }
     
     // Define hexagon vertices (assuming known, in counterclockwise order)
     private static final List<Point2D.Double> BLUE_HEXAGON_VERTICES = Arrays.asList(
@@ -119,89 +178,124 @@ public class Utils {
 
     // Define predefined safe waypoints around the hexagon
     private static final List<Point2D.Double> BLUE_SAFE_WAYPOINTS = Arrays.asList(
-        new Point2D.Double(ReefConstants.BLUE_BACK_LEFT.getX(), ReefConstants.BLUE_BACK_LEFT.getY()),
-        new Point2D.Double(ReefConstants.BLUE_FRONT_LEFT.getX(), ReefConstants.BLUE_FRONT_LEFT.getY()),
-        new Point2D.Double(ReefConstants.BLUE_FRONT_RIGHT.getX(), ReefConstants.BLUE_FRONT_RIGHT.getY()),
-        new Point2D.Double(ReefConstants.BLUE_BACK_RIGHT.getX(), ReefConstants.BLUE_BACK_RIGHT.getY()),
-        new Point2D.Double(ReefConstants.BLUE_LEFT.getX(), ReefConstants.BLUE_LEFT.getY()),
-        new Point2D.Double(ReefConstants.BLUE_RIGHT.getX(), ReefConstants.BLUE_RIGHT.getY())
+        new Point2D.Double(WaypointConstants.BLUE_FRONT_LEFT.getX(), WaypointConstants.BLUE_FRONT_LEFT.getY()),
+        new Point2D.Double(WaypointConstants.BLUE_LEFT.getX(), WaypointConstants.BLUE_LEFT.getY()),
+        new Point2D.Double(WaypointConstants.BLUE_BACK_LEFT.getX(), WaypointConstants.BLUE_BACK_LEFT.getY()),
+        new Point2D.Double(WaypointConstants.BLUE_BACK_RIGHT.getX(), WaypointConstants.BLUE_BACK_RIGHT.getY()),
+        new Point2D.Double(WaypointConstants.BLUE_RIGHT.getX(), WaypointConstants.BLUE_RIGHT.getY()),
+        new Point2D.Double(WaypointConstants.BLUE_FRONT_RIGHT.getX(), WaypointConstants.BLUE_FRONT_RIGHT.getY())
     );
 
     private static final List<Point2D.Double> RED_SAFE_WAYPOINTS = Arrays.asList(
-        new Point2D.Double(ReefConstants.RED_BACK_LEFT.getX(), ReefConstants.RED_BACK_LEFT.getY()),
-        new Point2D.Double(ReefConstants.RED_FRONT_LEFT.getX(), ReefConstants.RED_FRONT_LEFT.getY()),
-        new Point2D.Double(ReefConstants.RED_FRONT_RIGHT.getX(), ReefConstants.RED_FRONT_RIGHT.getY()),
-        new Point2D.Double(ReefConstants.RED_BACK_RIGHT.getX(), ReefConstants.RED_BACK_RIGHT.getY()),
-        new Point2D.Double(ReefConstants.RED_LEFT.getX(), ReefConstants.RED_LEFT.getY()),
-        new Point2D.Double(ReefConstants.RED_RIGHT.getX(), ReefConstants.RED_RIGHT.getY())
+        new Point2D.Double(WaypointConstants.RED_FRONT_LEFT.getX(), WaypointConstants.RED_FRONT_LEFT.getY()),
+        new Point2D.Double(WaypointConstants.RED_LEFT.getX(), WaypointConstants.RED_LEFT.getY()),
+        new Point2D.Double(WaypointConstants.RED_BACK_LEFT.getX(), WaypointConstants.RED_BACK_LEFT.getY()),
+        new Point2D.Double(WaypointConstants.RED_BACK_RIGHT.getX(), WaypointConstants.RED_BACK_RIGHT.getY()),
+        new Point2D.Double(WaypointConstants.RED_RIGHT.getX(), WaypointConstants.RED_RIGHT.getY()),
+        new Point2D.Double(WaypointConstants.RED_FRONT_RIGHT.getX(), WaypointConstants.RED_FRONT_RIGHT.getY())
     );
 
-    // Define robot width
-    private static final double ROBOT_WIDTH = 1.5; // Adjust as needed
+    // Ordered list of zones (Clockwise order)
+    private static final List<String> ZONES = Arrays.asList(
+        "ZONE_1", "ZONE_2", "ZONE_3", "ZONE_4", "ZONE_5", "ZONE_6"
+    );
+
+    // Lookup table for waypoints when transitioning between zones
+    private static final Map<String, Point2D.Double> RED_WAYPOINT_LOOKUP = new HashMap<>();
+
+    static {
+        RED_WAYPOINT_LOOKUP.put("ZONE_1->ZONE_2", RED_SAFE_WAYPOINTS.get(1));
+        RED_WAYPOINT_LOOKUP.put("ZONE_2->ZONE_3", RED_SAFE_WAYPOINTS.get(0));
+        RED_WAYPOINT_LOOKUP.put("ZONE_3->ZONE_4", RED_SAFE_WAYPOINTS.get(5));
+        RED_WAYPOINT_LOOKUP.put("ZONE_4->ZONE_5", RED_SAFE_WAYPOINTS.get(4));
+        RED_WAYPOINT_LOOKUP.put("ZONE_5->ZONE_6", RED_SAFE_WAYPOINTS.get(3));
+        RED_WAYPOINT_LOOKUP.put("ZONE_6->ZONE_1", RED_SAFE_WAYPOINTS.get(2));
+        RED_WAYPOINT_LOOKUP.put("ZONE_1->ZONE_6", RED_SAFE_WAYPOINTS.get(2));
+        RED_WAYPOINT_LOOKUP.put("ZONE_6->ZONE_5", RED_SAFE_WAYPOINTS.get(3));
+        RED_WAYPOINT_LOOKUP.put("ZONE_5->ZONE_4", RED_SAFE_WAYPOINTS.get(4));
+        RED_WAYPOINT_LOOKUP.put("ZONE_4->ZONE_3", RED_SAFE_WAYPOINTS.get(5));
+        RED_WAYPOINT_LOOKUP.put("ZONE_3->ZONE_2", RED_SAFE_WAYPOINTS.get(0));
+        RED_WAYPOINT_LOOKUP.put("ZONE_2->ZONE_1", RED_SAFE_WAYPOINTS.get(2));
+    }
+
+    private static final Map<String, Point2D.Double> BLUE_WAYPOINT_LOOKUP = new HashMap<>();
+
+    static {
+        BLUE_WAYPOINT_LOOKUP.put("ZONE_1->ZONE_2", BLUE_SAFE_WAYPOINTS.get(0));
+        BLUE_WAYPOINT_LOOKUP.put("ZONE_2->ZONE_3", BLUE_SAFE_WAYPOINTS.get(1));
+        BLUE_WAYPOINT_LOOKUP.put("ZONE_3->ZONE_4", BLUE_SAFE_WAYPOINTS.get(2));
+        BLUE_WAYPOINT_LOOKUP.put("ZONE_4->ZONE_5", BLUE_SAFE_WAYPOINTS.get(3));
+        BLUE_WAYPOINT_LOOKUP.put("ZONE_5->ZONE_6", BLUE_SAFE_WAYPOINTS.get(4));
+        BLUE_WAYPOINT_LOOKUP.put("ZONE_6->ZONE_1", BLUE_SAFE_WAYPOINTS.get(5));
+        BLUE_WAYPOINT_LOOKUP.put("ZONE_1->ZONE_6", BLUE_SAFE_WAYPOINTS.get(5));
+        BLUE_WAYPOINT_LOOKUP.put("ZONE_6->ZONE_5", BLUE_SAFE_WAYPOINTS.get(4)); 
+        BLUE_WAYPOINT_LOOKUP.put("ZONE_5->ZONE_4", BLUE_SAFE_WAYPOINTS.get(3));
+        BLUE_WAYPOINT_LOOKUP.put("ZONE_4->ZONE_3", BLUE_SAFE_WAYPOINTS.get(2));
+        BLUE_WAYPOINT_LOOKUP.put("ZONE_3->ZONE_2", BLUE_SAFE_WAYPOINTS.get(1));
+        BLUE_WAYPOINT_LOOKUP.put("ZONE_2->ZONE_1", BLUE_SAFE_WAYPOINTS.get(0));
+    }
 
     /**
-     * Checks if the given line (robot's path) or its offset lines intersect the hexagon.
+     * Finds the index of a zone in the ordered zone list.
      */
-    public static boolean pathIntersectsHexagon(Point2D.Double start, Point2D.Double target) {
-        final List<Point2D.Double> HEXAGON_VERTICES = getAllianceColor().equals("red") ? RED_HEXAGON_VERTICES : BLUE_HEXAGON_VERTICES;
-        for (int i = 0; i < HEXAGON_VERTICES.size(); i++) {
-            Point2D.Double p1 = HEXAGON_VERTICES.get(i);
-            Point2D.Double p2 = HEXAGON_VERTICES.get((i + 1) % HEXAGON_VERTICES.size());
+    private static int getZoneIndex(String zone) {
+        return ZONES.indexOf(zone);
+    }
 
-            // Check if the main path intersects
-            if (Line2D.linesIntersect(start.x, start.y, target.x, target.y, p1.x, p1.y, p2.x, p2.y)) {
-                return true;
-            }
+    /**
+     * Finds the next zone to travel to based on the shortest route.
+     */
+    private static String getNextZone(String startZone, String targetZone) {
+        int startIdx = getZoneIndex(startZone);
+        int targetIdx = getZoneIndex(targetZone);
 
-            // Check if the offset paths intersect
-            Point2D.Double leftOffsetStart = offsetPoint(start, target, -ROBOT_WIDTH / 2);
-            Point2D.Double leftOffsetEnd = offsetPoint(target, start, -ROBOT_WIDTH / 2);
-            Point2D.Double rightOffsetStart = offsetPoint(start, target, ROBOT_WIDTH / 2);
-            Point2D.Double rightOffsetEnd = offsetPoint(target, start, ROBOT_WIDTH / 2);
-
-            if (Line2D.linesIntersect(leftOffsetStart.x, leftOffsetStart.y, leftOffsetEnd.x, leftOffsetEnd.y, p1.x, p1.y, p2.x, p2.y)
-             || Line2D.linesIntersect(rightOffsetStart.x, rightOffsetStart.y, rightOffsetEnd.x, rightOffsetEnd.y, p1.x, p1.y, p2.x, p2.y)) {
-                return true;
-            }
+        if (startIdx == -1 || targetIdx == -1 || startIdx == targetIdx) {
+            return null; // Invalid zones or already at target
         }
-        return false;
-    }
 
-    /**
-     * Offsets a point perpendicular to the line formed by (start, target).
-     */
-    private static Point2D.Double offsetPoint(Point2D.Double start, Point2D.Double target, double offset) {
-        double dx = target.x - start.x;
-        double dy = target.y - start.y;
-        double length = Math.sqrt(dx * dx + dy * dy);
+        // Calculate clockwise and counterclockwise distances
+        int clockwiseSteps = (targetIdx - startIdx + ZONES.size()) % ZONES.size();
+        int counterClockwiseSteps = (startIdx - targetIdx + ZONES.size()) % ZONES.size();
 
-        // Normalize perpendicular vector
-        double perpX = -dy / length;
-        double perpY = dx / length;
-
-        // Apply perpendicular offset
-        return new Point2D.Double(start.x + perpX * offset, start.y + perpY * offset);
-    }
-
-    /**
-     * Finds the closest safe waypoint to the robot that does not cross the hexagon.
-     */
-    public static Pose2d findSafeWaypoint(Pose2d startPose, Pose2d targetPose) {
-        final Point2D.Double start = new Point2D.Double(startPose.getX(), startPose.getY());
-        final Point2D.Double target = new Point2D.Double(targetPose.getX(), targetPose.getY());
-        final List<Point2D.Double> SAFE_WAYPOINTS = getAllianceColor().equals("red") ? RED_SAFE_WAYPOINTS : BLUE_SAFE_WAYPOINTS;
-        Point2D.Double bestWaypoint = null;
-        double minDistance = Double.MAX_VALUE;
-
-        for (Point2D.Double waypoint : SAFE_WAYPOINTS) {
-            if (!pathIntersectsHexagon(start, waypoint) && !pathIntersectsHexagon(waypoint, target)) {
-                double distance = start.distance(waypoint);
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    bestWaypoint = waypoint;
-                }
-            }
+        // Choose the shortest direction and return the next zone
+        if (clockwiseSteps <= counterClockwiseSteps) {
+            return ZONES.get((startIdx + 1) % ZONES.size());
+        } else {
+            return ZONES.get((startIdx - 1 + ZONES.size()) % ZONES.size());
         }
-        return new Pose2d(bestWaypoint.x, bestWaypoint.y, targetPose.getRotation());
     }
-} 
+
+    /**
+     * Gets the next waypoint based on the shortest zone transition.
+     */
+    public static Point2D.Double getNextWaypoint(String startZone, String targetZone) {
+        Map<String, Point2D.Double> WAYPOINT_LOOKUP = getAllianceColor().equals("red") ? RED_WAYPOINT_LOOKUP : BLUE_WAYPOINT_LOOKUP;
+        String nextZone = getNextZone(startZone, targetZone);
+        System.out.println("Start Zone: " + startZone);
+        System.out.println("Next Zone: " + nextZone);
+        if (nextZone == null) {
+            return null; // No waypoint needed (already in the target zone)
+        }
+
+        String key = startZone + "->" + nextZone;
+        return WAYPOINT_LOOKUP.getOrDefault(key, null);
+    }
+
+    public static Pose2d getNextPose(Pose2d currentPose, Pose2d targetPose) {
+        Point2D.Double currentPoint = new Point2D.Double(currentPose.getX(), currentPose.getY());
+        Point2D.Double targetPoint = new Point2D.Double(targetPose.getX(), targetPose.getY());
+        String startZone = getZone(currentPoint);
+        String targetZone = getZone(targetPoint);
+        
+        if (startZone.equals(targetZone)) {
+            return targetPose; // Already in the target zone
+        }
+
+        Point2D.Double nextWaypoint = getNextWaypoint(startZone, targetZone);
+        if (nextWaypoint == null) {
+            return targetPose; // No waypoint needed (already in the target zone)
+        }
+
+        return new Pose2d(nextWaypoint.getX(), nextWaypoint.getY(), targetPose.getRotation());
+    }
+}

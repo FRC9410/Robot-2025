@@ -42,7 +42,7 @@ public class Robot extends TimedRobot {
     CanBridge.runTCP();
     robotContainer.resetLocalization();
     // robotContainer.getSubsystems().getDrivetrain().configureAutoBuilder();
-    // CameraServer.startAutomaticCapture().setVideoMode(PixelFormat.kMJPEG, 640,4800,30);
+    CameraServer.startAutomaticCapture().setVideoMode(PixelFormat.kMJPEG, 320,240,30);
     inst = NetworkTableInstance.getDefault();
     table = inst.getTable("Drive Command");
   }
@@ -51,6 +51,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     PathfindingCommand.warmupCommand().schedule();
     FollowPathCommand.warmupCommand().schedule();
+    robotContainer.getSubsystems().getLeds().setFadeAnimtation(0, 255, 255);
   }
 
   @Override
@@ -77,7 +78,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    autonomousCommand = new WaitCommand(0.010).andThen(robotContainer.getAutonomousCommand());
+    autonomousCommand = new WaitCommand(0.010).andThen(robotContainer.getRedLeftCommand());
 
     if (autonomousCommand != null) {
       autonomousCommand.schedule();
