@@ -4,6 +4,8 @@ import java.util.Map;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.FieldConstants;
@@ -24,10 +26,15 @@ public class AutoIntaking implements ActionRequestHandler {
     }
     
     public void execute(Map<String, Object> state, ActionController controller) {
+        NetworkTableInstance inst;
+        NetworkTable drivingTable;
+        inst = NetworkTableInstance.getDefault();
+        drivingTable = inst.getTable("Driving PIDs");
         final Pose2d currentPose = (Pose2d) state.get(MapConstants.POSE);
         final Pose2d targetPose;
+        final boolean isRed = drivingTable.getEntry("invert paths").getBoolean(false);
 
-        if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+        if (isRed) {
             if (currentPose.getTranslation().getY() < FieldConstants.Y_MAX / 2) {
                 targetPose = ScoringConstants.RED_HP_LEFT;
             } else {

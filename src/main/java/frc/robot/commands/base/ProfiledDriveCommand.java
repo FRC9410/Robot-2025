@@ -87,6 +87,7 @@ public class ProfiledDriveCommand extends Command {
               new TrapezoidProfile.Constraints(drivetrain.MAX_ANGULAR_RATE*2, drivetrain.MAX_ANGULAR_RATE*4)));
       // direction = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red ? -1.0 : 1.0;//
       table.getEntry("invert controls").setBoolean(false);
+      table.getEntry("invert paths").setBoolean(false);
 
       // table.getEntry("X P").setDouble(0.5);
       // table.getEntry("X D").setDouble(0.01);
@@ -192,9 +193,9 @@ public class ProfiledDriveCommand extends Command {
           : minTurnSpeed * turnSpeedDirection;
 
         drivetrain.setControl(drivetrain.ROBOT_RELATIVE
-          .withVelocityX(xSpeed)
-          .withVelocityY(ySpeed)
-          .withRotationalRate(turnSpeed));
+          .withVelocityX(xSpeed + (0.04 * xSpeedDirection))
+          .withVelocityY(ySpeed + (0.04 * ySpeedDirection))
+          .withRotationalRate(turnSpeed + (0.02 * turnSpeedDirection)));
       }
     } else if (dashboard.getIsClimbing()) {
       drivetrain.setControl(drivetrain.FIELD_RELATIVE

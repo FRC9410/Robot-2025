@@ -112,6 +112,7 @@ public final class Constants {
         public static final String TARGET_ROTATION = "targetRotation";
         public static final String TARGET_POSE = "targetPose";
         public static final String HAS_PIECE = "hasPiece";
+        public static final String AUTO = "auto";
     }
 
     public static final class FieldConstants {
@@ -156,7 +157,7 @@ public final class Constants {
         public static final double HOME_POSITION = 0.25;
         public static final double L1_SCORE_POSITION = 30.0;
         public static final double L2_SCORE_POSITION = 24.5;
-        public static final double L3_SCORE_POSITION = 36.5;
+        public static final double L3_SCORE_POSITION = 36.0;
         public static final double L4_SCORE_POSITION = 55.75;
         public static final double ALGAE_LAYUP_POSITIONS = 0.6;
         public static final double ALGAE_PLACE_POSITION = 0.8;
@@ -172,7 +173,7 @@ public final class Constants {
     
     public static final class EndEffectorConstants {
         public static final int CAN_ID = 23;
-        public static final double END_EFFECTOR_VOLTAGE = 6.0;
+        public static final double END_EFFECTOR_VOLTAGE = 4.0;
         public static final double STOP_VOLTAGE = 0.0;
         public static final double END_EFFECTOR_INTAKE_VOLTAGE = 2;
     }

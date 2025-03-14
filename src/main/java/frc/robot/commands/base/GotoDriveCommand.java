@@ -113,10 +113,10 @@ public class GotoDriveCommand extends Command {
         final double ySpeedDirection = yChassisSpeed > 1.0 ? 1 : -1;
         final double turnSpeedDirection = chassisTurnSpeed > 1.0 ? 1 : -1;
 
-        final double maxSpeed = 0.4 * drivetrain.MAX_SPEED;
+        final double maxSpeed = 0.8 * drivetrain.MAX_SPEED;
         final double minSpeed = 0.07 * drivetrain.MAX_SPEED;
 
-        final double maxTurnSpeed = 0.4 * drivetrain.MAX_ANGULAR_RATE;
+        final double maxTurnSpeed = 0.8 * drivetrain.MAX_ANGULAR_RATE;
         final double minTurnSpeed = 0.06 * drivetrain.MAX_ANGULAR_RATE;
 
         final double xSpeed = Math.abs(xChassisSpeed) < maxSpeed && Math.abs(xChassisSpeed) > minSpeed
@@ -138,9 +138,9 @@ public class GotoDriveCommand extends Command {
           : minTurnSpeed * turnSpeedDirection;
 
         drivetrain.setControl(drivetrain.ROBOT_RELATIVE
-          .withVelocityX(xSpeed)
-          .withVelocityY(ySpeed)
-          .withRotationalRate(turnSpeed));
+          .withVelocityX(xSpeed + (0.04 * xSpeedDirection))
+          .withVelocityY(ySpeed + (0.04 * ySpeedDirection))
+          .withRotationalRate(turnSpeed + (0.02 * turnSpeedDirection)));
       }
     
   }

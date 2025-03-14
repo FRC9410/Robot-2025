@@ -22,6 +22,7 @@ public class Dashboard extends SubsystemBase {
   private ReefSide reefSide;
   private CoralSide coralSide;
   private CoralLevel coralLevel;
+  private Auto auto;
   private boolean isClimbing;
   private final BiConsumer<String, Object> updateData;
   
@@ -45,6 +46,10 @@ public class Dashboard extends SubsystemBase {
     table.getEntry("l3").setBoolean(false);
     table.getEntry("l4").setBoolean(false);
     table.getEntry("isClimbing").setBoolean(false);
+    table.getEntry("blueLeft").setBoolean(false);
+    table.getEntry("blueRight").setBoolean(false);
+    table.getEntry("redLeft").setBoolean(false);
+    table.getEntry("redRight").setBoolean(false);
 
     reefSide = null;
     coralSide = null;
@@ -68,10 +73,16 @@ public class Dashboard extends SubsystemBase {
       setCoralLevel(newCoralLevel);
     }
 
+    final Auto newAuto = getAuto();
+    if (newAuto!= auto) {
+      setAuto(newAuto);
+    }
+
     isClimbing = table.getEntry("isClimbing").getBoolean(false);
 
     updateData.accept(MapConstants.TARGET_POSE, getScoringPose());
     updateData.accept(MapConstants.ELEVATOR_POSITION, getSelectedCoralLevel());
+    updateData.accept(MapConstants.AUTO, getAutoFromDash());
   }
 
   public ReefSide getReefSide() {
@@ -113,6 +124,32 @@ public class Dashboard extends SubsystemBase {
     return coralLevel;
   }
 
+  public Auto getAuto() {
+    if (table.getEntry("blueLeft").getBoolean(false) && auto != Auto.BLUE_LEFT) {
+      return Auto.BLUE_LEFT;
+    } else if (table.getEntry("blueRight").getBoolean(false) && auto != Auto.BLUE_RIGHT) {
+      return Auto.BLUE_RIGHT;
+    } else if (table.getEntry("redLeft").getBoolean(false) && auto != Auto.RED_LEFT) {
+      return Auto.RED_LEFT;
+    } else if (table.getEntry("redRight").getBoolean(false) && auto != Auto.RED_RIGHT) {
+      return Auto.RED_RIGHT;
+    }
+    return auto;
+  }
+
+  public Auto getAutoFromDash() {
+    if (table.getEntry("blueLeft").getBoolean(false)) {
+      return Auto.BLUE_LEFT;
+    } else if (table.getEntry("blueRight").getBoolean(false)) {
+      return Auto.BLUE_RIGHT;
+    } else if (table.getEntry("redLeft").getBoolean(false)) {
+      return Auto.RED_LEFT;
+    } else if (table.getEntry("redRight").getBoolean(false)) {
+      return Auto.RED_RIGHT;
+    }
+    return auto;
+  }
+
   public boolean getIsClimbing () {
     return isClimbing;
   }
@@ -130,11 +167,16 @@ public class Dashboard extends SubsystemBase {
     table.getEntry("l2").setBoolean(false);
     table.getEntry("l3").setBoolean(false);
     table.getEntry("l4").setBoolean(false);
+    table.getEntry("redLeft").setBoolean(false);
+    table.getEntry("redRight").setBoolean(false);
+    table.getEntry("blueLeft").setBoolean(false);
+    table.getEntry("blueRight").setBoolean(false);
     table.getEntry("isRed").setBoolean(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red);
 
     reefSide = null;
     coralSide = null;
     coralLevel = null;
+    auto = null;
   }
 
   public void clearReefSelections() {
@@ -151,6 +193,13 @@ public class Dashboard extends SubsystemBase {
     table.getEntry("l2").setBoolean(false);
     table.getEntry("l3").setBoolean(false);
     table.getEntry("l4").setBoolean(false);
+  }
+
+  public void clearAutoSelections() {
+    table.getEntry("blueLeft").setBoolean(false);
+    table.getEntry("blueRight").setBoolean(false);
+    table.getEntry("redLeft").setBoolean(false);
+    table.getEntry("redRight").setBoolean(false);
   }
 
   public void clearCoralSideSelections() {
@@ -227,8 +276,31 @@ public class Dashboard extends SubsystemBase {
     }
   }
 
+  public void setAuto(Auto auto) {
+    if (auto == null) {
+      return;
+    }
+
+    clearAutoSelections();
+    this.auto = auto;
+    switch (auto) {
+      case RED_LEFT:
+        table.getEntry("redLeft").setBoolean(true);
+        break;
+      case RED_RIGHT:
+        table.getEntry("redRight").setBoolean(true);
+        break;
+      case BLUE_LEFT:
+        table.getEntry("blueLeft").setBoolean(true);
+        break;
+      case BLUE_RIGHT:
+        table.getEntry("blueRight").setBoolean(true);
+        break;
+    }
+  }
+
   public Pose2d getScoringPose () {
-    final boolean isRed = drivingTable.getEntry("invert controls").getBoolean(false);
+    final boolean isRed = drivingTable.getEntry("invert paths").getBoolean(false);
 
 
     if (reefSide == null || coralSide == null) {
@@ -314,6 +386,10 @@ public class Dashboard extends SubsystemBase {
     return coralSide;
   }
 
+  public Auto getSelectedAuto() {
+    return auto;
+  }
+
   public double getSelectedCoralLevel() {
     if (coralLevel == null) {
       return Constants.ElevatorConstants.HOME_POSITION;
@@ -352,5 +428,12 @@ public class Dashboard extends SubsystemBase {
     L2,
     L3,
     L4
+  }
+
+  public enum Auto {
+    RED_LEFT,
+    RED_RIGHT,
+    BLUE_LEFT,
+    BLUE_RIGHT
   }
 }

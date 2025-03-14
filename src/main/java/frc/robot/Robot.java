@@ -49,8 +49,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
-    PathfindingCommand.warmupCommand().schedule();
-    FollowPathCommand.warmupCommand().schedule();
+    robotContainer.updatePose();
     robotContainer.getSubsystems().getLeds().setFadeAnimtation(0, 255, 255);
   }
 
@@ -65,6 +64,7 @@ public class Robot extends TimedRobot {
     table.getEntry("Heading").setDouble(pose.getRotation().getDegrees());
     table.getEntry("X").setDouble(pose.getTranslation().getX());
     table.getEntry("Y").setDouble(pose.getTranslation().getY());
+    System.out.println(robotContainer.getSubsystems().getDashboard().getSelectedCoralLevel());
   }
 
   @Override
@@ -78,7 +78,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    autonomousCommand = new WaitCommand(0.010).andThen(robotContainer.getRedLeftCommand());
+    autonomousCommand = new WaitCommand(0.010).andThen(robotContainer.getAutonomousCommand());
 
     if (autonomousCommand != null) {
       autonomousCommand.schedule();
