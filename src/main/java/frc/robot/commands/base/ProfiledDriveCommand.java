@@ -132,6 +132,7 @@ public class ProfiledDriveCommand extends Command {
   public void execute() {
     // setRotationPid();
       direction = table.getEntry("invert controls").getBoolean(false) ? 1 : -1;
+    final boolean useNewFfValues = table.getEntry("useIncreasedFfValue").getBoolean(false);
     final Pose2d currentPose = drivetrain.getState().Pose;
     if (currentPose != null
     && actionController.getCommandField(Constants.MapConstants.TARGET_POSE) != null
@@ -192,10 +193,15 @@ public class ProfiledDriveCommand extends Command {
           ? maxTurnSpeed * turnSpeedDirection
           : minTurnSpeed * turnSpeedDirection;
 
+        final double translationFfValue = useNewFfValues ? 0.05 : 0.04;
+        final double rotationFfValue = useNewFfValues ? 0.03 : 0.02;
+
+        
+
         drivetrain.setControl(drivetrain.ROBOT_RELATIVE
-          .withVelocityX(xSpeed + (0.04 * xSpeedDirection))
-          .withVelocityY(ySpeed + (0.04 * ySpeedDirection))
-          .withRotationalRate(turnSpeed + (0.02 * turnSpeedDirection)));
+          .withVelocityX(xSpeed + (translationFfValue * xSpeedDirection))
+          .withVelocityY(ySpeed + (translationFfValue * ySpeedDirection))
+          .withRotationalRate(turnSpeed + (rotationFfValue * turnSpeedDirection)));
       }
     } else if (dashboard.getIsClimbing()) {
       drivetrain.setControl(drivetrain.FIELD_RELATIVE

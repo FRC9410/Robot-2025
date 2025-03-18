@@ -267,36 +267,32 @@ public class RobotContainer {
         new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.RED_BACK_LEFT_RIGHT),
         new ParallelRaceGroup(
           new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L4_SCORE_POSITION, false),
-          new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController())
-        ),
+          new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController())),
         new GotoDriveCommand(subsystems.getDrivetrain(), new Pose2d(12.536, 1.715, Rotation2d.fromDegrees(125.0))),
         new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.RED_HP_LEFT),
-      new ParallelRaceGroup(
-      new DefaultEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
-      new HopperCommand(subsystems.getHopper(), subsystems.getSensors()),
-        new WaitCommand(1)),
-      new ParallelRaceGroup(
-      new DefaultEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
-      new HopperCommand(subsystems.getHopper(), subsystems.getSensors()),
-        new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.RED_FRONT_LEFT_LEFT)),
+        new ParallelRaceGroup(
+          new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
+          new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
+          new WaitCommand(1)),
+        new ParallelRaceGroup(
+          new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
+          new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
+          new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.RED_FRONT_LEFT_LEFT)),
         new ParallelRaceGroup(
           new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L4_SCORE_POSITION, false),
-          new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController())
-        ),
-        new HopperCommand(subsystems.getHopper(), subsystems.getSensors()),
+          new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController())),
         new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.RED_HP_LEFT),
-      new ParallelRaceGroup(
-      new DefaultEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
-      new HopperCommand(subsystems.getHopper(), subsystems.getSensors()),
-        new WaitCommand(1)),
-      new ParallelRaceGroup(
-      new DefaultEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
-      new HopperCommand(subsystems.getHopper(), subsystems.getSensors()),
-        new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.RED_FRONT_LEFT_RIGHT)),
+        new ParallelRaceGroup(
+          new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
+          new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
+          new WaitCommand(1)),
+        new ParallelRaceGroup(
+          new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
+          new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
+          new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.RED_FRONT_LEFT_RIGHT)),
         new ParallelRaceGroup(
           new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L4_SCORE_POSITION, false),
-          new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController())
-        )
+          new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController()))
       );
   }
 
@@ -305,35 +301,32 @@ public class RobotContainer {
       new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.RED_BACK_RIGHT_LEFT),
       new ParallelRaceGroup(
         new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L4_SCORE_POSITION, false),
-        new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController())
-      ),
+        new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController())),
       new GotoDriveCommand(subsystems.getDrivetrain(), new Pose2d(12.536, 6.435, Rotation2d.fromDegrees(-125.0))),
       new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.RED_HP_RIGHT),
       new ParallelRaceGroup(
-      new DefaultEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
-      new HopperCommand(subsystems.getHopper(), subsystems.getSensors()),
-      new WaitCommand(1)),
+        new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
+        new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
+        new WaitCommand(1)),
       new ParallelRaceGroup(
-      new DefaultEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
-      new HopperCommand(subsystems.getHopper(), subsystems.getSensors()),
-      new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.RED_FRONT_RIGHT_LEFT)),
+        new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
+        new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
+        new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.RED_FRONT_RIGHT_LEFT)),
       new ParallelRaceGroup(
         new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L4_SCORE_POSITION, false),
-        new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController())
-      ),
+        new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController())),
       new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.RED_HP_RIGHT),
       new ParallelRaceGroup(
-      new DefaultEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
-      new HopperCommand(subsystems.getHopper(), subsystems.getSensors()),
-      new WaitCommand(1)),
+        new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
+        new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
+        new WaitCommand(1)),
       new ParallelRaceGroup(
-      new DefaultEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
-      new HopperCommand(subsystems.getHopper(), subsystems.getSensors()),
-      new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.RED_FRONT_RIGHT_RIGHT)),
+        new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
+        new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
+        new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.RED_FRONT_RIGHT_RIGHT)),
       new ParallelRaceGroup(
         new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L4_SCORE_POSITION, false),
-        new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController())
-      )
+        new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController()))
     );
   }
 
@@ -342,35 +335,32 @@ public class RobotContainer {
       new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.BLUE_BACK_LEFT_RIGHT),
       new ParallelRaceGroup(
         new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L4_SCORE_POSITION, false),
-        new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController())
-      ),
+        new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController())),
       new GotoDriveCommand(subsystems.getDrivetrain(), new Pose2d(5.304, 6.135, Rotation2d.fromDegrees(-55.0))),
       new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.BLUE_HP_LEFT),
       new ParallelRaceGroup(
-      new DefaultEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
-      new HopperCommand(subsystems.getHopper(), subsystems.getSensors()),
-      new WaitCommand(1)),
+        new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
+        new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
+        new WaitCommand(1)),
       new ParallelRaceGroup(
-      new DefaultEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
-      new HopperCommand(subsystems.getHopper(), subsystems.getSensors()),
-      new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.BLUE_FRONT_LEFT_LEFT)),
+        new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
+        new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
+        new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.BLUE_FRONT_LEFT_LEFT)),
       new ParallelRaceGroup(
         new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L4_SCORE_POSITION, false),
-        new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController())
-      ),
+        new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController())),
       new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.BLUE_HP_LEFT),
       new ParallelRaceGroup(
-      new DefaultEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
-      new HopperCommand(subsystems.getHopper(), subsystems.getSensors()),
-      new WaitCommand(1)),
+        new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
+        new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
+        new WaitCommand(1)),
       new ParallelRaceGroup(
-      new DefaultEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
-      new HopperCommand(subsystems.getHopper(), subsystems.getSensors()),
-      new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.BLUE_FRONT_LEFT_RIGHT)),
+        new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
+        new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
+        new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.BLUE_FRONT_LEFT_RIGHT)),
       new ParallelRaceGroup(
         new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L4_SCORE_POSITION, false),
-        new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController())
-      )
+        new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController()))
     );
   }
 
@@ -379,35 +369,32 @@ public class RobotContainer {
       new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.BLUE_BACK_RIGHT_LEFT),
       new ParallelRaceGroup(
         new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L4_SCORE_POSITION, false),
-        new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController())
-      ),
+        new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController())),
       new GotoDriveCommand(subsystems.getDrivetrain(), new Pose2d(5.014, 1.815, Rotation2d.fromDegrees(55.0))),
       new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.BLUE_HP_RIGHT),
       new ParallelRaceGroup(
-      new DefaultEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
-      new HopperCommand(subsystems.getHopper(), subsystems.getSensors()),
-      new WaitCommand(1)),
+        new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
+        new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
+        new WaitCommand(1)),
       new ParallelRaceGroup(
-      new DefaultEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
-      new HopperCommand(subsystems.getHopper(), subsystems.getSensors()),
-      new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.BLUE_FRONT_RIGHT_LEFT)),
+        new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
+        new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
+        new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.BLUE_FRONT_RIGHT_LEFT)),
       new ParallelRaceGroup(
         new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L4_SCORE_POSITION, false),
-        new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController())
-      ),
+        new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController())),
       new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.BLUE_HP_RIGHT),
       new ParallelRaceGroup(
-      new DefaultEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
-      new HopperCommand(subsystems.getHopper(), subsystems.getSensors()),
-      new WaitCommand(1)),
+        new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
+        new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
+        new WaitCommand(1)),
       new ParallelRaceGroup(
-      new DefaultEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
-      new HopperCommand(subsystems.getHopper(), subsystems.getSensors()),
-      new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.BLUE_FRONT_RIGHT_RIGHT)),
+        new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
+        new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
+        new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.BLUE_FRONT_RIGHT_RIGHT)),
       new ParallelRaceGroup(
         new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L4_SCORE_POSITION, false),
-        new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController())
-      )
+        new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController()))
     );
   }
 }

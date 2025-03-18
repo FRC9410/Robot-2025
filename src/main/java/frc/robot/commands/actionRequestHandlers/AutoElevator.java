@@ -3,6 +3,8 @@ package frc.robot.commands.actionRequestHandlers;
 import java.util.Map;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.AutoConstants;
@@ -31,10 +33,17 @@ public class AutoElevator implements ActionRequestHandler {
     }
     
     public void execute(Map<String, Object> state, ActionController controller) {
+        NetworkTableInstance inst;
+        NetworkTable drivingTable;
+        inst = NetworkTableInstance.getDefault();
+        drivingTable = inst.getTable("Driving PIDs");
+        final boolean autoElevator = drivingTable.getEntry("autoElevator").getBoolean(false);
 
 
-        // controller.setCommandData(Map.of(
-        //     MapConstants.ELEVATOR_POSITION, state.get(MapConstants.ELEVATOR_POSITION)
-        // ));
+        if (autoElevator) {
+            controller.setCommandData(Map.of(
+                MapConstants.ELEVATOR_POSITION, state.get(MapConstants.ELEVATOR_POSITION)
+            ));
+        }
     }
 }

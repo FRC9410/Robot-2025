@@ -6,7 +6,60 @@
       "name": "Autonomous",
       "grid_layout": {
         "layouts": [],
-        "containers": []
+        "containers": [
+          {
+            "title": "blueLeft",
+            "x": 256.0,
+            "y": 0.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Toggle Button",
+            "properties": {
+              "topic": "/Scoring/blueLeft",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "blueRight",
+            "x": 384.0,
+            "y": 0.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Toggle Button",
+            "properties": {
+              "topic": "/Scoring/blueRight",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "redLeft",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Toggle Button",
+            "properties": {
+              "topic": "/Scoring/redLeft",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "redRight",
+            "x": 128.0,
+            "y": 0.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Toggle Button",
+            "properties": {
+              "topic": "/Scoring/redRight",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          }
+        ]
       }
     },
     {
@@ -54,19 +107,6 @@
               "period": 0.06,
               "data_type": "double",
               "show_submit_button": false
-            }
-          },
-          {
-            "title": "Auto Chooser",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "ComboBox Chooser",
-            "properties": {
-              "topic": "/SmartDashboard/Auto Chooser",
-              "period": 0.06,
-              "sort_options": false
             }
           },
           {
@@ -294,29 +334,55 @@
             }
           },
           {
-            "title": "limelight-left",
-            "x": 256.0,
+            "title": "USB Camera 0",
+            "x": 800.0,
             "y": 0.0,
-            "width": 320.0,
+            "width": 352.0,
             "height": 320.0,
             "type": "Camera Stream",
             "properties": {
-              "topic": "/CameraPublisher/limelight-left",
+              "topic": "/CameraPublisher/USB Camera 0",
               "period": 0.06,
               "rotation_turns": 0
             }
           },
           {
-            "title": "limelight-right",
-            "x": 576.0,
+            "title": "invert paths",
+            "x": 0.0,
             "y": 0.0,
-            "width": 320.0,
-            "height": 320.0,
-            "type": "Camera Stream",
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Toggle Button",
             "properties": {
-              "topic": "/CameraPublisher/limelight-right",
+              "topic": "/Driving PIDs/invert paths",
               "period": 0.06,
-              "rotation_turns": 0
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "useIncreasedFfValue",
+            "x": 128.0,
+            "y": 0.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Toggle Button",
+            "properties": {
+              "topic": "/Driving PIDs/useIncreasedFfValue",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "autoElevator",
+            "x": 256.0,
+            "y": 0.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Toggle Button",
+            "properties": {
+              "topic": "/Scoring/autoElevator",
+              "period": 0.06,
+              "data_type": "boolean"
             }
           }
         ]

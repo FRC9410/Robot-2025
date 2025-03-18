@@ -50,6 +50,8 @@ public class Dashboard extends SubsystemBase {
     table.getEntry("blueRight").setBoolean(false);
     table.getEntry("redLeft").setBoolean(false);
     table.getEntry("redRight").setBoolean(false);
+    table.getEntry("autoElevator").setBoolean(false);
+    drivingTable.getEntry("useIncreasedFfValue").setBoolean(false);
 
     reefSide = null;
     coralSide = null;
