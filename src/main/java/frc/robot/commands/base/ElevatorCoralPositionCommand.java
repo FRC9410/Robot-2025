@@ -37,7 +37,7 @@ public class ElevatorCoralPositionCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (sensors.getOuttakeLaserBroken() || dashboard.getSelectedCoralLevel() == Constants.ElevatorConstants.HOME_POSITION || override) {
+    if ((sensors.getOuttakeLaserBroken()  && !sensors.getIntakeLaserBroken()) || dashboard.getSelectedCoralLevel() == Constants.ElevatorConstants.HOME_POSITION || override) {
       elevator.setPosition(dashboard.getSelectedCoralLevel());
     }
   }

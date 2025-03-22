@@ -21,7 +21,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class GotoDriveCommand extends Command {
+public class GotoSafeDriveCommand extends Command {
   private final CommandSwerveDrivetrain drivetrain;
   private final NetworkTableInstance inst;
   private final NetworkTable table;
@@ -55,7 +55,7 @@ public class GotoDriveCommand extends Command {
   ///////////////////////////////////////////////////////////////////////////////////////
 
   /** Creates a new DriveCommand. */
-  public GotoDriveCommand(CommandSwerveDrivetrain drivetrain, Pose2d targetPose) {
+  public GotoSafeDriveCommand(CommandSwerveDrivetrain drivetrain, Pose2d targetPose) {
       this.targetPose = targetPose;
       this.drivetrain = drivetrain;
       inst = NetworkTableInstance.getDefault();
@@ -147,8 +147,8 @@ public class GotoDriveCommand extends Command {
       table.getEntry("chassisTurnSpeed").setDouble(turnSpeed);
 
       drivetrain.setControl(drivetrain.ROBOT_RELATIVE
-        .withVelocityX(Math.min(xSpeed, drivetrain.MAX_SPEED * 0.5))
-        .withVelocityY(Math.min(ySpeed, drivetrain.MAX_SPEED * 0.5))
+        .withVelocityX(Math.min(xSpeed, drivetrain.MAX_SPEED * 1.0))
+        .withVelocityY(Math.min(ySpeed, drivetrain.MAX_SPEED * 1.0))
         .withRotationalRate(Math.min(turnSpeed, drivetrain.MAX_ANGULAR_RATE * 0.5)));
     }
   }
@@ -167,9 +167,9 @@ public class GotoDriveCommand extends Command {
     final double yDelta = targetPose.getTranslation().getY() - currentPose.getTranslation().getY();
     final double rotationDelta = targetPose.getRotation().getDegrees() - currentPose.getRotation().getDegrees();
 
-    final boolean isWithinTolerance = Math.abs(xDelta) < Constants.AutoConstants.TRANSLATION_TOLERANCE + 0.1 &&
-      Math.abs(yDelta) < Constants.AutoConstants.TRANSLATION_TOLERANCE + 0.1
-      && Math.abs(rotationDelta) < Constants.AutoConstants.ROTATION_TOLERANCE + 5;
+    final boolean isWithinTolerance = Math.abs(xDelta) < Constants.AutoConstants.TRANSLATION_TOLERANCE + 1 &&
+      Math.abs(yDelta) < Constants.AutoConstants.TRANSLATION_TOLERANCE + 1
+      && Math.abs(rotationDelta) < Constants.AutoConstants.ROTATION_TOLERANCE + 10;
 
     if (isWithinTolerance) {
       return true;

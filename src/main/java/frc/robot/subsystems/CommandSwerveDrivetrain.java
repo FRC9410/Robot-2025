@@ -54,11 +54,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
 
     public double MAX_SPEED = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
-    public double MAX_ANGULAR_RATE = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
-    public static final AngularVelocity TURN_SPEED = Units.DegreesPerSecond.of(360);
+    public double MAX_ANGULAR_RATE = RotationsPerSecond.of(1.0).in(RadiansPerSecond);
 
     public final SwerveRequest.FieldCentric FIELD_RELATIVE = new SwerveRequest.FieldCentric()
         .withDeadband(MAX_SPEED * 0.1).withRotationalDeadband(MAX_ANGULAR_RATE * 0.1)
+        .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+    public final SwerveRequest.FieldCentric AUTO_FIELD_RELATIVE = new SwerveRequest.FieldCentric()
+        .withDeadband(MAX_SPEED * 0.05).withRotationalDeadband(MAX_ANGULAR_RATE * 0.05)
+        .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+    public final SwerveRequest.FieldCentric FF_FIELD_RELATIVE = new SwerveRequest.FieldCentric()
+        .withDeadband(MAX_SPEED * 0.0).withRotationalDeadband(MAX_ANGULAR_RATE * 0.0)
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     public final SwerveRequest.RobotCentric ROBOT_RELATIVE = new SwerveRequest.RobotCentric()
         .withDeadband(MAX_SPEED * 0.1).withRotationalDeadband(MAX_ANGULAR_RATE * 0.1)

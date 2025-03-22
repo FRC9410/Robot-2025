@@ -80,14 +80,26 @@ public class DriveCommand extends Command {
     setRotationPid();
     final Pose2d currentPose = drivetrain.getState().Pose;
     System.out.println(actionController.getCommandField(Constants.MapConstants.TARGET_POSE));
+
+    if (currentPose != null
+    && actionController.getCommandField(Constants.MapConstants.TARGET_POSE) != null) {
+      final Pose2d requestedPose = (Pose2d) actionController.getCommandField(Constants.MapConstants.TARGET_POSE);
+      final Pose2d targetPose = Utils.getNextPose(currentPose, requestedPose);
+      final double xDelta = targetPose.getTranslation().getX() - currentPose.getTranslation().getX();
+      final double yDelta = targetPose.getTranslation().getY() - currentPose.getTranslation().getY();
+      final double rotationDelta = targetPose.getRotation().getDegrees() - currentPose.getRotation().getDegrees();
+      table.getEntry("Y Delta").setDouble(xDelta);
+      table.getEntry("X Delta").setDouble(yDelta);
+      table.getEntry("Rotation Delta").setDouble(rotationDelta);
+    }
+
     if (currentPose != null
     && actionController.getCommandField(Constants.MapConstants.TARGET_POSE) != null
     && Math.abs(controller.getLeftX()) < 0.10
     && Math.abs(controller.getLeftY()) < 0.10
     && Math.abs(controller.getRightX()) < 0.10) {
-      final Pose2d requestedPose = (Pose2d) actionController.getCommandField(Constants.MapConstants.TARGET_POSE);
-      final Pose2d targetPose = Utils.getNextPose(currentPose, requestedPose);
-      final ChassisSpeeds ChassisSpeeds = holonomicController.calculate(
+      final Pose2d targetPose = (Pose2d) actionController.getCommandField(Constants.MapConstants.TARGET_POSE);
+      final ChassisSpeeds chassisSpeeds = holonomicController.calculate(
         currentPose,
         targetPose,
         0.0,
@@ -96,46 +108,26 @@ public class DriveCommand extends Command {
       final double xDelta = targetPose.getTranslation().getX() - currentPose.getTranslation().getX();
       final double yDelta = targetPose.getTranslation().getY() - currentPose.getTranslation().getY();
       final double rotationDelta = targetPose.getRotation().getDegrees() - currentPose.getRotation().getDegrees();
-      table.getEntry("Y Delta").setDouble(xDelta);
-      table.getEntry("X Delta").setDouble(yDelta);
-      table.getEntry("Rotation Delta").setDouble(rotationDelta);
 
       final boolean isWithinTolerance = Math.abs(xDelta) < Constants.AutoConstants.TRANSLATION_TOLERANCE &&
         Math.abs(yDelta) < Constants.AutoConstants.TRANSLATION_TOLERANCE
         && Math.abs(rotationDelta) < Constants.AutoConstants.ROTATION_TOLERANCE;
 
-      if (isWithinTolerance) {
-        final double xChassisSpeed = ChassisSpeeds.vxMetersPerSecond * drivetrain.MAX_SPEED;
-        final double yChassisSpeed = ChassisSpeeds.vyMetersPerSecond * drivetrain.MAX_SPEED;
-        final double chassisTurnSpeed = ChassisSpeeds.omegaRadiansPerSecond * drivetrain.MAX_ANGULAR_RATE;
+      if (!isWithinTolerance) {
+        final double xChassisSpeed = chassisSpeeds.vxMetersPerSecond * drivetrain.MAX_SPEED;
+        final double yChassisSpeed = chassisSpeeds.vyMetersPerSecond * drivetrain.MAX_SPEED;
+        final double chassisTurnSpeed = chassisSpeeds.omegaRadiansPerSecond * drivetrain.MAX_ANGULAR_RATE;
 
         final double xSpeedDirection = xChassisSpeed > 1.0 ? 1 : -1;
         final double ySpeedDirection = yChassisSpeed > 1.0 ? 1 : -1;
         final double turnSpeedDirection = chassisTurnSpeed > 1.0 ? 1 : -1;
 
-        final double maxSpeed = 0.5 * drivetrain.MAX_SPEED;
-        final double minSpeed = 0.1 * drivetrain.MAX_SPEED;
+        final double transFF = 0.03;
+        final double turnFF = 0.03;
 
-        final double maxTurnSpeed = 0.5 * drivetrain.MAX_ANGULAR_RATE;
-        final double minTurnSpeed = 0.1 * drivetrain.MAX_ANGULAR_RATE;
-
-        final double xSpeed = Math.abs(xChassisSpeed) < maxSpeed && Math.abs(xChassisSpeed) > minSpeed
-          ? xChassisSpeed
-          : Math.abs(xChassisSpeed) > maxSpeed
-          ? maxSpeed * xSpeedDirection
-          : minSpeed * xSpeedDirection;
-
-        final double ySpeed = Math.abs(yChassisSpeed) < maxSpeed && Math.abs(yChassisSpeed) > minSpeed
-          ? yChassisSpeed
-          : Math.abs(yChassisSpeed) > maxSpeed
-          ? maxSpeed * ySpeedDirection
-          : minSpeed * ySpeedDirection;
-
-        final double turnSpeed = Math.abs(chassisTurnSpeed) < maxTurnSpeed && Math.abs(chassisTurnSpeed) > minTurnSpeed
-          ? chassisTurnSpeed
-          : Math.abs(chassisTurnSpeed) > maxTurnSpeed
-          ? maxTurnSpeed * turnSpeedDirection
-          : minTurnSpeed * turnSpeedDirection;
+        final double xSpeed = Math.abs(xChassisSpeed) + (transFF * xSpeedDirection);
+        final double ySpeed = Math.abs(yChassisSpeed) + (transFF * ySpeedDirection);
+        final double turnSpeed = Math.abs(chassisTurnSpeed) + (turnFF * turnSpeedDirection);
 
         drivetrain.setControl(drivetrain.ROBOT_RELATIVE
           .withVelocityX(xSpeed)

@@ -37,7 +37,7 @@ public class ElevatorPositionCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (sensors.getOuttakeLaserBroken() || position == Constants.ElevatorConstants.HOME_POSITION || override) {
+    if ((sensors.getOuttakeLaserBroken() && !sensors.getIntakeLaserBroken()) || position == Constants.ElevatorConstants.HOME_POSITION || override) {
       elevator.setPosition(position);
     }
   }

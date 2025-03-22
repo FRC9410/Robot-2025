@@ -27,8 +27,10 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.subsystems.ActionController;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Subsystems;
+import frc.robot.utils.Utils;
 
 public class Robot extends TimedRobot {
   private Command autonomousCommand;
@@ -36,6 +38,7 @@ public class Robot extends TimedRobot {
   private final RobotContainer robotContainer;
   private final NetworkTableInstance inst;
   private final NetworkTable table;
+  private final NetworkTable poseTable;
 
   public Robot() {
     robotContainer = new RobotContainer();
@@ -45,6 +48,7 @@ public class Robot extends TimedRobot {
     CameraServer.startAutomaticCapture();
     inst = NetworkTableInstance.getDefault();
     table = inst.getTable("Drive Command");
+    poseTable = inst.getTable("Driving PIDs");
   }
 
   @Override
@@ -60,11 +64,23 @@ public class Robot extends TimedRobot {
     // System.out.println(RotationsPerSecond.of(0.75).in(RadiansPerSecond));
 
     robotContainer.updatePose();
-    final Pose2d pose = robotContainer.getSubsystems().getDrivetrain().getState().Pose;
-    table.getEntry("Heading").setDouble(pose.getRotation().getDegrees());
-    table.getEntry("X").setDouble(pose.getTranslation().getX());
-    table.getEntry("Y").setDouble(pose.getTranslation().getY());
-    System.out.println(robotContainer.getSubsystems().getDashboard().getSelectedCoralLevel());
+    final Pose2d currentPose = robotContainer.getSubsystems().getDrivetrain().getState().Pose;
+    final ActionController actionController = robotContainer.getSubsystems().getActionController();
+    table.getEntry("Heading").setDouble(currentPose.getRotation().getDegrees());
+    table.getEntry("X").setDouble(currentPose.getTranslation().getX());
+    table.getEntry("Y").setDouble(currentPose.getTranslation().getY());
+
+    if (currentPose != null
+    && actionController.getCommandField(Constants.MapConstants.TARGET_POSE) != null) {
+      final Pose2d requestedPose = (Pose2d) actionController.getCommandField(Constants.MapConstants.TARGET_POSE);
+      final Pose2d targetPose = Utils.getNextPose(currentPose, requestedPose);
+      final double xDelta = targetPose.getTranslation().getX() - currentPose.getTranslation().getX();
+      final double yDelta = targetPose.getTranslation().getY() - currentPose.getTranslation().getY();
+      final double rotationDelta = targetPose.getRotation().getDegrees() - currentPose.getRotation().getDegrees();
+      poseTable.getEntry("Y Delta").setDouble(xDelta);
+      poseTable.getEntry("X Delta").setDouble(yDelta);
+      poseTable.getEntry("Rotation Delta").setDouble(rotationDelta);
+    }
   }
 
   @Override

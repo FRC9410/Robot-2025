@@ -36,7 +36,6 @@ import frc.robot.utils.Utils;
 public class ProfiledDriveCommand extends Command {
   private final CommandSwerveDrivetrain drivetrain;
   private final CommandXboxController controller;
-  private HolonomicDriveController holonomicController;
   private double direction;
   private Dashboard dashboard;
   private final Elevator elevator;
@@ -53,16 +52,12 @@ public class ProfiledDriveCommand extends Command {
   ///////////////////////////////////////////////////////////////////////////////////////
 
   
-  private final HolonomicDriveController profiledHolonomicController;
+  private final HolonomicDriveController holonomicController;
   private final PIDController TRANS_CONTROLLER;
 
-  private final TrapezoidProfile.Constraints xConstraints;
-  private final TrapezoidProfile.Constraints yConstraints;
-  
-  private TrapezoidProfile.State xState = new TrapezoidProfile.State(0, 0);
-  private TrapezoidProfile.State yState = new TrapezoidProfile.State(0, 0);
-
   private final ProfiledPIDController thetaController;
+  private double transFF = 0;
+  private double rotationFF = 0;
   
   public final Distance AT_POINT_TOLERANCE = Units.Inches.of(0.5);
   public final Angle AT_ROTATION_TOLERANCE = Units.Degrees.of(1);
@@ -89,43 +84,37 @@ public class ProfiledDriveCommand extends Command {
       this.dashboard = dashboard;
       this.actionController = actionController;
       this.elevator = elevator;
-      this.holonomicController = new HolonomicDriveController(
-        new PIDController(0.6, 0, 0.01),
-        new PIDController(0.6, 0, 0.01),
-        new ProfiledPIDController(1, 0, 0.00025,
-              new TrapezoidProfile.Constraints(drivetrain.MAX_ANGULAR_RATE*2, drivetrain.MAX_ANGULAR_RATE*4)));
       // direction = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red ? -1.0 : 1.0;//
       table.getEntry("invert controls").setBoolean(false);
       table.getEntry("invert paths").setBoolean(false);
 
-      table.getEntry("Trans P").setDouble(3.0);
+      table.getEntry("Trans P").setDouble(0.5);
       table.getEntry("Trans D").setDouble(0.0);
-      table.getEntry("Rotation P").setDouble(2.0);
+      table.getEntry("Rotation P").setDouble(0.7);
       table.getEntry("Rotation D").setDouble(0.0);
+      table.getEntry("TransFF").setDouble(0.25);
+      table.getEntry("RotationFF").setDouble(0.3);
 
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////
       //
       //
 
       thetaController = new ProfiledPIDController(
-        2, 0, 0, new TrapezoidProfile.Constraints(CommandSwerveDrivetrain.TURN_SPEED.in(Units.DegreesPerSecond),
-            Math.pow(CommandSwerveDrivetrain.TURN_SPEED.in(Units.DegreesPerSecond), 2)));
+        0.7, 0, 0, new TrapezoidProfile.Constraints(drivetrain.MAX_ANGULAR_RATE,
+            Math.pow(drivetrain.MAX_ANGULAR_RATE, 2)));
 
             
       TRANS_CONTROLLER = new PIDController(
-        3,
+        0.5,
         0,
         0);
-        
-        xConstraints = new TrapezoidProfile.Constraints(drivetrain.MAX_SPEED/4, drivetrain.MAX_SPEED);
-        yConstraints = new TrapezoidProfile.Constraints(drivetrain.MAX_SPEED/4, drivetrain.MAX_SPEED);
       
       TRANS_CONTROLLER.setTolerance(AT_POINT_TOLERANCE.in(Units.Meters));
 
-      thetaController.enableContinuousInput(0, 360);
+      thetaController.enableContinuousInput(-180, 180);
       thetaController.setTolerance(AT_ROTATION_TOLERANCE.in(Units.Degrees));
 
-      profiledHolonomicController = new HolonomicDriveController(
+      holonomicController = new HolonomicDriveController(
         TRANS_CONTROLLER,
         TRANS_CONTROLLER,
         thetaController);                // Rotation ProfiledPID
@@ -148,54 +137,72 @@ public class ProfiledDriveCommand extends Command {
   @Override
   public void execute() {
     setRotationPid();
-      direction = table.getEntry("invert controls").getBoolean(false) ? 1 : -1;
-    final boolean useNewFfValues = table.getEntry("useIncreasedFfValue").getBoolean(false);
+    direction = table.getEntry("invert controls").getBoolean(false) ? 1 : -1;
     final Pose2d currentPose = drivetrain.getState().Pose;
+
     if (currentPose != null
     && actionController.getCommandField(Constants.MapConstants.TARGET_POSE) != null
     && Math.abs(controller.getLeftX()) < 0.10
     && Math.abs(controller.getLeftY()) < 0.10
     && Math.abs(controller.getRightX()) < 0.10) {
-      // final Pose2d requestedPose = (Pose2d) actionController.getCommandField(Constants.MapConstants.TARGET_POSE);
-      // final Pose2d targetPose = Utils.getNextPose(currentPose, requestedPose);
       final Pose2d targetPose = (Pose2d) actionController.getCommandField(Constants.MapConstants.TARGET_POSE);
-      // final ChassisSpeeds ChassisSpeeds = holonomicController.calculate(
-      //   currentPose,
-      //   targetPose,
-      //   0.0,
-      //   targetPose.getRotation()
-      // );
-      final ChassisSpeeds chassisSpeeds = profiledHolonomicController.calculate(currentPose, targetPose, 0, targetPose.getRotation());
       final double xDelta = targetPose.getTranslation().getX() - currentPose.getTranslation().getX();
       final double yDelta = targetPose.getTranslation().getY() - currentPose.getTranslation().getY();
       final double rotationDelta = targetPose.getRotation().getDegrees() - currentPose.getRotation().getDegrees();
-      table.getEntry("Y Delta").setDouble(xDelta);
-      table.getEntry("X Delta").setDouble(yDelta);
-      table.getEntry("Rotation Delta").setDouble(rotationDelta);
 
       final boolean isWithinTolerance = Math.abs(xDelta) < Constants.AutoConstants.TRANSLATION_TOLERANCE &&
         Math.abs(yDelta) < Constants.AutoConstants.TRANSLATION_TOLERANCE
         && Math.abs(rotationDelta) < Constants.AutoConstants.ROTATION_TOLERANCE;
 
       if (!isWithinTolerance) {
-        drivetrain.setControl(drivetrain.FIELD_RELATIVE
-          .withVelocityX(chassisSpeeds.vxMetersPerSecond)
-          .withVelocityY(chassisSpeeds.vyMetersPerSecond)
-          .withRotationalRate(chassisSpeeds.omegaRadiansPerSecond));
+        final ChassisSpeeds chassisSpeeds = holonomicController.calculate(
+        currentPose,
+        targetPose,
+        0.0,
+        targetPose.getRotation());
+        
+        double xChassisSpeed = chassisSpeeds.vxMetersPerSecond * drivetrain.MAX_SPEED;
+        double yChassisSpeed = chassisSpeeds.vyMetersPerSecond * drivetrain.MAX_SPEED;
+        double chassisTurnSpeed = chassisSpeeds.omegaRadiansPerSecond * drivetrain.MAX_ANGULAR_RATE;
+
+        double xSpeedDirection = xChassisSpeed > 0 ? 1 : -1;
+        double ySpeedDirection = yChassisSpeed > 0 ? 1 : -1;
+        double turnSpeedDirection = chassisTurnSpeed > 0 ? 1 : -1;
+
+        double transFF = table.getEntry("TransFF").getDouble(0.0); //0.25;
+        double turnFF = table.getEntry("RotationFF").getDouble(0.0); //0.3;
+        double totalChassisSpeed = Math.abs(xChassisSpeed) + Math.abs(yChassisSpeed);
+
+        double xSpeed = (xChassisSpeed + (transFF * xSpeedDirection));
+        double ySpeed = (yChassisSpeed + (transFF * ySpeedDirection));
+
+        double turnSpeed = (chassisTurnSpeed + (turnFF * turnSpeedDirection));
+
+        
+        table.getEntry("X Speed").setDouble(xSpeed);
+        table.getEntry("Y Speed").setDouble(ySpeed);
+        table.getEntry("turT Speed").setDouble(turnSpeed);
+        table.getEntry("transFFXSpeed").setDouble(transFF * xSpeedDirection);
+        table.getEntry("transFFYSpeed").setDouble(transFF * ySpeedDirection);
+        table.getEntry("rotationFFSpeed").setDouble(turnFF * turnSpeedDirection);
+        table.getEntry("chassisXSpeed").setDouble(xChassisSpeed);
+        table.getEntry("chassisYSpeed").setDouble(yChassisSpeed);
+        table.getEntry("chassisTurnSpeed").setDouble(turnSpeed);
+
+        drivetrain.setControl(drivetrain.ROBOT_RELATIVE
+          .withVelocityX(xSpeed)
+          .withVelocityY(ySpeed)
+          .withRotationalRate(turnSpeed));
       }
     } else if (dashboard.getIsClimbing()) {
-      drivetrain.setControl(drivetrain.FIELD_RELATIVE
+      drivetrain.setControl(drivetrain.FF_FIELD_RELATIVE
         .withVelocityX(direction * Utils.squareInput(controller.getLeftY()) * drivetrain.MAX_SPEED/5)
         .withVelocityY(direction * Utils.squareInput(controller.getLeftX()) * drivetrain.MAX_SPEED/5)
         .withRotationalRate(getRotation()));
-        // if (Math.abs(controller.getLeftX()) > 0.10
-        // || Math.abs(controller.getLeftY()) > 0.10
-        // || Math.abs(controller.getRightX()) > 0.10) {
-        //   actionController.setAutoMode(false);
-        // }
     } else if (controller.povLeft().getAsBoolean() || controller.povRight().getAsBoolean() || controller.povUp().getAsBoolean() || controller.povDown().getAsBoolean()) {
       double dpadLeftRightDirection = 0;
       double dpadUpDownDirection = 0;
+      double rotationDirection = 0;
 
       if (controller.povLeft().getAsBoolean() || controller.povRight().getAsBoolean()) {
         dpadLeftRightDirection = controller.povRight().getAsBoolean() ? -1.0 : 1.0;
@@ -204,36 +211,23 @@ public class ProfiledDriveCommand extends Command {
       if (controller.povUp().getAsBoolean() || controller.povDown().getAsBoolean()) {
         dpadUpDownDirection = controller.povUp().getAsBoolean() ? 1.0 : -1.0;
       }
+      
+      rotationDirection = getRotation() > 0 ? 1.0 : -1.0;
 
       drivetrain.setControl(drivetrain.ROBOT_RELATIVE
         .withVelocityY(dpadLeftRightDirection * drivetrain.MAX_SPEED/10)
         .withVelocityX(dpadUpDownDirection * drivetrain.MAX_SPEED/10)
         .withRotationalRate(getRotation()));
-        // if (Math.abs(controller.getLeftX()) > 0.10
-        // || Math.abs(controller.getLeftY()) > 0.10
-        // || Math.abs(controller.getRightX()) > 0.10) {
-        //   actionController.setAutoMode(false);
-        // }
     } else if (elevator.getCurrentHeight() > 5) {
       drivetrain.setControl(drivetrain.FIELD_RELATIVE
         .withVelocityX(direction * Utils.squareInput(controller.getLeftY()) * drivetrain.MAX_SPEED/5)
         .withVelocityY(direction * Utils.squareInput(controller.getLeftX()) * drivetrain.MAX_SPEED/5)
         .withRotationalRate(getRotation()));
-        // if (Math.abs(controller.getLeftX()) > 0.10
-        // || Math.abs(controller.getLeftY()) > 0.10
-        // || Math.abs(controller.getRightX()) > 0.10) {
-        //   actionController.setAutoMode(false);
-        // }
     } else {
       drivetrain.setControl(drivetrain.FIELD_RELATIVE
         .withVelocityX(direction * Utils.cubeInput(controller.getLeftY()) * drivetrain.MAX_SPEED)
         .withVelocityY(direction * Utils.cubeInput(controller.getLeftX()) * drivetrain.MAX_SPEED)
         .withRotationalRate(getRotation()));
-        // if (Math.abs(controller.getLeftX()) > 0.10
-        // || Math.abs(controller.getLeftY()) > 0.10
-        // || Math.abs(controller.getRightX()) > 0.10) {
-        //   actionController.setAutoMode(false);
-        // }
     }
   }
 
@@ -265,28 +259,13 @@ public class ProfiledDriveCommand extends Command {
   }
 
   public void setRotationPid () {
-    profiledHolonomicController.getXController().setP(table.getEntry("Trans P").getDouble(3.0));
-    profiledHolonomicController.getXController().setD(table.getEntry("Trans D").getDouble(0.0));
-    profiledHolonomicController.getYController().setP(table.getEntry("Trans P").getDouble(3.0));
-    profiledHolonomicController.getYController().setD(table.getEntry("Trans D").getDouble(0.0));
-    profiledHolonomicController.getThetaController().setP(table.getEntry("Rotation P").getDouble(2.0));
-    profiledHolonomicController.getThetaController().setD(table.getEntry("Rotation D").getDouble(0.0));
+    holonomicController.getXController().setP(table.getEntry("Trans P").getDouble(0.0));
+    holonomicController.getXController().setD(table.getEntry("Trans D").getDouble(0.0));
+    holonomicController.getYController().setP(table.getEntry("Trans P").getDouble(0.0));
+    holonomicController.getYController().setD(table.getEntry("Trans D").getDouble(0.0));
+    holonomicController.getThetaController().setP(table.getEntry("Rotation P").getDouble(0.0));
+    holonomicController.getThetaController().setD(table.getEntry("Rotation D").getDouble(0.0));
+    transFF = table.getEntry("TransFF").getDouble(0.0);
+    rotationFF = table.getEntry("RotationFF").getDouble(0.0);
   }
-
-  public ChassisSpeeds calculate(Pose2d currentPose, Pose2d targetPose, double dt) {
-    // Generate trapezoidal profiles for X and Y
-    TrapezoidProfile xProfile = new TrapezoidProfile(xConstraints);
-    TrapezoidProfile yProfile = new TrapezoidProfile(yConstraints);
-
-    // Update profile states
-    xState = xProfile.calculate(dt, new TrapezoidProfile.State(targetPose.getX(), 0), xState);
-    yState = yProfile.calculate(dt, new TrapezoidProfile.State(targetPose.getY(), 0), yState);
-
-    // Create the new desired pose with profiled X & Y motion
-    Pose2d profiledTarget = new Pose2d(xState.position, yState.position, targetPose.getRotation());
-
-    // Compute the desired chassis speeds using the holonomic controller
-    return profiledHolonomicController.calculate(currentPose, profiledTarget, 0, targetPose.getRotation());
-}
-
 }

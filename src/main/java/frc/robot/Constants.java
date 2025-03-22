@@ -20,7 +20,7 @@ public final class Constants {
     }
     
     public static final class AutoConstants {
-         public static final double TRANSLATION_TOLERANCE = 0.1;
+         public static final double TRANSLATION_TOLERANCE = 0.05;
          public static final double ROTATION_TOLERANCE = 1.0;
     }
     
@@ -156,8 +156,8 @@ public final class Constants {
         // Elevator preset heights (in units; placeholders for L1-L4, home, algae layup, and algae place)
         public static final double HOME_POSITION = 0.25;
         public static final double L1_SCORE_POSITION = 30.0;
-        public static final double L2_SCORE_POSITION = 24.5;
-        public static final double L3_SCORE_POSITION = 36;
+        public static final double L2_SCORE_POSITION = 23.5;
+        public static final double L3_SCORE_POSITION = 36.5;
         public static final double L4_SCORE_POSITION = 55.75;
         public static final double ALGAE_LAYUP_POSITIONS = 0.6;
         public static final double ALGAE_PLACE_POSITION = 0.8;
@@ -225,11 +225,13 @@ public final class Constants {
         public static final Pose2d BLUE_BACK_RIGHT_LEFT = new Pose2d(4.990, 2.820, Rotation2d.fromDegrees(120.0));
         public static final Pose2d BLUE_BACK_RIGHT_RIGHT = new Pose2d(5.273, 2.985, Rotation2d.fromDegrees(120.0));
 
-        public static final Pose2d RED_HP_LEFT = new Pose2d(16.4, 0.95, Rotation2d.fromDegrees(125.0));
-        public static final Pose2d RED_HP_RIGHT = new Pose2d(16.4, 7.05, Rotation2d.fromDegrees(-125.0));
+        public static final Pose2d RED_HP_LEFT = new Pose2d(16.2, 0.95, Rotation2d.fromDegrees(125.0));
+        public static final Pose2d RED_HP_RIGHT = new Pose2d(16.2, 7.25, Rotation2d.fromDegrees(-125.0));
+        public static final Pose2d RED_HP_RIGHT_AUTO = new Pose2d(16.2, 7.05, Rotation2d.fromDegrees(-125.0));
 
-        public static final Pose2d BLUE_HP_LEFT = new Pose2d(1.1, 7.05, Rotation2d.fromDegrees(-55.0));
-        public static final Pose2d BLUE_HP_RIGHT = new Pose2d(1.1, 0.95, Rotation2d.fromDegrees(55.0));
+        public static final Pose2d BLUE_HP_LEFT = new Pose2d(1.3, 7.25, Rotation2d.fromDegrees(-55.0));
+        public static final Pose2d BLUE_HP_RIGHT = new Pose2d(1.3, 0.95, Rotation2d.fromDegrees(55.0));
+        public static final Pose2d BLUE_HP_LEFT_AUTO = new Pose2d(1.3, 7.05, Rotation2d.fromDegrees(-55.0));
     }
 
     public static final class WaypointConstants {

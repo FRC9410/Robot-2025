@@ -38,7 +38,7 @@ public class AutoEndEffectorCommand extends Command {
   @Override
   public void execute() {
     if (sensors.getIntakeLaserBroken() && sensors.getOuttakeLaserBroken()) {
-      endEffector.setVoltage(Constants.EndEffectorConstants.END_EFFECTOR_INTAKE_VOLTAGE/2);
+      endEffector.setVoltage(Constants.EndEffectorConstants.END_EFFECTOR_INTAKE_VOLTAGE/2.5);
     }
     else if (sensors.getIntakeLaserBroken() && !sensors.getOuttakeLaserBroken()) {
       endEffector.setVoltage(Constants.EndEffectorConstants.END_EFFECTOR_INTAKE_VOLTAGE);

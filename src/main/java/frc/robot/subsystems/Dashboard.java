@@ -165,10 +165,10 @@ public class Dashboard extends SubsystemBase {
     table.getEntry("back_right").setBoolean(false);
     table.getEntry("left").setBoolean(false);
     table.getEntry("right").setBoolean(false);
-    table.getEntry("l1").setBoolean(false);
-    table.getEntry("l2").setBoolean(false);
-    table.getEntry("l3").setBoolean(false);
-    table.getEntry("l4").setBoolean(false);
+    // table.getEntry("l1").setBoolean(false);
+    // table.getEntry("l2").setBoolean(false);
+    // table.getEntry("l3").setBoolean(false);
+    // table.getEntry("l4").setBoolean(false);
     table.getEntry("redLeft").setBoolean(false);
     table.getEntry("redRight").setBoolean(false);
     table.getEntry("blueLeft").setBoolean(false);

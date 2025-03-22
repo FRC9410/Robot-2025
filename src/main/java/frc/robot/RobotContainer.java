@@ -268,12 +268,12 @@ public class RobotContainer {
         new ParallelRaceGroup(
           new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L4_SCORE_POSITION, false),
           new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController())),
-        new GotoDriveCommand(subsystems.getDrivetrain(), new Pose2d(12.536, 1.715, Rotation2d.fromDegrees(125.0))),
+        new GotoSafeDriveCommand(subsystems.getDrivetrain(), new Pose2d(12.536, 1.715, Rotation2d.fromDegrees(125.0))),
         new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.RED_HP_LEFT),
         new ParallelRaceGroup(
           new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
           new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
-          new WaitCommand(1)),
+          new WaitCommand(0.75)),
         new ParallelRaceGroup(
           new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
           new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
@@ -285,7 +285,7 @@ public class RobotContainer {
         new ParallelRaceGroup(
           new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
           new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
-          new WaitCommand(1)),
+          new WaitCommand(0.75)),
         new ParallelRaceGroup(
           new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
           new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
@@ -302,12 +302,12 @@ public class RobotContainer {
       new ParallelRaceGroup(
         new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L4_SCORE_POSITION, false),
         new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController())),
-      new GotoDriveCommand(subsystems.getDrivetrain(), new Pose2d(12.536, 6.435, Rotation2d.fromDegrees(-125.0))),
-      new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.RED_HP_RIGHT),
+      new GotoSafeDriveCommand(subsystems.getDrivetrain(), new Pose2d(12.536, 6.435, Rotation2d.fromDegrees(-125.0))),
+      new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.RED_HP_RIGHT_AUTO),
       new ParallelRaceGroup(
         new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
         new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
-        new WaitCommand(1)),
+        new WaitCommand(0.75)),
       new ParallelRaceGroup(
         new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
         new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
@@ -315,11 +315,11 @@ public class RobotContainer {
       new ParallelRaceGroup(
         new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L4_SCORE_POSITION, false),
         new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController())),
-      new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.RED_HP_RIGHT),
+      new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.RED_HP_RIGHT_AUTO),
       new ParallelRaceGroup(
         new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
         new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
-        new WaitCommand(1)),
+        new WaitCommand(0.75)),
       new ParallelRaceGroup(
         new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
         new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
@@ -336,12 +336,12 @@ public class RobotContainer {
       new ParallelRaceGroup(
         new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L4_SCORE_POSITION, false),
         new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController())),
-      new GotoDriveCommand(subsystems.getDrivetrain(), new Pose2d(5.304, 6.135, Rotation2d.fromDegrees(-55.0))),
-      new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.BLUE_HP_LEFT),
+      new GotoSafeDriveCommand(subsystems.getDrivetrain(), new Pose2d(5.304, 6.135, Rotation2d.fromDegrees(-55.0))),
+      new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.BLUE_HP_LEFT_AUTO),
       new ParallelRaceGroup(
         new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
         new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
-        new WaitCommand(1)),
+        new WaitCommand(0.75)),
       new ParallelRaceGroup(
         new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
         new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
@@ -349,11 +349,11 @@ public class RobotContainer {
       new ParallelRaceGroup(
         new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L4_SCORE_POSITION, false),
         new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController())),
-      new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.BLUE_HP_LEFT),
+      new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.BLUE_HP_LEFT_AUTO),
       new ParallelRaceGroup(
         new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
         new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
-        new WaitCommand(1)),
+        new WaitCommand(0.75)),
       new ParallelRaceGroup(
         new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
         new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
@@ -370,12 +370,12 @@ public class RobotContainer {
       new ParallelRaceGroup(
         new ElevatorPositionCommand(subsystems.getElevator(), subsystems.getSensors(), Constants.ElevatorConstants.L4_SCORE_POSITION, false),
         new EndEffectorCommand(subsystems.getEndEffector(), Constants.EndEffectorConstants.END_EFFECTOR_VOLTAGE, subsystems.getElevator(), subsystems.getSensors(), subsystems.getDashboard(), subsystems.getActionController())),
-      new GotoDriveCommand(subsystems.getDrivetrain(), new Pose2d(5.014, 1.815, Rotation2d.fromDegrees(55.0))),
+      new GotoSafeDriveCommand(subsystems.getDrivetrain(), new Pose2d(5.014, 1.815, Rotation2d.fromDegrees(55.0))),
       new GotoDriveCommand(subsystems.getDrivetrain(), ScoringConstants.BLUE_HP_RIGHT),
       new ParallelRaceGroup(
         new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
         new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
-        new WaitCommand(1)),
+        new WaitCommand(0.75)),
       new ParallelRaceGroup(
         new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
         new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
@@ -387,7 +387,7 @@ public class RobotContainer {
       new ParallelRaceGroup(
         new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
         new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
-        new WaitCommand(1)),
+        new WaitCommand(0.75)),
       new ParallelRaceGroup(
         new AutoEndEffectorCommand(subsystems.getEndEffector(), subsystems.getSensors(), subsystems.getElevator(), subsystems.getDashboard()),
         new AutoHopperCommand(subsystems.getHopper(), subsystems.getSensors()),
